@@ -20,6 +20,8 @@
 #include <stdio_driver.h>
 #include <serial.h>
 
+#include <display_7seg.h>
+
 // Needed for LoRaWAN
 #include <lora_driver.h>
 
@@ -120,6 +122,16 @@ void initialiseSystem()
 	stdio_create(ser_USART0);
 	// Let's create some tasks
 	create_tasks_and_semaphores();
+
+
+
+// Here the call back function is not needed
+display_7seg_init(NULL);
+
+// Power up the display
+display_7seg_powerUp();
+
+
 
 	// vvvvvvvvvvvvvvvvv BELOW IS LoRaWAN initialisation vvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
 	// Initialise the HAL layer and use 5 for LED driver priority

@@ -9,6 +9,7 @@
 
 #include <ATMEGA_FreeRTOS.h>
 
+#include <ihal.h>
 #include <lora_driver.h>
 #include <status_leds.h>
 
@@ -34,6 +35,7 @@ void lora_handler_create(UBaseType_t lora_handler_task_priority)
 	,  lora_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }
+
 
 static void _lora_setup(void)
 {
@@ -71,6 +73,7 @@ static void _lora_setup(void)
 	do {
 		rc = lora_driver_join(LORA_OTAA);
 		printf("Join Network TriesLeft:%d >%s<\n", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
+		display_7seg_display((float)maxJoinTriesLeft, 0);
 
 		if ( rc != LORA_ACCEPTED)
 		{
@@ -87,12 +90,15 @@ static void _lora_setup(void)
 
 	if (rc == LORA_ACCEPTED)
 	{
+		display_7seg_display(8888.0, 0);
+
 		// Connected to LoRaWAN :-)
 		// Make the green led steady
 		status_leds_ledOn(led_ST2); // OPTIONAL
 	}
 	else
 	{
+		display_7seg_display(0.0, 0);
 		// Something went wrong
 		// Turn off the green led
 		status_leds_ledOff(led_ST2); // OPTIONAL
@@ -124,10 +130,11 @@ void lora_handler_task( void *pvParameters )
 	_uplink_payload.len = 6;
 	_uplink_payload.port_no = 2;
 
-	 TickType_t xLastWakeTime;
-	 const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
-	 xLastWakeTime = xTaskGetTickCount();
-	 
+
+	TickType_t xLastWakeTime;
+	const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	xLastWakeTime = xTaskGetTickCount();
+	
 	for(;;)
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
@@ -148,3 +155,4 @@ void lora_handler_task( void *pvParameters )
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 }
+
