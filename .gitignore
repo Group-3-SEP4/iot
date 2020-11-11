@@ -76,3 +76,4 @@ Mkfile.old
 dkms.conf
 
 # End of https://www.toptal.com/developers/gitignore/api/c,atmelstudio
+IoT_sleep/IoT_sleep/secrets.h
