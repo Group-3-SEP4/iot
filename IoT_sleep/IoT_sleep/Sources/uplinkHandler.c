@@ -6,32 +6,25 @@
 */
 #include <stddef.h>
 #include <stdio.h>
-
 #include <ATMEGA_FreeRTOS.h>
-
 #include <lora_driver.h>
 #include <status_leds.h>
-
 #include "secrets.h"
 
-// Parameters for OTAA join - You have got these in a mail from IHA
-//#define LORA_appEUI "XXXXXXXXXXXXXXX"
-//#define LORA_appKEY "YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYY"
-
+static bool initialized = false;
 static char _out_buf[100];
 
-void lora_handler_task( void *pvParameters );
 
-static lora_driver_payload_t _uplink_payload;
+void uplink_handler_task( void *pvParameters );
 
-void lora_handler_create(UBaseType_t lora_handler_task_priority)
+void uplink_handler_create(UBaseType_t uplink_handler_task_priority, UBaseType_t stackSize)
 {
 	xTaskCreate(
-	lora_handler_task
-	,  (const portCHAR *)"LRHand"  // A name just for humans
-	,  configMINIMAL_STACK_SIZE+200  // This stack size can be checked & adjusted by reading the Stack Highwater
+	uplink_handler_task
+	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
+	,  stackSize + 200  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
-	,  lora_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  uplink_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }
 
@@ -107,37 +100,44 @@ static void _lora_setup(void)
 	}
 }
 
+static lora_driver_payload_t _uplink_payload; // should be passed as argument from buffer
+
 /*-----------------------------------------------------------*/
-void lora_handler_task( void *pvParameters )
+void uplink_handler_task( void *pvParameters )
 {
-	// Hardware reset of LoRaWAN transceiver
-	lora_driver_resetRn2483(1);
-	vTaskDelay(2);
-	lora_driver_resetRn2483(0);
-	// Give it a chance to wakeup
-	vTaskDelay(150);
+	if (!initialized){
+		// Hardware reset of LoRaWAN transceiver
+		lora_driver_resetRn2483(1);
+		vTaskDelay(2);
+		lora_driver_resetRn2483(0);
+		// Give it a chance to wakeup
+		vTaskDelay(150);
 
-	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
+		lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
-	_lora_setup();
+		_lora_setup();
+		
+		initialized = true;
+	}
+	
 
-	_uplink_payload.len = 6;
-	_uplink_payload.port_no = 2;
+	_uplink_payload.len = 6;		// should be passed as argument from buffer
+	_uplink_payload.port_no = 2;	// should be passed as argument from buffer
 
-	 TickType_t xLastWakeTime;
+	 TickType_t xLastWakeTime  // maybe this should be moved to other place where time can be handled 
 	 const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	 xLastWakeTime = xTaskGetTickCount();
 	 
-	for(;;)
+	for(;;) // task might need to loop else where, so it can be called by buffer
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 
-		// Some dummy payload
-		uint16_t hum = 12345; // Dummy humidity
-		int16_t temp = 675; // Dummy temp
-		uint16_t co2_ppm = 1050; // Dummy CO2
+		// Some dummy payload // should be passed as argument from buffer
+		uint16_t hum = 52; // Dummy humidity
+		int16_t temp = 18; // Dummy temp
+		uint16_t co2_ppm = 652; // Dummy CO2
 
-		_uplink_payload.bytes[0] = hum >> 8;
+		_uplink_payload.bytes[0] = hum >> 8; 
 		_uplink_payload.bytes[1] = hum & 0xFF;
 		_uplink_payload.bytes[2] = temp >> 8;
 		_uplink_payload.bytes[3] = temp & 0xFF;

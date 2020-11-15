@@ -23,7 +23,8 @@ main.d main.o: .././main.c \
  ../drivers/FreeRTOSTraceDriver.h ../drivers/stdio_driver.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stdbool.h \
  ../drivers/serial.h ../drivers/lora_driver.h \
- ../FreeRTOS/src/message_buffer.h ../FreeRTOS/src/stream_buffer.h
+ ../FreeRTOS/src/message_buffer.h ../FreeRTOS/src/stream_buffer.h \
+ ../Includes/uplinkHandler.h ../FreeRTOS/src/portmacro.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdio.h:
 
@@ -94,3 +95,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\
 ../FreeRTOS/src/message_buffer.h:
 
 ../FreeRTOS/src/stream_buffer.h:
+
+../Includes/uplinkHandler.h:
+
+../FreeRTOS/src/portmacro.h:
