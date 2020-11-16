@@ -10,6 +10,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 #include "secrets.h"
+#include <display_7seg.h>
 
 static bool initialized = false;
 static char _out_buf[100];
