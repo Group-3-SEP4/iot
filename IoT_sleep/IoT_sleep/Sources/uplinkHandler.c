@@ -131,6 +131,8 @@ void uplink_handler_task( void *pvParameters )
 	 const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	 xLastWakeTime = xTaskGetTickCount();
 	 
+	 float packagesSent = 0.0;
+	 
 	for(;;) // task might need to loop else where, so it can be called by buffer
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
@@ -146,6 +148,9 @@ void uplink_handler_task( void *pvParameters )
 		_uplink_payload.bytes[3] = temp & 0xFF;
 		_uplink_payload.bytes[4] = co2_ppm >> 8;
 		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
+		
+		
+		display_7seg_display(++packagesSent, 0);
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
