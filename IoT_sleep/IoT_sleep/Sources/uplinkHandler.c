@@ -67,6 +67,7 @@ static void _lora_setup(void)
 
 		if ( rc != LORA_ACCEPTED)
 		{
+			display_7seg_display((float)maxJoinTriesLeft, 0);
 			// Make the red led pulse to tell something went wrong
 			status_leds_longPuls(led_ST1); // OPTIONAL
 			// Wait 5 sec and lets try again
@@ -80,12 +81,14 @@ static void _lora_setup(void)
 
 	if (rc == LORA_ACCEPTED)
 	{
+		display_7seg_display(1111.0, 0);
 		// Connected to LoRaWAN :-)
 		// Make the green led steady
 		status_leds_ledOn(led_ST2); // OPTIONAL
 	}
 	else
 	{
+		display_7seg_display(9999.0, 0);
 		// Something went wrong
 		// Turn off the green led
 		status_leds_ledOff(led_ST2); // OPTIONAL
@@ -124,7 +127,7 @@ void uplink_handler_task( void *pvParameters )
 	_uplink_payload.len = 6;		// should be passed as argument from buffer
 	_uplink_payload.port_no = 2;	// should be passed as argument from buffer
 
-	 TickType_t xLastWakeTime  // maybe this should be moved to other place where time can be handled 
+	 TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled 
 	 const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
 	 xLastWakeTime = xTaskGetTickCount();
 	 

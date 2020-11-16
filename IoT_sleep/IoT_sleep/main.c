@@ -49,6 +49,12 @@ void initialiseSystem()
 	hal_create(5);
 	// Initialise the LoRaWAN driver without down-link buffer
 	lora_driver_create(1, NULL);
+	
+	// Here the call back function is not needed
+	display_7seg_init(NULL);
+
+	// Power up the display
+	display_7seg_powerUp();
 }
 
 
