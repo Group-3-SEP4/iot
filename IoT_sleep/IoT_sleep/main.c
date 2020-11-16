@@ -10,6 +10,8 @@
 #include <stdio_driver.h>
 #include <serial.h>
 
+#include <display_7seg.h>
+
 // LoRaWAN
 #include <lora_driver.h>
 #include "uplinkHandler.h"
