@@ -98,7 +98,7 @@ static void _lora_setup(void)
 	}
 	else
 	{
-		display_7seg_display(0.0, 0);
+		display_7seg_display(1111.0, 0);
 		// Something went wrong
 		// Turn off the green led
 		status_leds_ledOff(led_ST2); // OPTIONAL
