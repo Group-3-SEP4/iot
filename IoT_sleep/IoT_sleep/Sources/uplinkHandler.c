@@ -1,20 +1,15 @@
-/*
-* loraWANHandler.c
-*
-* Created: 12/04/2019 10:09:05
-*  Author: IHA
-*/
 #include <stddef.h>
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <lora_driver.h>
 #include <status_leds.h>
-#include "secrets.h"
 #include <display_7seg.h>
+
+// LoRa keys 
+#include "secrets.h"
 
 static bool initialized = false;
 static char _out_buf[100];
-
 
 void uplink_handler_task( void *pvParameters );
 
