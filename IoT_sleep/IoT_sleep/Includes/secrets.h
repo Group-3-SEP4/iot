@@ -1,10 +1,3 @@
-/*
- * secrets.h
- *
- * Created: 15/11/2020 15.07.00
- *  Author: Jacob
- */ 
-
 #pragma once
 
 #define LORA_appEUI "BDF222A4C4217BC4"
