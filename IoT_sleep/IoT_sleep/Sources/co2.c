@@ -77,10 +77,10 @@ void co2_task_meassure(void* pvParameters){
 	for (;;){
 		
 		
-		mh_z19_returnCode_t allowMeasurement = mh_z19_takeMeassuring();
+		mh_z19_returnCode_t returnCode = mh_z19_takeMeassuring();
 		
 		vTaskDelay(DEF_DELAY_TASK_CO2);
-		if(allowMeasurement == MHZ19_OK) {
+		if(returnCode == MHZ19_OK) {
 			mh_z19_getCo2Ppm(&_sensor->value);
 			printf("Current ppm: %i\n", _sensor->value);
 		}
