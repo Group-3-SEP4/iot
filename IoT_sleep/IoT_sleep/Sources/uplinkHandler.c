@@ -14,14 +14,19 @@ static char _out_buf[100];
 
 void uplink_handler_task( void *pvParameters );
 
-void uplink_handler_create()
+// co2 sensor should be removed when message buffer is implemented 
+#include "co2.h"
+static co2_sensor_t _co2Sensor;
+void uplink_handler_create(co2_sensor_t co2Sensor)
 {
+	_co2Sensor = co2Sensor;
+	
 	xTaskCreate(
 	uplink_handler_task
 	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
-	,  DEF_UPLINK_STACK + 200  // This stack size can be checked & adjusted by reading the Stack Highwater
+	,  DEF_STACK_UPLINK + 200  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
-	,  DEF_UPLINK_TASK_PRIORITY  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }
 
@@ -125,7 +130,7 @@ void uplink_handler_task( void *pvParameters )
 	_uplink_payload.port_no = 2;	// should be passed as argument from buffer
 
 	 TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled 
-	 const TickType_t xFrequency = DEF_UPLINK_FREQUENCY; 
+	 const TickType_t xFrequency = DEF_FREQUENCY_UPLINK; 
 	 xLastWakeTime = xTaskGetTickCount();
 	 
 	 float packagesSent = 0.0;
@@ -137,7 +142,7 @@ void uplink_handler_task( void *pvParameters )
 		// Some dummy payload // should be passed as argument from buffer
 		uint16_t hum = 52; // Dummy humidity
 		int16_t temp = 18; // Dummy temp
-		uint16_t co2_ppm = 652; // Dummy CO2
+		uint16_t co2_ppm = co2_getMeassure(_co2Sensor); // Dummy CO2
 
 		_uplink_payload.bytes[0] = hum >> 8; 
 		_uplink_payload.bytes[1] = hum & 0xFF;
@@ -150,6 +155,6 @@ void uplink_handler_task( void *pvParameters )
 		display_7seg_display(++packagesSent, 0);
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
-		printf("Upload Message >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2_ppm, lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 }

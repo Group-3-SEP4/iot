@@ -10,28 +10,34 @@
 #include <stdio_driver.h>
 #include <serial.h>
 #include <event_groups.h>
-
 #include <display_7seg.h>
+#include "co2.h"
 
 // LoRaWAN
 #include <lora_driver.h>
 #include "uplinkHandler.h"	
 
- 
-// Global scope event groups
-EventGroupHandle_t meassureEventGroup = NULL;
-EventGroupHandle_t dataReadyEventGroup = NULL;
+// Global scope event and buffers
+EventGroupHandle_t eventGroupMeassure = NULL;
+EventGroupHandle_t eventGroupDataReady = NULL;
 
 
 void create_operations(void){
 
 	// create event groups
-	meassureEventGroup = xEventGroupCreate();
-	dataReadyEventGroup = xEventGroupCreate();
+	eventGroupMeassure  = xEventGroupCreate();
+	eventGroupDataReady = xEventGroupCreate();
+	
+	// create message buffers
 	
 	
+	// create tasks
+	co2_sensor_t co2Sensor = co2_create(eventGroupMeassure, eventGroupDataReady);
+	
+	
+	// CO2 sensor passed to uplink handler is temporary.......
 	// create LoRaWAN
-	uplink_handler_create();
+	uplink_handler_create(co2Sensor);
 	
 }
 
@@ -46,9 +52,7 @@ void initialiseSystem()
 	trace_init();
 	// Make it possible to use stdio on COM port 0 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_create(ser_USART0);
-	// Create tasks
-	create_operations();
-
+	
 	// LoRaWAN initialization 
 	// Initialise the HAL layer and use 5 for LED driver priority
 	hal_create(5);
@@ -67,6 +71,10 @@ void initialiseSystem()
 int main(void)
 {
 	initialiseSystem(); // Must be done as the very first thing!!
+	
+	// Create tasks
+	create_operations();
+
 	printf("Program Started!!\n");
 	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 
