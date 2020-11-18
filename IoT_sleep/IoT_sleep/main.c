@@ -9,27 +9,29 @@
 #include <FreeRTOSTraceDriver.h>
 #include <stdio_driver.h>
 #include <serial.h>
+#include <event_groups.h>
 
 #include <display_7seg.h>
 
 // LoRaWAN
 #include <lora_driver.h>
-#include "uplinkHandler.h"
+#include "uplinkHandler.h"	
 
-
-// define priorities 
-#define UPLINK_TASK_PRIORITY		( tskIDLE_PRIORITY + 1 )
-
-
-//define task stack for each task
-#define UPLINK_TASK_STACK			(configMINIMAL_STACK_SIZE )
+ 
+// Global scope event groups
+EventGroupHandle_t meassureEventGroup = NULL;
+EventGroupHandle_t dataReadyEventGroup = NULL;
 
 
 void create_operations(void){
 
-
-	// LoRaWAN
-	uplink_handler_create(UPLINK_TASK_PRIORITY, UPLINK_TASK_STACK);
+	// create event groups
+	meassureEventGroup = xEventGroupCreate();
+	dataReadyEventGroup = xEventGroupCreate();
+	
+	
+	// create LoRaWAN
+	uplink_handler_create();
 	
 }
 
@@ -37,6 +39,7 @@ void create_operations(void){
 /*-----------------------------------------------------------*/
 void initialiseSystem()
 {
+	
 	// Set output ports for leds used in the example
 	DDRA |= _BV(DDA0) | _BV(DDA7);
 	// Initialise the trace-driver to be used together with the R2R-Network

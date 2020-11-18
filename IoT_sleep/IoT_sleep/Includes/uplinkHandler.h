@@ -9,5 +9,5 @@
 #include "portmacro.h"
 
 
-void uplink_handler_create(UBaseType_t priority, UBaseType_t stack);
+void uplink_handler_create();
 void uplink_handler_task();

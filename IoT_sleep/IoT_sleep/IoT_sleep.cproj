@@ -166,7 +166,16 @@
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\co2.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\definitions.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\uplinkHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\co2.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\uplinkHandler.c">

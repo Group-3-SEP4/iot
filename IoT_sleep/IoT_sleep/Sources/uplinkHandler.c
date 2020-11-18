@@ -4,6 +4,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 #include <display_7seg.h>
+#include "definitions.h"
 
 // LoRa keys 
 #include "secrets.h"
@@ -13,14 +14,14 @@ static char _out_buf[100];
 
 void uplink_handler_task( void *pvParameters );
 
-void uplink_handler_create(UBaseType_t uplink_handler_task_priority, UBaseType_t stackSize)
+void uplink_handler_create()
 {
 	xTaskCreate(
 	uplink_handler_task
 	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
-	,  stackSize + 200  // This stack size can be checked & adjusted by reading the Stack Highwater
+	,  DEF_UPLINK_STACK + 200  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
-	,  uplink_handler_task_priority  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  DEF_UPLINK_TASK_PRIORITY  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }
 
@@ -124,7 +125,7 @@ void uplink_handler_task( void *pvParameters )
 	_uplink_payload.port_no = 2;	// should be passed as argument from buffer
 
 	 TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled 
-	 const TickType_t xFrequency = pdMS_TO_TICKS(300000UL); // Upload message every 5 minutes (300000 ms)
+	 const TickType_t xFrequency = DEF_UPLINK_FREQUENCY; 
 	 xLastWakeTime = xTaskGetTickCount();
 	 
 	 float packagesSent = 0.0;
