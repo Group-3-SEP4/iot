@@ -18,21 +18,21 @@
 #include "uplinkHandler.h"	
 
 // Global scope event and buffers
-EventGroupHandle_t eventGroupMeassure = NULL;
+EventGroupHandle_t eventGroupMeasure = NULL;
 EventGroupHandle_t eventGroupDataReady = NULL;
 
 
 void create_operations(void){
 
 	// create event groups
-	eventGroupMeassure  = xEventGroupCreate();
+	eventGroupMeasure  = xEventGroupCreate();
 	eventGroupDataReady = xEventGroupCreate();
 	
 	// create message buffers
 	
 	
 	// create tasks
-	co2_sensor_t co2Sensor = co2_create(eventGroupMeassure, eventGroupDataReady);
+	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	
 	
 	// CO2 sensor passed to uplink handler is temporary.......

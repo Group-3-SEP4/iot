@@ -142,7 +142,7 @@ void uplink_handler_task( void *pvParameters )
 		// Some dummy payload // should be passed as argument from buffer
 		uint16_t hum = 52; // Dummy humidity
 		int16_t temp = 18; // Dummy temp
-		uint16_t co2_ppm = co2_getMeassure(_co2Sensor); // Dummy CO2
+		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor); // Dummy CO2
 
 		_uplink_payload.bytes[0] = hum >> 8; 
 		_uplink_payload.bytes[1] = hum & 0xFF;

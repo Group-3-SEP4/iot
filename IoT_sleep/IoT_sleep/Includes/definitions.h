@@ -11,8 +11,8 @@
 
 
 // define measure event groups bit flags
-#define DEF_BIT_MEASSURE_START_CO2			(1 << 0)
-#define DEF_BIT_MEASSURE_DONE				DEF_BIT_MEASSURE_START_CO2
+#define DEF_BIT_MEASURE_START_CO2			(1 << 0)
+#define DEF_BIT_MEASURE_DONE				DEF_BIT_MEASSURE_START_CO2
 
 
 // define data ready event groups bit flags
@@ -22,8 +22,12 @@
 
 // define time constraints
 #define DEF_FREQUENCY_UPLINK				pdMS_TO_TICKS(300000UL) // Upload message every 5 minutes (300000 ms)
-#define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(5000)
-
+#define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(5000UL)
+#define DEF_WAIT_MUTEX_CO2					pdMS_TO_TICKS(200)
 
 // define hardware I/O
 #define DEF_IO_PORT_CO2						ser_USART3
+
+
+// define default values
+#define DEF_DEFAULT_NA_CO2					10000 // sensor range 0-5000
