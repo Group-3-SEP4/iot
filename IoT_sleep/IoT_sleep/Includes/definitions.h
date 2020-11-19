@@ -12,7 +12,7 @@
 
 // define measure event groups bit flags
 #define DEF_BIT_MEASURE_START_CO2			(1 << 0)
-#define DEF_BIT_MEASURE_DONE				DEF_BIT_MEASSURE_START_CO2
+#define DEF_BIT_MEASURE_DONE				DEF_BIT_MEASURE_START_CO2
 
 
 // define data ready event groups bit flags
