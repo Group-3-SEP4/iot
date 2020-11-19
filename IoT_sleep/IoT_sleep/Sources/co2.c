@@ -6,6 +6,7 @@
 #include <ATMEGA_FreeRTOS.h>
 #include <task.h>
 #include <event_groups.h>
+#include <stdbool.h>
 #include "co2.h"
 #include "definitions.h"
 
@@ -25,6 +26,8 @@ static EventGroupHandle_t _eventGroupDataReady;
 static EventBits_t _bitMeassureStart;
 static EventBits_t _bitDataReady;
 
+static bool _dataReady;
+
 
 co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){
 	
@@ -34,6 +37,8 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	}
 	
 	_sensor->value = 0;
+	_dataReady = false;
+	
 	
 	_eventGroupMeassure = eventGroupMeassure;
 	_eventGroupDataReady = eventGroupMeassure;
@@ -57,21 +62,8 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 }
 
 
-void co2_destroy(co2_sensor_t* sensor){
-	if (sensor == NULL) {
-		return;
-	}
-	
-	co2_sensor_t _sensor = *sensor;
-	vTaskDelete(_sensor->taskHandle);
-	vPortFree(_sensor);
-}
-
-
-
 void co2_task_meassure(void* pvParameters){
 	
-	// Remove compiler warnings 
 	co2_sensor_t _sensor = pvParameters;
 	
 	for (;;){
@@ -82,13 +74,13 @@ void co2_task_meassure(void* pvParameters){
 		vTaskDelay(DEF_DELAY_TASK_CO2);
 		if(returnCode == MHZ19_OK) {
 			mh_z19_getCo2Ppm(&_sensor->value);
+			_dataReady = true;
 			printf("Current ppm: %i\n", _sensor->value);
 		}
 	}
 }
 
 
-// content might have to be moved.....
 void co2_event_meassure(){
 
 	EventBits_t bits = xEventGroupWaitBits(
@@ -101,8 +93,11 @@ void co2_event_meassure(){
 
 	if ((bits & (_bitMeassureStart)) == (_bitMeassureStart)) { /* check bits */
 	
-		//handle start measure here
-	
+		_dataReady = false;
+		
+		while(!_dataReady){
+			// waiting for task to have a new measurement. 
+		}
 	
 		xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); /* measurement ready */
 	
