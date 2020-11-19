@@ -6,28 +6,22 @@
 #include <ATMEGA_FreeRTOS.h>
 #include <task.h>
 #include <event_groups.h>
-#include <stdbool.h>
 #include "co2.h"
 #include "definitions.h"
 
 typedef struct co2_sensor {
 	uint16_t value;
-	TaskHandle_t taskHandle;
 } co2_sensor;
 
 
 // tasks
 void co2_task_meassure(void* pvParameters);
 
-
 static EventGroupHandle_t _eventGroupMeassure;
 static EventGroupHandle_t _eventGroupDataReady;
 
 static EventBits_t _bitMeassureStart;
 static EventBits_t _bitDataReady;
-
-static bool _dataReady;
-
 
 co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){
 	
@@ -36,9 +30,7 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 		return NULL;
 	}
 	
-	_sensor->value = 0;
-	_dataReady = false;
-	
+	_sensor->value = 0;	
 	
 	_eventGroupMeassure = eventGroupMeassure;
 	_eventGroupDataReady = eventGroupMeassure;
@@ -52,14 +44,16 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	xTaskCreate(
 		co2_task_meassure,		/* Function that implements the task. */
 		"CO2 Sensor task",		/* Text name for the task. */
-		DEF_STACK_CO2 + 200,	/* Stack size in words, not bytes. */
+		DEF_STACK_CO2,			/* Stack size in words, not bytes. */
 		_sensor,				/* Parameter passed into the task. */
 		DEF_PRIORITY_TASK_CO2,	/* Priority at which the task is created. */
-		&_sensor->taskHandle	/* Used to pass out the created task's handle. */
+		NULL					/* Used to pass out the created task's handle. */
 	);
 	
 	return _sensor;
 }
+
+
 
 
 void co2_task_meassure(void* pvParameters){
@@ -69,45 +63,24 @@ void co2_task_meassure(void* pvParameters){
 	for (;;){
 		
 		
-		mh_z19_returnCode_t returnCode = mh_z19_takeMeassuring();
-		
+		mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
 		vTaskDelay(DEF_DELAY_TASK_CO2);
-		if(returnCode == MHZ19_OK) {
-			mh_z19_getCo2Ppm(&_sensor->value);
-			_dataReady = true;
+		if(_returnCode == MHZ19_OK) {
+			
+			mh_z19_getCo2Ppm(&_sensor->value); //mutex protect this
+			
+			if (xEventGroupGetBits(_eventGroupMeassure) & _bitMeassureStart){
+				xEventGroupClearBits(_eventGroupMeassure, _bitMeassureStart);
+				xEventGroupSetBits(_eventGroupDataReady, _bitDataReady);
+			}
 			printf("Current ppm: %i\n", _sensor->value);
 		}
 	}
 }
 
-
-void co2_event_meassure(){
-
-	EventBits_t bits = xEventGroupWaitBits(
-	_eventGroupMeassure,	/* the event group being tested */
-	_bitMeassureStart,		/* the bit to wait for */
-	pdTRUE,					/* bits will be cleared before return */
-	pdTRUE,					/* wait for bits to be set */
-	portMAX_DELAY);			/* maximum time to wait */
-
-
-	if ((bits & (_bitMeassureStart)) == (_bitMeassureStart)) { /* check bits */
-	
-		_dataReady = false;
-		
-		while(!_dataReady){
-			// waiting for task to have a new measurement. 
-		}
-	
-		xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); /* measurement ready */
-	
-	
-	}
-}
-
 	
 uint16_t co2_getMeassure(co2_sensor_t sensor){
-	return sensor->value;
+	return sensor->value; //mutex protect this
 }
 
 	
