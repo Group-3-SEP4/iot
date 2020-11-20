@@ -41,13 +41,11 @@ void co2_task_measure(void* pvParameters){
 	
 	for (;;)
 	{
-		
 		mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
-		vTaskDelay(DEF_DELAY_TASK_CO2); 
-		
+		vTaskDelay(DEF_DELAY_TASK_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure. If moved value will be 0 ppm.
 		if(_returnCode == MHZ19_OK) 
 		{
-			if (xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE)
+			if (xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE) // protect shared data
 			{
 				mh_z19_getCo2Ppm(&_sensor->value);
 				xSemaphoreGive(_co2_mutex);
