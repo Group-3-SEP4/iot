@@ -25,7 +25,7 @@ static EventBits_t _bitDataReady;
 
 
 uint16_t co2_getMeasurement(co2_sensor_t sensor){
-	uint16_t _tmpValue = DEF_DEFAULT_NA_CO2;
+	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
 	if (xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE)
 	{
 		_tmpValue = sensor->value;
@@ -39,10 +39,14 @@ void co2_task_measure(void* pvParameters){
 	
 	co2_sensor_t _sensor = pvParameters;
 	
+	TickType_t xLastWakeTime = xTaskGetTickCount();
+	const TickType_t xFrequency = DEF_DELAY_TASK_CO2;
+	
 	for (;;)
 	{
+		vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first 
 		mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
-		vTaskDelay(DEF_DELAY_TASK_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure. If moved value will be 0 ppm.
+		vTaskDelay(DEF_DELAY_DRIVER_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure. If moved value will be 0 ppm.
 		if(_returnCode == MHZ19_OK) 
 		{
 			if (xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE) // protect shared data
@@ -60,6 +64,7 @@ void co2_task_measure(void* pvParameters){
 		}
 	}
 }
+
 
 
 co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){

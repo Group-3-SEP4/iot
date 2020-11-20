@@ -126,7 +126,7 @@ void uplink_handler_task( void *pvParameters )
 	}
 	
 
-	_uplink_payload.len = 6;		// should be passed as argument from buffer
+	_uplink_payload.len = 8;		// should be passed as argument from buffer
 	_uplink_payload.port_no = 2;	// should be passed as argument from buffer
 
 	 TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled 
@@ -140,9 +140,10 @@ void uplink_handler_task( void *pvParameters )
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 
 		// Some dummy payload // should be passed as argument from buffer
-		uint16_t hum = 52; // Dummy humidity
-		int16_t temp = 18; // Dummy temp
-		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor); // Dummy CO2
+		uint16_t hum = DEF_DEFAULT_NA_SENSOR; // Dummy humidity
+		int16_t temp = DEF_DEFAULT_NA_SENSOR; // Dummy temp
+		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor); 
+		uint16_t serv = DEF_DEFAULT_NA_SENSOR;
 
 		_uplink_payload.bytes[0] = hum >> 8; 
 		_uplink_payload.bytes[1] = hum & 0xFF;
@@ -150,6 +151,8 @@ void uplink_handler_task( void *pvParameters )
 		_uplink_payload.bytes[3] = temp & 0xFF;
 		_uplink_payload.bytes[4] = co2_ppm >> 8;
 		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
+		_uplink_payload.bytes[6] = serv >> 8;
+		_uplink_payload.bytes[7] = serv & 0xFF;
 		
 		
 		display_7seg_display(++packagesSent, 0);

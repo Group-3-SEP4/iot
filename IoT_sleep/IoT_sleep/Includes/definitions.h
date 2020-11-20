@@ -1,5 +1,7 @@
 #pragma once
 
+#include <limits.h>
+
 // define priorities
 #define DEF_PRIORITY_TASK_UPLINK			(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_CO2				(tskIDLE_PRIORITY + 2)
@@ -23,11 +25,14 @@
 // define time constraints
 #define DEF_FREQUENCY_UPLINK				pdMS_TO_TICKS(300000UL) // Upload message every 5 minutes (300000 ms)
 #define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(5000UL)
+#define DEF_DELAY_DRIVER_CO2				pdMS_TO_TICKS(300)
 #define DEF_WAIT_MUTEX_CO2					pdMS_TO_TICKS(200)
+
 
 // define hardware I/O
 #define DEF_IO_PORT_CO2						ser_USART3
 
 
 // define default values
-#define DEF_DEFAULT_NA_CO2					10000 // sensor range 0-5000
+#define DEF_DEFAULT_NA_SENSOR				INT_MAX
+
