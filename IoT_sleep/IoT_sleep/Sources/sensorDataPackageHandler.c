@@ -13,7 +13,7 @@
 
 typedef struct SensorDataPackageHandler {
 	uint16_t co2_ppm;
-	uint16_t temperature;
+	int16_t temperature;
 	uint16_t humidity;
 	uint16_t servo_position;
 } SensorDataPackageHandler;
@@ -59,19 +59,19 @@ void sensorDataPackageHandler_setServoPosition(sensor_data_package_handler_t sel
 lora_driver_payload_t* sensorDataPackageHandler_getLoRaPayload(sensor_data_package_handler_t self){
 	if (self == NULL) return NULL;
 	
-	lora_driver_payload_t _uplink_payload;
+	lora_driver_payload_t * _uplink_payload = calloc(sizeof(struct lora_driver_payload), 1);
 	
-	_uplink_payload.len = 8;
-	_uplink_payload.port_no = 2;
+	_uplink_payload->len = 8;
+	_uplink_payload->port_no = 2;
 	
-	_uplink_payload.bytes[0] = self->humidity >> 8;
-	_uplink_payload.bytes[1] = self->humidity & 0xFF;
-	_uplink_payload.bytes[2] = self->temperature >> 8;
-	_uplink_payload.bytes[3] = self->temperature & 0xFF;
-	_uplink_payload.bytes[4] = self->co2_ppm >> 8;
-	_uplink_payload.bytes[5] = self->co2_ppm & 0xFF;
-	_uplink_payload.bytes[6] = self->servo_position >> 8;
-	_uplink_payload.bytes[7] = self->servo_position & 0xFF;
+	_uplink_payload->bytes[0] = self->humidity >> 8;
+	_uplink_payload->bytes[1] = self->humidity & 0xFF;
+	_uplink_payload->bytes[2] = self->temperature >> 8;
+	_uplink_payload->bytes[3] = self->temperature & 0xFF;
+	_uplink_payload->bytes[4] = self->co2_ppm >> 8;
+	_uplink_payload->bytes[5] = self->co2_ppm & 0xFF;
+	_uplink_payload->bytes[6] = self->servo_position >> 8;
+	_uplink_payload->bytes[7] = self->servo_position & 0xFF;
 	
-	return &_uplink_payload;
+	return _uplink_payload;
 }
