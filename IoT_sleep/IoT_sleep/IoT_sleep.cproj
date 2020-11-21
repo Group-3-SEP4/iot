@@ -172,10 +172,16 @@
     <Compile Include="Includes\definitions.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\sensorDataPackageHandler.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\uplinkHandler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\co2.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\sensorDataPackageHandler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\uplinkHandler.c">

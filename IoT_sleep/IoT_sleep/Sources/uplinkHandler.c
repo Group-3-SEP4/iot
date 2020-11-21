@@ -5,12 +5,14 @@
 #include <status_leds.h>
 #include <display_7seg.h>
 #include "definitions.h"
+#include "sensorDataPackageHandler.h"
 
 // LoRa keys 
 #include "secrets.h"
 
 static bool initialized = false;
 static char _out_buf[100];
+static sensor_data_package_handler_t packageHandler;
 
 void uplink_handler_task( void *pvParameters );
 
@@ -105,7 +107,7 @@ static void _lora_setup(void)
 	}
 }
 
-static lora_driver_payload_t _uplink_payload; // should be passed as argument from buffer
+//static lora_driver_payload_t _uplink_payload; // should be passed as argument from buffer
 
 /*-----------------------------------------------------------*/
 void uplink_handler_task( void *pvParameters )
@@ -122,12 +124,11 @@ void uplink_handler_task( void *pvParameters )
 
 		_lora_setup();
 		
+		packageHandler = sensorDataPackageHandler_create();
+		
 		initialized = true;
 	}
 	
-
-	_uplink_payload.len = 8;		// should be passed as argument from buffer
-	_uplink_payload.port_no = 2;	// should be passed as argument from buffer
 
 	 TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled 
 	 const TickType_t xFrequency = DEF_FREQUENCY_UPLINK; 
@@ -139,25 +140,17 @@ void uplink_handler_task( void *pvParameters )
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 
-		// Some dummy payload // should be passed as argument from buffer
-		uint16_t hum = DEF_DEFAULT_NA_SENSOR; // Dummy humidity
-		int16_t temp = DEF_DEFAULT_NA_SENSOR; // Dummy temp
 		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor); 
-		uint16_t serv = DEF_DEFAULT_NA_SENSOR;
-
-		_uplink_payload.bytes[0] = hum >> 8; 
-		_uplink_payload.bytes[1] = hum & 0xFF;
-		_uplink_payload.bytes[2] = temp >> 8;
-		_uplink_payload.bytes[3] = temp & 0xFF;
-		_uplink_payload.bytes[4] = co2_ppm >> 8;
-		_uplink_payload.bytes[5] = co2_ppm & 0xFF;
-		_uplink_payload.bytes[6] = serv >> 8;
-		_uplink_payload.bytes[7] = serv & 0xFF;
 		
+		sensorDataPackageHandler_setCo2_ppm(packageHandler, co2_ppm);
+		// Data which has not been set defaults to DEF_DEFAULT_NA_SENSOR
+
+		lora_driver_payload_t* _uplink_payload = sensorDataPackageHandler_getLoRaPayload(packageHandler);
+	
 		
 		display_7seg_display(++packagesSent, 0);
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
-		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2_ppm, lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
+		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2_ppm, lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, _uplink_payload)));
 	}
 }
