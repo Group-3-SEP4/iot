@@ -145,7 +145,8 @@ void uplink_handler_task( void *pvParameters )
 		sensorDataPackageHandler_setCo2_ppm(packageHandler, co2_ppm);
 		// Data which has not been set defaults to DEF_DEFAULT_NA_SENSOR
 
-		lora_driver_payload_t* _uplink_payload = sensorDataPackageHandler_getLoRaPayload(packageHandler);
+		lora_driver_payload_t* _uplink_payload;
+		sensorDataPackageHandler_getLoRaPayload(packageHandler, &_uplink_payload);
 		
 		
 		display_7seg_display(++packagesSent, 0);

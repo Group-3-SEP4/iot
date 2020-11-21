@@ -24,4 +24,4 @@ void sensorDataPackageHandler_setTemperature(sensor_data_package_handler_t self,
 
 void sensorDataPackageHandler_setServoPosition(sensor_data_package_handler_t self, uint16_t s_pos);
 
-lora_driver_payload_t* sensorDataPackageHandler_getLoRaPayload(sensor_data_package_handler_t self);
+void sensorDataPackageHandler_getLoRaPayload(sensor_data_package_handler_t self, lora_driver_payload_t **payload);
