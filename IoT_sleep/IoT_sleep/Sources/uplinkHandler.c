@@ -7,7 +7,7 @@
 #include "definitions.h"
 #include "sensorDataPackageHandler.h"
 
-// LoRa keys 
+// LoRa keys
 #include "secrets.h"
 
 static bool initialized = false;
@@ -16,7 +16,7 @@ static sensor_data_package_handler_t packageHandler;
 
 void uplink_handler_task( void *pvParameters );
 
-// co2 sensor should be removed when message buffer is implemented 
+// co2 sensor should be removed when message buffer is implemented
 #include "co2.h"
 static co2_sensor_t _co2Sensor;
 void uplink_handler_create(co2_sensor_t co2Sensor)
@@ -124,29 +124,29 @@ void uplink_handler_task( void *pvParameters )
 
 		_lora_setup();
 		
-		packageHandler = sensorDataPackageHandler_create();
 		
 		initialized = true;
 	}
 	
+	packageHandler = sensorDataPackageHandler_create();
 
-	 TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled 
-	 const TickType_t xFrequency = DEF_FREQUENCY_UPLINK; 
-	 xLastWakeTime = xTaskGetTickCount();
-	 
-	 float packagesSent = 0.0;
-	 
+	TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled
+	const TickType_t xFrequency = DEF_FREQUENCY_UPLINK;
+	xLastWakeTime = xTaskGetTickCount();
+	
+	float packagesSent = 0.0;
+	
 	for(;;) // task might need to loop else where, so it can be called by buffer
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 
-		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor); 
+		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor);
 		
 		sensorDataPackageHandler_setCo2_ppm(packageHandler, co2_ppm);
 		// Data which has not been set defaults to DEF_DEFAULT_NA_SENSOR
 
 		lora_driver_payload_t* _uplink_payload = sensorDataPackageHandler_getLoRaPayload(packageHandler);
-	
+		
 		
 		display_7seg_display(++packagesSent, 0);
 
