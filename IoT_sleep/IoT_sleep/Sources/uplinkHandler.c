@@ -107,7 +107,7 @@ static void _lora_setup(void)
 	}
 }
 
-//static lora_driver_payload_t _uplink_payload; // should be passed as argument from buffer
+static lora_driver_payload_t *_uplink_payload; // should be passed as argument from buffer
 
 /*-----------------------------------------------------------*/
 void uplink_handler_task( void *pvParameters )
@@ -145,7 +145,7 @@ void uplink_handler_task( void *pvParameters )
 		sensorDataPackageHandler_setCo2_ppm(packageHandler, co2_ppm);
 		// Data which has not been set defaults to DEF_DEFAULT_NA_SENSOR
 
-		lora_driver_payload_t* _uplink_payload;
+		//lora_driver_payload_t* _uplink_payload;
 		sensorDataPackageHandler_getLoRaPayload(packageHandler, &_uplink_payload);
 		
 		

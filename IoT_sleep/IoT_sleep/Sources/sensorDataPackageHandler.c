@@ -60,7 +60,6 @@ void sensorDataPackageHandler_getLoRaPayload(sensor_data_package_handler_t self,
 	if (self == NULL) return;
 	if (payload == NULL) return;
 	
-	
 	(*payload)->len = 8;
 	(*payload)->port_no = 2;
 		 
