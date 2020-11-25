@@ -15,7 +15,7 @@ static char _out_buf[100];
 void uplink_handler_task( void *pvParameters );
 
 // co2 sensor should be removed when message buffer is implemented 
-#include "co2.h"
+#include "co2_sensor.h"
 static co2_sensor_t _co2Sensor;
 void uplink_handler_create(co2_sensor_t co2Sensor)
 {
