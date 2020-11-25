@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #include <limits.h>
 
@@ -8,7 +9,7 @@
 
 
 // define task stack for each task
-#define DEF_STACK_UPLINK					(configMINIMAL_STACK_SIZE)
+#define DEF_STACK_UPLINK					(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_CO2						(configMINIMAL_STACK_SIZE + 200)
 
 
@@ -31,8 +32,10 @@
 
 // define hardware I/O
 #define DEF_IO_PORT_CO2						ser_USART3
+#define DEF_PRINT_TO_TERMINAL				true
 
 
 // define default values
 #define DEF_DEFAULT_NA_SENSOR				INT_MAX
 
+#endif

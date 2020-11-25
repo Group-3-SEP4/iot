@@ -7,15 +7,17 @@
 #include <task.h>
 #include <event_groups.h>
 #include <semphr.h>
-#include "co2.h"
+#include "co2_sensor.h"
 #include "definitions.h"
+#include "wrapper_semaphore.h"
+#include "wrapper_eventGroup.h"
 
 typedef struct co2_sensor {
 	uint16_t value;
 } co2_sensor;
 
 
-SemaphoreHandle_t _co2_mutex;
+static SemaphoreHandle_t _co2_mutex;
 
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
@@ -26,18 +28,40 @@ static EventBits_t _bitDataReady;
 
 uint16_t co2_getMeasurement(co2_sensor_t sensor){
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
-	if (xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE)
+	if (_xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE)
 	{
 		_tmpValue = sensor->value;
-		xSemaphoreGive(_co2_mutex);
+		_xSemaphoreGive(_co2_mutex);
 	}
 	return _tmpValue;
 }
 
 
-void co2_task_measure(void* pvParameters){
+inline void co2_measure(co2_sensor_t sensor){
 	
-	co2_sensor_t _sensor = pvParameters;
+	mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
+	vTaskDelay(DEF_DELAY_DRIVER_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure (Async). If moved/deleted value will be 0 ppm.
+	if(_returnCode == MHZ19_OK)
+	{
+		if (_xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE) // protect shared data
+		{
+			mh_z19_getCo2Ppm(&sensor->value);
+			_xSemaphoreGive(_co2_mutex);
+			
+			if (_xEventGroupGetBits(_eventGroupMeasure) & _bitMeasureStart) // checks eventMeasureStart bits
+			{
+				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
+				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
+			}
+			if (DEF_PRINT_TO_TERMINAL){
+			printf("Current ppm: %i\n", co2_getMeasurement(sensor)); // only for visual verification in terminal
+			}
+		}
+	}
+}
+
+
+void co2_task_measure(void* pvParameters){
 	
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_CO2;
@@ -45,31 +69,14 @@ void co2_task_measure(void* pvParameters){
 	for (;;)
 	{
 		vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first 
-		mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
-		vTaskDelay(DEF_DELAY_DRIVER_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure. If moved value will be 0 ppm.
-		if(_returnCode == MHZ19_OK) 
-		{
-			if (xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE) // protect shared data
-			{
-				mh_z19_getCo2Ppm(&_sensor->value);
-				xSemaphoreGive(_co2_mutex);
-				
-				if (xEventGroupGetBits(_eventGroupMeasure) & _bitMeasureStart) // checks eventMeasureStart bits
-				{
-					xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
-					xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
-				}
-			}
-			printf("Current ppm: %i\n", co2_getMeasurement(_sensor)); // only for visual verification in terminal
-		}
+		co2_measure((co2_sensor_t) pvParameters);
 	}
 }
 
 
-
 co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){
 	
-	co2_sensor_t _sensor = calloc(1, sizeof(co2_sensor));
+	co2_sensor_t _sensor = malloc(sizeof(co2_sensor));
 	if (NULL == _sensor){
 		return NULL;
 	}
@@ -98,15 +105,3 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	
 	return _sensor;
 }
-
-
-
-
-
-
-	
-
-
-
-
-

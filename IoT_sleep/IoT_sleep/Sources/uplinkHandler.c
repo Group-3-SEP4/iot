@@ -16,8 +16,8 @@ static sensor_data_package_handler_t packageHandler;
 
 void uplink_handler_task( void *pvParameters );
 
-// co2 sensor should be removed when message buffer is implemented
-#include "co2.h"
+// co2 sensor should be removed when message buffer is implemented 
+#include "co2_sensor.h"
 static co2_sensor_t _co2Sensor;
 void uplink_handler_create(co2_sensor_t co2Sensor)
 {
@@ -26,7 +26,7 @@ void uplink_handler_create(co2_sensor_t co2Sensor)
 	xTaskCreate(
 	uplink_handler_task
 	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
-	,  DEF_STACK_UPLINK + 200  // This stack size can be checked & adjusted by reading the Stack Highwater
+	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
 	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );

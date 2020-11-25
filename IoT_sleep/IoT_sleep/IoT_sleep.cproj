@@ -135,6 +135,7 @@
             <Value>../drivers</Value>
             <Value>../Includes</Value>
             <Value>../Sources</Value>
+            <Value>../Includes/Wrappers</Value>
           </ListValues>
         </avrgcc.compiler.directories.IncludePaths>
         <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
@@ -166,7 +167,7 @@
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\co2.h">
+    <Compile Include="Includes\co2_sensor.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\definitions.h">
@@ -175,10 +176,19 @@
     <Compile Include="Includes\sensorDataPackageHandler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\secrets.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\uplinkHandler.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\co2.c">
+    <Compile Include="Includes\Wrappers\wrapper_eventGroup.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\Wrappers\wrapper_semaphore.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\co2_sensor.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\sensorDataPackageHandler.c">
@@ -190,9 +200,6 @@
     <None Include="drivers\docs\example\loraWANHandler.c">
       <SubType>compile</SubType>
     </None>
-    <Compile Include="Includes\secrets.h">
-      <SubType>compile</SubType>
-    </Compile>
     <None Include="Debug\drivers\docs\example\loraWANHandler.d">
       <SubType>compile</SubType>
     </None>
@@ -476,6 +483,7 @@
     <Folder Include="FreeRTOS\FreeRTOSTraceDriver\" />
     <Folder Include="FreeRTOS\src\" />
     <Folder Include="Includes" />
+    <Folder Include="Includes\Wrappers\" />
     <Folder Include="Sources" />
   </ItemGroup>
   <ItemGroup>
