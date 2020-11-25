@@ -11,7 +11,7 @@
 #include <serial.h>
 #include <event_groups.h>
 #include <display_7seg.h>
-#include "co2.h"
+#include "co2_sensor.h"
 
 // LoRaWAN
 #include <lora_driver.h>

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #include <limits.h>
 
@@ -31,8 +32,9 @@
 
 // define hardware I/O
 #define DEF_IO_PORT_CO2						ser_USART3
-
+#define DEF_PRINT_TO_TERMINAL				true
 
 // define default values
 #define DEF_DEFAULT_NA_SENSOR				INT_MAX
 
+#endif
