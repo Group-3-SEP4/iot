@@ -10,6 +10,7 @@
 #include <stdio_driver.h>
 #include <serial.h>
 #include <event_groups.h>
+#include <message_buffer.h>
 #include <display_7seg.h>
 #include "co2_sensor.h"
 #include "dataPackageHandler.h"
@@ -18,28 +19,25 @@
 #include <lora_driver.h>
 #include "uplinkHandler.h"	
 
-// Global scope event and buffers
-EventGroupHandle_t eventGroupMeasure = NULL;
-EventGroupHandle_t eventGroupDataReady = NULL;
 
 
 void create_operations(void){
 
 	// create event groups
-	eventGroupMeasure  = xEventGroupCreate();
-	eventGroupDataReady = xEventGroupCreate();
+	EventGroupHandle_t eventGroupMeasure  = xEventGroupCreate();
+	EventGroupHandle_t eventGroupDataReady = xEventGroupCreate();
 	
 	// create message buffers
-	
+	MessageBufferHandle_t msgBufferUplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
-	dataPackageHandler_t dataPackageHandler = dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, co2Sensor);
+	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor);
 	
 	
 	// datapackage passed to uplink handler is temporary.......
 	// create LoRaWAN
-	uplink_handler_create(dataPackageHandler);
+	uplink_handler_create(msgBufferUplink);
 	
 }
 

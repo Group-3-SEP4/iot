@@ -3,12 +3,14 @@
 #include <stdlib.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <event_groups.h>
+#include <message_buffer.h>
 #include <stddef.h>
 #include <semphr.h>
 #include "dataPackageHandler.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"
+#include "wrapper_messageBuffer.h"
 #include "co2_sensor.h"
 
 #include <lora_driver.h>
@@ -23,6 +25,7 @@ typedef struct dataPackage {
 
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
+static MessageBufferHandle_t _msgBufferUplink;
 
 static EventBits_t _bitMeasureStart;
 static EventBits_t _bitDataReady;
@@ -81,6 +84,10 @@ inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dat
 			
 			_xSemaphoreGive(_data_mutex);
 			_xEventGroupClearBits(_eventGroupMeasure, _bitDataReady);
+			
+			lora_driver_payload_t payload = dataPackageHandler_getPayload(dataPackage);
+			
+			_xMessageBufferSend(_msgBufferUplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_SEND_DATAPACKGE);
 		}
 	}
 }
@@ -88,7 +95,7 @@ inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dat
 
 void dataPackageHandler_task(void* pvParameters){	
 	TickType_t xLastWakeTime = xTaskGetTickCount();
-	const TickType_t xFrequency = DEF_DELAY_TASK_DATAPACKAGE;
+	const TickType_t xFrequency = DEF_DELAY_TASK_SEND_DATAPACKAGE;
 	
 	for (;;)
 	{
@@ -98,7 +105,7 @@ void dataPackageHandler_task(void* pvParameters){
 }
 
 
-dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, co2_sensor_t co2_sensor){
+dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, MessageBufferHandle_t messageBufferuplink, co2_sensor_t co2_sensor){
 	
 	dataPackageHandler_t _dataPackageHandler = malloc(sizeof(dataPackage));
 	if (NULL == _dataPackageHandler){
@@ -115,6 +122,7 @@ dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeas
 	
 	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
+	_msgBufferUplink = messageBufferuplink;
 	
 	_bitMeasureStart = DEF_BIT_MEASURE_START;
 	_bitDataReady = DEF_BIT_DATA_READY;

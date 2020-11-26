@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <lora_driver.h>
+#include <message_buffer.h>
 #include <status_leds.h>
 #include <display_7seg.h>
 #include "definitions.h"
+#include "wrapper_messageBuffer.h"
 
 // LoRa keys 
 #include "secrets.h"
@@ -12,10 +14,7 @@
 static bool initialized = false;
 static char _out_buf[100];
 
-
-// DataPackageHandler should be removed when message buffer is implemented 
-#include "dataPackageHandler.h"
-static dataPackageHandler_t _dataPackageHandler;
+static MessageBufferHandle_t _msgBufferUplink;
 
 
 static void _lora_setup(void)
@@ -110,31 +109,35 @@ void uplink_handler_task( void *pvParameters )
 		
 		initialized = true;
 	}
-
-	TickType_t xLastWakeTime;  // maybe this should be moved to other place where time can be handled
-	const TickType_t xFrequency = DEF_FREQUENCY_UPLINK;
-	xLastWakeTime = xTaskGetTickCount();
 	
 	float packagesSent = 0.0;
 	
-	for(;;) // task might need to loop else where, so it can be called by buffer
+	for(;;) 
 	{
-		vTaskDelayUntil( &xLastWakeTime, xFrequency );
-
-		lora_driver_payload_t _payload = dataPackageHandler_getPayload(_dataPackageHandler);
+	
+		lora_driver_payload_t _payload;
+		size_t xReceivedBytes;
 		
+		xReceivedBytes = _xMessageBufferReceive( _msgBufferUplink,( void * ) &_payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_RECV_UPLINK);
 		
-		display_7seg_display(++packagesSent, 0);
+		if( xReceivedBytes > 0 )
+		{
+				display_7seg_display(++packagesSent, 0);
 
-		status_leds_shortPuls(led_ST4);  // OPTIONAL
-		printf("Upload Message: >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_payload)));
+				status_leds_shortPuls(led_ST4);  // OPTIONAL
+				printf("Upload Message: >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_payload)));
+		} else {
+			if (DEF_PRINT_TO_TERMINAL){
+				printf("Buffer empty looping around \n");
+			}
+		}
 	}
 }
 
 
-void uplink_handler_create(dataPackageHandler_t dataPackageHandler)
+void uplink_handler_create(MessageBufferHandle_t messageBufferUplink)
 {
-	_dataPackageHandler = dataPackageHandler;
+	_msgBufferUplink = messageBufferUplink;
 	
 	xTaskCreate(
 	uplink_handler_task
