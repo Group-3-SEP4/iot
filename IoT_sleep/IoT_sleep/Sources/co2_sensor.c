@@ -49,7 +49,7 @@ inline void co2_measure(co2_sensor_t sensor){
 			_xSemaphoreGive(_co2_mutex);
 			
 			if (_xEventGroupGetBits(_eventGroupMeasure) & _bitMeasureStart) // checks eventMeasureStart bits
-			{
+			{	
 				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
 				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
 			}
@@ -86,7 +86,7 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	_co2_mutex = xSemaphoreCreateMutex();
 	
 	_eventGroupMeasure = eventGroupMeassure;
-	_eventGroupDataReady = eventGroupMeassure;
+	_eventGroupDataReady = eventGroupDataReady;
 	
 	_bitMeasureStart = DEF_BIT_MEASURE_START_CO2;
 	_bitDataReady = DEF_BIT_DATA_READY_CO2;

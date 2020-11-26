@@ -3,9 +3,10 @@
 
 #include "ATMEGA_FreeRTOS.h"
 #include "portmacro.h"
+#include "dataPackageHandler.h"
 
-// co2 sensor is temporary
-void uplink_handler_create(co2_sensor_t co2Sensor);
+//dataPackageHandler is temporary
+void uplink_handler_create(dataPackageHandler_t dataPackageHandler);
 
 
 #endif
