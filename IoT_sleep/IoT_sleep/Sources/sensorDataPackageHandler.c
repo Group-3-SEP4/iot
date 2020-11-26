@@ -19,7 +19,7 @@ typedef struct SensorDataPackageHandler {
 } SensorDataPackageHandler;
 
 sensor_data_package_handler_t sensorDataPackageHandler_create(void){
-	sensor_data_package_handler_t _newHandler = calloc(sizeof(struct SensorDataPackageHandler), 1);
+	sensor_data_package_handler_t _newHandler = malloc(sizeof(struct SensorDataPackageHandler));
 
 	if (NULL == _newHandler) return NULL;
 

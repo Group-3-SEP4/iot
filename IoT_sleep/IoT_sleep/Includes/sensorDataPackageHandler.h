@@ -5,10 +5,10 @@
 *  Author: agk13
 */
 
-#include "stdint.h"
-#include <lora_driver.h>
-
 #pragma once
+
+#include <stdint.h>
+#include <lora_driver.h>
 
 typedef struct SensorDataPackageHandler *sensor_data_package_handler_t;
 
