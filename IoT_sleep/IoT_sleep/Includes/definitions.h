@@ -38,4 +38,9 @@
 // define default values
 #define DEF_DEFAULT_NA_SENSOR				INT_MAX
 
+// define EEPROM addresses
+#define DEF_MEMLOC_TEMP							(uint16_t*)10
+#define DEF_MEMLOC_CO2_MIN						(uint16_t*)12
+#define DEF_MEMLOC_CO2_MAX						(uint16_t*)14
+
 #endif

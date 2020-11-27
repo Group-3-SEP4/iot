@@ -170,10 +170,16 @@
     <Compile Include="Includes\co2_sensor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\configuration.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\definitions.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\secrets.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\storageHandler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\uplinkHandler.h">
@@ -186,6 +192,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\co2_sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\configuration.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\storageHandler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\uplinkHandler.c">

@@ -2,8 +2,15 @@
 
 
 
-void storeDefaultTemperature(uint16_t temp);
+uint16_t storageHandler_readTemperature();
 
-void storeMinCo2(uint16_t min);
+void storangeHandler_writeTemperature(uint16_t value);
 
-void storeMaxCo2(uint16_t max);
+uint16_t storageHandler_readCo2Min();
+
+void storangeHandler_writeCo2Min(uint16_t value);
+
+uint16_t storageHandler_readCo2Max();
+
+void storangeHandler_writeCo2Max(uint16_t value);
+

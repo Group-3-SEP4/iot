@@ -34,6 +34,9 @@ void create_operations(void){
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	
+	// read configuration
+	configuration_create();
+	
 	
 	// CO2 sensor passed to uplink handler is temporary.......
 	// create LoRaWAN

@@ -1,43 +1,61 @@
 #include "configuration.h"
+#include "storageHandler.h"
+#include "definitions.h"
+#include <stdint.h>
+#include <stdlib.h>
 
-#define MAX_CO2 1
 #define MIN_CO2 0
+#define MAX_CO2 1
+
 
 
 typedef struct configuration {
 	uint16_t temp;
-	uint16_t[] co2Range;
+	uint16_t co2Range[];
 
-} configuration
+} configuration_st;
 
 
-configuration_t configuration_create(void) {
+static configuration_t self;
+
+void configuration_create(void) {
+	
+	self = malloc(sizeof(configuration_st));
+	
+	self->temp = storageHandler_readTemperature();
+	self->co2Range[MIN_CO2] = storageHandler_readCo2Min();
+	self->co2Range[MAX_CO2] = storageHandler_readCo2Max();
 	
 }
 
 uint16_t configuration_getDefaultTemperatur() {
-	return configuration->temp;
+	return self->temp;
 }
 
 void configuration_setDefaultTemperatur(uint16_t temp) {
-	configuration->temp = temp;
-}
-
-uint16_t configuration_getMaxCo2() {
-	return configuration->co2Range[MAX_CO2];
-}
-
-void configuration_setMaxCo2(uint16_t max) {
-	configuration->co2Range[MAX_CO2] = max;
+	storangeHandler_writeTemperature(temp);
+	self->temp = temp;
 }
 
 uint16_t configuration_getMinCo2() {
-	return configuration->co2Range[MIN_CO2];
+	return self->co2Range[MIN_CO2];
 }
 
 void configuration_setMinCo2(uint16_t min) {
-	configuration->co2Range[MIN_CO2] = min;
+	storangeHandler_writeCo2Min(min);
+	self->co2Range[MIN_CO2] = min;
 }
+
+
+uint16_t configuration_getMaxCo2() {
+	return self->co2Range[MAX_CO2];
+}
+
+void configuration_setMaxCo2(uint16_t max) {
+	storangeHandler_writeCo2Max(max);
+	self->co2Range[MAX_CO2] = max;
+}
+
 
 
 
