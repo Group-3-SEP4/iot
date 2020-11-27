@@ -118,11 +118,11 @@ void uplink_handler_task( void *pvParameters )
 		lora_driver_payload_t _payload;
 		size_t xReceivedBytes;
 		
-		xReceivedBytes = _xMessageBufferReceive( _msgBufferUplink,( void * ) &_payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_RECV_UPLINK);
+		xReceivedBytes = _xMessageBufferReceive( _msgBufferUplink,( void * ) &_payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_EMPTY_UPLINK);
 		
 		if( xReceivedBytes > 0 )
 		{
-				display_7seg_display(++packagesSent, 0);
+				display_7seg_display(packagesSent++, 0);
 
 				status_leds_shortPuls(led_ST4);  // OPTIONAL
 				printf("Upload Message: >%s<\n", lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_payload)));

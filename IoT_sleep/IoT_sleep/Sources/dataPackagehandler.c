@@ -81,14 +81,13 @@ inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dat
 		if (_xSemaphoreTake (_data_mutex, DEF_WAIT_MUTEX_DATAPACKAGE) == pdTRUE) // protect shared data
 		{
 			dataPackage->co2 = co2_getMeasurement(_co2_sensor);
-			
 			_xSemaphoreGive(_data_mutex);
+			
 			_xEventGroupClearBits(_eventGroupMeasure, _bitDataReady);
-			
-			lora_driver_payload_t payload = dataPackageHandler_getPayload(dataPackage);
-			
-			_xMessageBufferSend(_msgBufferUplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_SEND_DATAPACKGE);
 		}
+		
+		lora_driver_payload_t payload = dataPackageHandler_getPayload(dataPackage);	
+		_xMessageBufferSend(_msgBufferUplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE);
 	}
 }
 
