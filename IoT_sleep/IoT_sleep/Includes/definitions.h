@@ -27,6 +27,7 @@
 #define DEF_FREQUENCY_UPLINK				pdMS_TO_TICKS(300000UL) // Upload message every 5 minutes (300000 ms)
 #define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(5000UL)
 #define DEF_DELAY_DRIVER_CO2				pdMS_TO_TICKS(300)
+#define DEF_WAIT_DEFAULT					pdMS_TO_TICKS(200) // default wait time
 #define DEF_WAIT_MUTEX_CO2					pdMS_TO_TICKS(200)
 
 

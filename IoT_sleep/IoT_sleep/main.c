@@ -12,6 +12,7 @@
 #include <event_groups.h>
 #include <display_7seg.h>
 #include "co2_sensor.h"
+#include "configuration.h"
 
 // LoRaWAN
 #include <lora_driver.h>
@@ -24,6 +25,10 @@ EventGroupHandle_t eventGroupDataReady = NULL;
 
 void create_operations(void){
 
+	// read configuration
+	configuration_t configuration = configuration_create();
+	
+	
 	// create event groups
 	eventGroupMeasure  = xEventGroupCreate();
 	eventGroupDataReady = xEventGroupCreate();
@@ -34,8 +39,7 @@ void create_operations(void){
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	
-	// read configuration
-	configuration_create();
+
 	
 	
 	// CO2 sensor passed to uplink handler is temporary.......

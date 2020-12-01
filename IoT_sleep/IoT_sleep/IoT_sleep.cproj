@@ -179,9 +179,6 @@
     <Compile Include="Includes\secrets.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\storageHandler.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Includes\uplinkHandler.h">
       <SubType>compile</SubType>
     </Compile>
@@ -195,9 +192,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\configuration.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Sources\storageHandler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\uplinkHandler.c">
