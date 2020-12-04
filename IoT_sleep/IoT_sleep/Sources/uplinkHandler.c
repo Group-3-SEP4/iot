@@ -107,7 +107,7 @@ static void _lora_setup(void)
 	}
 }
 
-static lora_driver_payload_t *_uplink_payload; // should be passed as argument from buffer
+static lora_driver_payload_t _uplink_payload; // should be passed as argument from buffer
 
 /*-----------------------------------------------------------*/
 void uplink_handler_task( void *pvParameters )
@@ -148,10 +148,9 @@ void uplink_handler_task( void *pvParameters )
 		//lora_driver_payload_t* _uplink_payload;
 		sensorDataPackageHandler_getLoRaPayload(packageHandler, &_uplink_payload);
 		
-		
 		display_7seg_display(++packagesSent, 0);
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
-		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2_ppm, lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, _uplink_payload)));
+		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2_ppm, lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &_uplink_payload)));
 	}
 }
