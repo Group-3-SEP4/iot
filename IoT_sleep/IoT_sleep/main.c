@@ -22,10 +22,13 @@
 EventGroupHandle_t eventGroupMeasure = NULL;
 EventGroupHandle_t eventGroupDataReady = NULL;
 
+// message buffer
+MessageBufferHandle_t messageBuffer;
+
 
 void create_operations(void){
 
-	// read configuration
+	// initialise configuration
 	configuration_t configuration = configuration_create();
 	
 	
@@ -34,19 +37,21 @@ void create_operations(void){
 	eventGroupDataReady = xEventGroupCreate();
 	
 	// create message buffers
-	
+	messageBuffer = pvPortMalloc(sizeof(MessageBufferHandle_t));
 	
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
-	
-
 	
 	
 	// CO2 sensor passed to uplink handler is temporary.......
 	// create LoRaWAN
 	uplink_handler_create(co2Sensor);
 	
+	// downLink handler
+	downlinkHandler_create(configuration, messageBuffer);
+	
 }
+
 
 
 /*-----------------------------------------------------------*/
@@ -63,8 +68,9 @@ void initialiseSystem()
 	// LoRaWAN initialization 
 	// Initialise the HAL layer and use 5 for LED driver priority
 	hal_create(5);
+		
 	// Initialise the LoRaWAN driver without down-link buffer
-	lora_driver_create(1, NULL);
+	lora_driver_create(1, messageBuffer);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);
