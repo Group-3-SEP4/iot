@@ -16,7 +16,6 @@ typedef struct co2_sensor {
 	uint16_t value;
 } co2_sensor;
 
-
 static SemaphoreHandle_t _co2_mutex;
 
 static EventGroupHandle_t _eventGroupMeasure;
@@ -35,7 +34,6 @@ uint16_t co2_getMeasurement(co2_sensor_t sensor){
 	}
 	return _tmpValue;
 }
-
 
 inline void co2_measure(co2_sensor_t sensor){
 	
@@ -60,7 +58,6 @@ inline void co2_measure(co2_sensor_t sensor){
 	}
 }
 
-
 void co2_task_measure(void* pvParameters){
 	
 	TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -72,7 +69,6 @@ void co2_task_measure(void* pvParameters){
 		co2_measure((co2_sensor_t) pvParameters);
 	}
 }
-
 
 co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){
 	
