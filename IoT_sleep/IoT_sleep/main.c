@@ -10,22 +10,29 @@
 #include <stdio_driver.h>
 #include <serial.h>
 #include <event_groups.h>
+#include <message_buffer.h>
 #include <display_7seg.h>
+#include <status_leds.h>
+#include <lora_driver.h>
 #include "co2_sensor.h"
 #include "configuration.h"
-
-// LoRaWAN
-#include <lora_driver.h>
 #include "uplinkHandler.h"	
+#include "secrets.h"
+#include "sensorDataHandler.h"
+#include "definitions.h"
 
-// Global scope event and buffers
+// Globals
 EventGroupHandle_t eventGroupMeasure = NULL;
 EventGroupHandle_t eventGroupDataReady = NULL;
+MessageBufferHandle_t uplinkMessageBuffer;
 
+// Locals
 void initialize_hardware(void);
 void initialize_lora(void);
 void initialize_globals(void);
 void start_tasks(void);
+
+static char _out_buf[100];
 
 int main(void)
 {
@@ -53,6 +60,10 @@ void initialize_globals(void){
 	eventGroupDataReady = xEventGroupCreate();
 	
 	// create message buffers
+	uplinkMessageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
+	if(NULL == uplinkMessageBuffer){
+		printf("Not enough memory available for uplink message buffer!!\n");
+	}
 }
 
 void start_tasks(void){
@@ -60,10 +71,9 @@ void start_tasks(void){
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	
-	// CO2 sensor passed to uplink handler is temporary.......
-	// create LoRaWAN
-	uplink_handler_create(co2Sensor);
+	uplink_handler_create(uplinkMessageBuffer);
 	
+	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
 }
 
 /*-----------------------------------------------------------*/

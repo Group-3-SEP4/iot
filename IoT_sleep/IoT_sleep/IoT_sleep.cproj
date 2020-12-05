@@ -176,7 +176,13 @@
     <Compile Include="Includes\definitions.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\payloadBuilder.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\secrets.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\sensorDataHandler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\uplinkHandler.h">
@@ -192,6 +198,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\configuration.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\payloadBuilder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\sensorDataHandler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\uplinkHandler.c">
