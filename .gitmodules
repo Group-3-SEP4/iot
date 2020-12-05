@@ -1,0 +1,6 @@
+[submodule "IoT_Test/fff"]
+	path = IoT_Test/fff
+	url = https://github.com/meekrosoft/fff.git
+[submodule "IoT_Test/FreeRTOS"]
+	path = IoT_Test/FreeRTOS
+	url = https://github.com/FreeRTOS/FreeRTOS.git
