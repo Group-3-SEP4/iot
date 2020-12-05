@@ -11,6 +11,7 @@
 #include "definitions.h"
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"
+#include "wrapper_task.h"
 
 typedef struct co2_sensor {
 	uint16_t value;
@@ -40,7 +41,7 @@ uint16_t co2_getMeasurement(co2_sensor_t sensor){
 inline void co2_measure(co2_sensor_t sensor){
 	
 	mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
-	vTaskDelay(DEF_DELAY_DRIVER_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure (Async). If moved/deleted value will be 0 ppm.
+	_vTaskDelay(DEF_DELAY_DRIVER_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure (Async). If moved/deleted value will be 0 ppm.
 	if(_returnCode == MHZ19_OK)
 	{
 		if (_xSemaphoreTake (_co2_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE) // protect shared data
@@ -63,12 +64,12 @@ inline void co2_measure(co2_sensor_t sensor){
 
 void co2_task_measure(void* pvParameters){
 	
-	TickType_t xLastWakeTime = xTaskGetTickCount();
+	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_CO2;
 	
 	for (;;)
 	{
-		vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first 
+		_vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first 
 		co2_measure((co2_sensor_t) pvParameters);
 	}
 }
@@ -83,7 +84,7 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	
 	_sensor->value = 0;	
 	
-	_co2_mutex = xSemaphoreCreateMutex();
+	_co2_mutex = _xSemaphoreCreateMutex();
 	
 	_eventGroupMeasure = eventGroupMeassure;
 	_eventGroupDataReady = eventGroupMeassure;
@@ -94,7 +95,7 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	
 	mh_z19_create(DEF_IO_PORT_CO2, NULL); 
 	
-	xTaskCreate(
+	_xTaskCreate(
 		co2_task_measure,		/* Function that implements the task. */
 		"CO2 Sensor task",		/* Text name for the task. */
 		DEF_STACK_CO2,			/* Stack size in words, not bytes. */

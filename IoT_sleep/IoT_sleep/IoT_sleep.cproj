@@ -188,6 +188,9 @@
     <Compile Include="Includes\Wrappers\wrapper_semaphore.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\Wrappers\wrapper_task.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Sources\co2_sensor.c">
       <SubType>compile</SubType>
     </Compile>
