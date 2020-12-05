@@ -4,6 +4,7 @@
 #include <limits.h>
 
 // define priorities
+#define DEF_PRIORITY_TASK_LINK				(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_UPLINK				(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_CO2					(tskIDLE_PRIORITY + 2)
 #define DEF_PRIORITY_TASK_SENSOR_DATA_HANDLER	(tskIDLE_PRIORITY + 2)
@@ -12,6 +13,7 @@
 // define task stack for each task
 #define DEF_STACK_UPLINK						(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_CO2							(configMINIMAL_STACK_SIZE + 200)
+#define DEF_STACK_DOWNLINK					(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_SENSOR_DATA_HANDLER			(configMINIMAL_STACK_SIZE + 200)
 
 

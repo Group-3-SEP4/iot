@@ -20,11 +20,14 @@
 #include "secrets.h"
 #include "sensorDataHandler.h"
 #include "definitions.h"
+#include "downlinkHandler.h"
 
 // Globals
 EventGroupHandle_t eventGroupMeasure = NULL;
 EventGroupHandle_t eventGroupDataReady = NULL;
 MessageBufferHandle_t uplinkMessageBuffer;
+MessageBufferHandle_t messageBuffer;
+configuration_t configuration;
 
 // Locals
 void initialize_hardware(void);
@@ -40,6 +43,8 @@ int main(void)
 	
 	initialize_globals();
 	start_tasks();
+// message buffer
+
 
 	printf("Program Started!!\n");
 	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
@@ -49,11 +54,11 @@ int main(void)
 	}
 }
 
-/*-----------------------------------------------------------*/
 
 void initialize_globals(void){
 	// read configuration
-	configuration_t configuration = configuration_create();
+	// initialize configuration
+	configuration = configuration_create();
 	
 	// create event groups
 	eventGroupMeasure  = xEventGroupCreate();
@@ -64,6 +69,7 @@ void initialize_globals(void){
 	if(NULL == uplinkMessageBuffer){
 		printf("Not enough memory available for uplink message buffer!!\n");
 	}
+	messageBuffer = pvPortMalloc(sizeof(MessageBufferHandle_t));
 }
 
 void start_tasks(void){
@@ -71,9 +77,14 @@ void start_tasks(void){
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	
-	uplink_handler_create(uplinkMessageBuffer);
 	
-	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
+	// CO2 sensor passed to uplink handler is temporary.......
+	// create LoRaWAN
+	uplink_handler_create(co2Sensor);
+	
+	// downLink handler
+	downlinkHandler_create(configuration, messageBuffer);
+	
 }
 
 /*-----------------------------------------------------------*/
@@ -87,11 +98,12 @@ void initialize_hardware(void)
 	// Make it possible to use stdio on COM port 0 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_create(ser_USART0);
 	
-	// LoRaWAN initialization
+	// LoRaWAN initialization 
 	// Initialize the HAL layer and use 5 for LED driver priority
-	hal_create(5); // TODO: look at this magic number, maybe make definition for it
+	hal_create(5);
+		
 	// Initialize the LoRaWAN driver without down-link buffer
-	lora_driver_create(1, NULL); // TODO: Magic number
+	lora_driver_create(1, messageBuffer);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);
