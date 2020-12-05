@@ -35,9 +35,16 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IncludePath>C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\drivers;.;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>.;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\drivers;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\Includes;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_Test\IoT_Test;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\FreeRTOS\src;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_sensor.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration.c" />
     <ClCompile Include="co2Test.cpp" />
+    <ClCompile Include="configurationTest.cpp" />
+    <ClCompile Include="eeprom.c" />
+    <ClCompile Include="IoTTesting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -45,6 +52,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\IoT_sleep\IoT_sleep\Includes\definitions.h" />
     <ClInclude Include="ATMEGA_FreeRTOS.h" />
+    <ClInclude Include="avr\eeprom.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
   </ItemGroup>
   <ItemDefinitionGroup />
@@ -69,7 +77,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>X64;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
