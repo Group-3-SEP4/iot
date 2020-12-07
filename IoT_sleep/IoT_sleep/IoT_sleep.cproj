@@ -191,6 +191,9 @@
     <Compile Include="Includes\Wrappers\wrapper_semaphore.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\Wrappers\wrapper_task.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Sources\co2_sensor.c">
       <SubType>compile</SubType>
     </Compile>
@@ -264,6 +267,15 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\twi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\wrapper_eventGroup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\wrapper_semaphore.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\wrapper_task.c">
       <SubType>compile</SubType>
     </Compile>
     <None Include="FreeRTOS\Example\main.c">
