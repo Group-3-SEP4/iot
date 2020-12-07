@@ -70,7 +70,7 @@ inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dat
 	
 	_xEventGroupSetBits(_eventGroupMeasure, _bitMeasureStart);
 	
-	EventBits_t dataBits = _xEventGroupWaitBits(
+	EventBits_t dataBits = xEventGroupWaitBits(
 	_eventGroupDataReady,	// The event group being tested.
 	_bitDataReady,			// The bits to wait for.
 	pdTRUE,					// bits will be cleared before return

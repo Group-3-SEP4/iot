@@ -42,7 +42,6 @@ void downlink_handler_task( void *pvParameters )
 					printf("Received TT: %i, co2 min: %i, co2 max: %i \n", tempSetpoint, co2Min, co2Max);
 				}
 				
-				
 				configuration_setDefaultTemperatur(_configuration, tempSetpoint);
 				configuration_setMinCo2(_configuration, co2Min);
 				configuration_setMaxCo2(_configuration, co2Max);

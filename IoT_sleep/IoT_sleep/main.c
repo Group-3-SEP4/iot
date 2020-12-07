@@ -2,7 +2,6 @@
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
 
-//#include <hal_defs.h>
 #include <ihal.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
@@ -12,17 +11,20 @@
 #include <event_groups.h>
 #include <message_buffer.h>
 #include <display_7seg.h>
+#include <lora_driver.h>
+
+#include "definitions.h"
 #include "co2_sensor.h"
 #include "dataPackageHandler.h"
 #include "configuration.h"
-
-// LoRaWAN
-#include <lora_driver.h>
-#include "uplinkHandler.h"	
+#include "uplinkHandler.h"
 #include "downlinkHandler.h"
+
 
 MessageBufferHandle_t msgBufferDownlink;
 
+
+/*-----------------------------------------------------------*/
 void create_operations(void){
 	
 	configuration_t configuration = configuration_create();
@@ -31,15 +33,16 @@ void create_operations(void){
 	EventGroupHandle_t eventGroupDataReady = xEventGroupCreate();
 	
 	MessageBufferHandle_t msgBufferUplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
-	
-	// create tasks
+
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
-	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor);
+	// TT
+	// RH
+	//SERVO - needs co2, TT, RH, config
 	
-	// create LoRaWAN
+	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor); //needs TT, RH, Output
+	
 	uplink_handler_create(msgBufferUplink);
 	downlink_handler_create(msgBufferDownlink, configuration);
-	
 }
 
 
@@ -59,7 +62,7 @@ void initialiseSystem()
 	hal_create(5);
 	// Initialise the LoRaWAN
 	msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
-	lora_driver_create(1, msgBufferDownlink);
+	lora_driver_create(LORA_USART, msgBufferDownlink);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);

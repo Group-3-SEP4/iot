@@ -92,7 +92,7 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_
 	_bitDataReady = DEF_BIT_DATA_READY_CO2;
 	
 	
-	mh_z19_create(DEF_IO_PORT_CO2, NULL); 
+	mh_z19_create(MH_Z19_USART, NULL); 
 	
 	xTaskCreate(
 		co2_task_measure,		/* Function that implements the task. */
