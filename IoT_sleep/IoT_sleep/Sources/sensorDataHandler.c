@@ -16,10 +16,10 @@
 
 void sensorDataHandler_task(void *pvParameters);
 
-static co2_sensor_t _co2Sensor;
-static MessageBufferHandle_t _uplinkMessageBuffer;
-static lora_driver_payload_t _uplink_payload;
-static payload_builder_t _payloadBuilder;
+co2_sensor_t _co2Sensor;
+MessageBufferHandle_t _uplinkMessageBuffer;
+lora_driver_payload_t _uplink_payload;
+payload_builder_t _payloadBuilder;
 
 void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_sensor_t co2Sensor){
 	_uplinkMessageBuffer = messageBuffer;
