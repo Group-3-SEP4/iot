@@ -17,6 +17,7 @@ void uplink_handler_task( void *pvParameters );
 // co2 sensor should be removed when message buffer is implemented 
 #include "co2_sensor.h"
 static co2_sensor_t _co2Sensor;
+
 void uplink_handler_create(co2_sensor_t co2Sensor)
 {
 	_co2Sensor = co2Sensor;
@@ -144,7 +145,7 @@ void uplink_handler_task( void *pvParameters )
 		int16_t temp = DEF_DEFAULT_NA_SENSOR; // Dummy temp
 		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor); 
 		uint16_t serv = DEF_DEFAULT_NA_SENSOR;
-
+ 
 		_uplink_payload.bytes[0] = hum >> 8; 
 		_uplink_payload.bytes[1] = hum & 0xFF;
 		_uplink_payload.bytes[2] = temp >> 8;
