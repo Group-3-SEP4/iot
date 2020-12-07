@@ -17,6 +17,7 @@
 // LoRaWAN
 #include <lora_driver.h>
 #include "uplinkHandler.h"	
+#include "downlinkHandler.h"
 
 // Global scope event and buffers
 EventGroupHandle_t eventGroupMeasure = NULL;
@@ -72,7 +73,7 @@ void initialiseSystem()
 	hal_create(5);
 		
 	// create message buffer
-	messageBuffer = xMessageBufferCreate(sizeof(uint8_t[20]));
+	messageBuffer = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 
 	// Initialise the LoRaWAN driver without down-link buffer
 	lora_driver_create(1, messageBuffer);

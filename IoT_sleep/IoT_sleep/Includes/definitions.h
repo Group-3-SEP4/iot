@@ -8,7 +8,7 @@
 
 
 // define priorities
-#define DEF_PRIORITY_TASK_LINK				(tskIDLE_PRIORITY + 3)
+#define DEF_PRIORITY_TASK_LINK				(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_UPLINK			(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_CO2				(tskIDLE_PRIORITY + 2)
 
@@ -31,7 +31,7 @@
 
 // define time constraints
 #define DEF_FREQUENCY_UPLINK				pdMS_TO_TICKS(60000UL) // Upload message every 5 minutes (300000 ms)
-#define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(5000UL)
+#define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(10000UL)
 #define DEF_DELAY_DRIVER_CO2				pdMS_TO_TICKS(300)
 #define DEF_WAIT_DEFAULT					pdMS_TO_TICKS(200) // default wait time
 #define DEF_WAIT_MUTEX_CO2					pdMS_TO_TICKS(200)
@@ -39,7 +39,7 @@
 
 // define hardware I/O
 #define DEF_IO_PORT_CO2						ser_USART3
-#define DEF_PRINT_TO_TERMINAL				true
+#define DEF_PRINT_TO_TERMINAL				false
 
 
 // define default values
