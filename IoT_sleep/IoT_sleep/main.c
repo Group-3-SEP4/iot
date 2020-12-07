@@ -25,21 +25,23 @@
 // Globals
 EventGroupHandle_t eventGroupMeasure = NULL;
 EventGroupHandle_t eventGroupDataReady = NULL;
-MessageBufferHandle_t uplinkMessageBuffer;
-MessageBufferHandle_t messageBuffer;
-configuration_t configuration;
+MessageBufferHandle_t uplinkMessageBuffer =NULL;
+MessageBufferHandle_t messageBuffer =NULL;
+configuration_t config = NULL;
+co2_sensor_t co2Sensor;
 
 // Locals
 void initialize_hardware(void);
 void initialize_globals(void);
 void start_tasks(void);
 
+
 int main(void)
 {
 	initialize_globals();
-	
+		
 	initialize_hardware(); // Must be done as the very first thing!!
-	
+		
 	start_tasks();
 
 	printf("Program Started!!\n");
@@ -54,12 +56,12 @@ int main(void)
 void initialize_globals(void){
 	// read configuration
 	// initialize configuration
-	configuration = configuration_create();
-	
+	config = configuration_create();
+
 	// create event groups
 	eventGroupMeasure  = xEventGroupCreate();
 	eventGroupDataReady = xEventGroupCreate();
-	
+
 	// create message buffers
 	uplinkMessageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
 	if(NULL == uplinkMessageBuffer){
@@ -69,11 +71,13 @@ void initialize_globals(void){
 }
 
 void start_tasks(void){
-	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
-	
-	downlinkHandler_create(configuration, messageBuffer);
-	
-	uplink_handler_create(co2Sensor);
+	co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
+
+	uplink_handler_create(uplinkMessageBuffer);
+		
+	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
+
+	//downlinkHandler_create(config, messageBuffer);
 }
 
 /*-----------------------------------------------------------*/

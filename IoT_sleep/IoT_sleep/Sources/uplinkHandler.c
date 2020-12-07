@@ -51,10 +51,10 @@ void uplink_handler_task( void *pvParameters )
 	
 	float packagesSent = 0.0;
 	
-	lora_driver_payload_t uplink_payload;
-	size_t xReceivedBytes;
 	for(;;)
 	{
+		lora_driver_payload_t uplink_payload;
+		size_t xReceivedBytes;
 		xReceivedBytes = xMessageBufferReceive(
 		_uplinkMessageBuffer
 		,  ( void * ) &uplink_payload
