@@ -39,12 +39,11 @@ static char _out_buf[100];
 
 int main(void)
 {
+	initialize_globals();
+	
 	initialize_hardware(); // Must be done as the very first thing!!
 	
-	initialize_globals();
 	start_tasks();
-// message buffer
-
 
 	printf("Program Started!!\n");
 	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
@@ -69,7 +68,7 @@ void initialize_globals(void){
 	if(NULL == uplinkMessageBuffer){
 		printf("Not enough memory available for uplink message buffer!!\n");
 	}
-	messageBuffer = pvPortMalloc(sizeof(MessageBufferHandle_t));
+	messageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
 }
 
 void start_tasks(void){

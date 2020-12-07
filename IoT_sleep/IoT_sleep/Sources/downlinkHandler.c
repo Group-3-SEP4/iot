@@ -30,12 +30,15 @@ void downlinkHandler_task(MessageBufferHandle_t messageBuffer) {
 		
 		if(xReceivedBytes > 0)
 		{
+			printf("downlinkHandler_task: Received data \n");
 			// TODO: perhaps eventgroup to tell that we received updated conf? This could also be done in the configuration itself
 			//0012032003E8 // 18 800 1000
 			configuration_setDefaultTemperatur(_configuration, (uint16_t)((downlinkPayload.bytes[0] << 8) + downlinkPayload.bytes[1]));
 			configuration_setMinCo2(_configuration, (uint16_t)((downlinkPayload.bytes[2] << 8) + downlinkPayload.bytes[3]));
 			configuration_setMaxCo2(_configuration, (uint16_t)((downlinkPayload.bytes[4] << 8) + downlinkPayload.bytes[5]));
 		}
+		else
+			printf("downlinkHandler_task: Error receiving from messageBuffer \n");
 	}
 }
 
@@ -52,6 +55,4 @@ void downlinkHandler_create(configuration_t configuration, MessageBufferHandle_t
 	DEF_PRIORITY_TASK_LINK,
 	NULL
 	);
-	
-	
 }
