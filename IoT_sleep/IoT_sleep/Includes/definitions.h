@@ -30,7 +30,7 @@
 
 
 // define time constraints
-#define DEF_FREQUENCY_UPLINK				pdMS_TO_TICKS(60000UL) // Upload message every 5 minutes (300000 ms)
+#define DEF_FREQUENCY_UPLINK				pdMS_TO_TICKS(300000UL) // Upload message every 5 minutes (300000 ms)
 #define DEF_DELAY_TASK_CO2					pdMS_TO_TICKS(10000UL)
 #define DEF_DELAY_DRIVER_CO2				pdMS_TO_TICKS(300)
 #define DEF_WAIT_DEFAULT					pdMS_TO_TICKS(200) // default wait time
@@ -39,7 +39,7 @@
 
 // define hardware I/O
 #define DEF_IO_PORT_CO2						ser_USART3
-#define DEF_PRINT_TO_TERMINAL				false
+#define DEF_PRINT_TO_TERMINAL				true
 
 
 // define default values
