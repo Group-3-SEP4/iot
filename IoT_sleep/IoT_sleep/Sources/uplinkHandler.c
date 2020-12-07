@@ -12,13 +12,12 @@
 #include "secrets.h"
 
 static bool initialized = false;
-static char _out_buf[100];
-
-static MessageBufferHandle_t _msgBufferUplink;
 
 
 static void _lora_setup(void)
 {
+	char _out_buf[100];
+	
 	lora_driver_returnCode_t rc;
 	status_leds_slowBlink(led_ST2); // OPTIONAL: Led the green led blink slowly while we are setting up LoRa
 
@@ -95,6 +94,9 @@ static void _lora_setup(void)
 
 void uplink_handler_task( void *pvParameters )
 {
+	MessageBufferHandle_t _msgBufferUplink = pvParameters;
+
+	
 	if (!initialized){
 		// Hardware reset of LoRaWAN transceiver
 		lora_driver_resetRn2483(1);
@@ -137,13 +139,12 @@ void uplink_handler_task( void *pvParameters )
 
 void uplink_handler_create(MessageBufferHandle_t messageBufferUplink)
 {
-	_msgBufferUplink = messageBufferUplink;
 	
 	xTaskCreate(
 	uplink_handler_task
 	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
 	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
-	,  NULL
+	,  messageBufferUplink
 	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }

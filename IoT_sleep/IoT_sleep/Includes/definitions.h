@@ -2,15 +2,20 @@
 #define DEFINITIONS_H
 
 #include <limits.h>
+#include <FreeRTOSConfig.h>
+#include <stdbool.h>
+#include <stdint.h>
 
 // define priorities
 #define DEF_PRIORITY_TASK_UPLINK				(tskIDLE_PRIORITY + 1)
+#define DEF_PRIORITY_TASK_DOWNLINK				(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_CO2					(tskIDLE_PRIORITY + 2)
 #define DEF_PRIORITY_TASK_DATAPACKAGE			(tskIDLE_PRIORITY + 1)
 
 
 // define task stack for each task
 #define DEF_STACK_UPLINK						(configMINIMAL_STACK_SIZE + 200)
+#define DEF_STACK_DOWNLINK						(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_CO2							(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_DATAPACKAGE					(configMINIMAL_STACK_SIZE + 200)
 
@@ -35,6 +40,10 @@
 #define DEF_WAIT_EVENT_DATA_READY				pdMS_TO_TICKS(portMAX_DELAY)
 #define DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE		pdMS_TO_TICKS(200)
 
+#define DEF_WAIT_MSG_BUFFER_DOWNLINK			pdMS_TO_TICKS(portMAX_DELAY)
+
+#define DEF_WAIT_DEFAULT						pdMS_TO_TICKS(200) // default wait time
+
 #define DEF_WAIT_MSG_BUFFER_EMPTY_UPLINK		pdMS_TO_TICKS(portMAX_DELAY)
 
 // define hardware I/O
@@ -44,5 +53,10 @@
 
 // define default values
 #define DEF_DEFAULT_NA_SENSOR					INT_MAX
+
+// define EEPROM addresses
+#define DEF_MEMLOC_TEMP							(uint16_t*)10
+#define DEF_MEMLOC_CO2_MIN						(uint16_t*)12
+#define DEF_MEMLOC_CO2_MAX						(uint16_t*)14
 
 #endif

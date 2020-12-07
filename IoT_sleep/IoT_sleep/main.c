@@ -14,30 +14,31 @@
 #include <display_7seg.h>
 #include "co2_sensor.h"
 #include "dataPackageHandler.h"
+#include "configuration.h"
 
 // LoRaWAN
 #include <lora_driver.h>
 #include "uplinkHandler.h"	
+#include "downlinkHandler.h"
 
-
+MessageBufferHandle_t msgBufferDownlink;
 
 void create_operations(void){
+	
+	configuration_t configuration = configuration_create();
 
-	// create event groups
 	EventGroupHandle_t eventGroupMeasure  = xEventGroupCreate();
 	EventGroupHandle_t eventGroupDataReady = xEventGroupCreate();
 	
-	// create message buffers
 	MessageBufferHandle_t msgBufferUplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	
 	// create tasks
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor);
 	
-	
-	// datapackage passed to uplink handler is temporary.......
 	// create LoRaWAN
 	uplink_handler_create(msgBufferUplink);
+	downlink_handler_create(msgBufferDownlink, configuration);
 	
 }
 
@@ -56,8 +57,9 @@ void initialiseSystem()
 	// LoRaWAN initialization 
 	// Initialise the HAL layer and use 5 for LED driver priority
 	hal_create(5);
-	// Initialise the LoRaWAN driver without down-link buffer
-	lora_driver_create(1, NULL);
+	// Initialise the LoRaWAN
+	msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	lora_driver_create(1, msgBufferDownlink);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);
