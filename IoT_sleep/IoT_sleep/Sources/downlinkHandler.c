@@ -56,3 +56,4 @@ void downlinkHandler_create(configuration_t configuration, MessageBufferHandle_t
 	NULL
 	);
 }
+
