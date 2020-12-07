@@ -7,6 +7,7 @@
 #include <ATMEGA_FreeRTOS.h>
 #include <message_buffer.h>
 #include <task.h>
+#include <stdio.h>
 #include "sensorDataHandler.h"
 #include "co2_sensor.h"
 #include "payloadBuilder.h"
