@@ -31,11 +31,8 @@ configuration_t configuration;
 
 // Locals
 void initialize_hardware(void);
-void initialize_lora(void);
 void initialize_globals(void);
 void start_tasks(void);
-
-static char _out_buf[100];
 
 int main(void)
 {
@@ -102,7 +99,5 @@ void initialize_hardware(void)
 
 	// Power up the display
 	display_7seg_powerUp();
-	
-	initialize_lora();
 }
 

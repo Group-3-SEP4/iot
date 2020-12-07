@@ -7,6 +7,7 @@
 #include <display_7seg.h>
 #include "definitions.h"
 #include "payloadBuilder.h"
+#include "secrets.h"
 
 static bool initialized = false;
 
@@ -15,12 +16,14 @@ static void _lora_setup(void);
 
 static MessageBufferHandle_t _uplinkMessageBuffer;
 
+static char _out_buf[100];
+
 void uplink_handler_create(MessageBufferHandle_t messageBuffer)
 {
 	_uplinkMessageBuffer = messageBuffer;
 	
 	xTaskCreate(
-	   uplink_handler_task
+	uplink_handler_task
 	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
 	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
@@ -47,14 +50,18 @@ void uplink_handler_task( void *pvParameters )
 	}
 	
 	float packagesSent = 0.0;
-	 
-	for(;;) // task might need to loop else where, so it can be called by buffer
+	
+	lora_driver_payload_t uplink_payload;
+	size_t xReceivedBytes;
+	for(;;)
 	{
-		lora_driver_payload_t uplink_payload;
-		size_t xReceivedBytes = xMessageBufferReceive( _uplinkMessageBuffer,
-		( void * ) &uplink_payload,
-		sizeof( uplink_payload ),
-		portMAX_DELAY );
+		xReceivedBytes = xMessageBufferReceive(
+		_uplinkMessageBuffer
+		,  ( void * ) &uplink_payload
+		,  sizeof( lora_driver_payload_t )
+		,  portMAX_DELAY
+		);
+		
 		if( xReceivedBytes > 0 )
 		{
 			display_7seg_display(++packagesSent, 0);
@@ -62,7 +69,7 @@ void uplink_handler_task( void *pvParameters )
 			status_leds_shortPuls(led_ST4);  // OPTIONAL
 			
 			char * returnCode = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &uplink_payload));
-			uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5]; 
+			uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
 			
 			printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
 		}
