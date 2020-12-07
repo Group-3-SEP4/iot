@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <avr/eeprom.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
@@ -30,7 +31,7 @@ configuration_t configuration_create(void) {
 	self->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
 	self->co2Range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
 	self->co2Range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
-	
+	printf("configuration_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2Range[MIN_CO2_FLAG], self->co2Range[MAX_CO2_FLAG]);
 	return self;
 }
 
@@ -44,6 +45,7 @@ uint16_t configuration_getDefaultTemperatur(configuration_t self) {
 }
 
 void configuration_setDefaultTemperatur(configuration_t self, uint16_t temp) {
+printf("configuration_setDefaultTemperatur: set temp to: %d\n", temp);
 	if (self->temp != temp) {
 		if (_xSemaphoreTake(_confMutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if conf. cant be run, wait forever.
 			eeprom_write_word(DEF_MEMLOC_TEMP, temp);

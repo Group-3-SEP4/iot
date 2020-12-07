@@ -14,20 +14,20 @@
 static configuration_t _configuration;
 static lora_driver_payload_t downlinkPayload;
 
-void downlinkHandler_task(MessageBufferHandle_t messageBuffer) {
-	
+void downlinkHandler_task(void* xMessageBuffer) {
+	printf("downlinkHandler_task: starting task\n");
 	// while loop
-	
 	
 	/* Receive the next message from the message buffer.  Wait in the Blocked
     state (so not using any CPU processing time) for a maximum of 100ms for
     a message to become available. */
 	uint16_t xReceivedBytes;
-	
+//	uint8_t ucRxData[ 20 ];
 	for(;;) {
 		
-		xReceivedBytes = xMessageBufferReceive(messageBuffer, &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY); // wait forever
-		
+		xReceivedBytes = xMessageBufferReceive((MessageBufferHandle_t) xMessageBuffer, (void*) &downlinkPayload, sizeof(lora_driver_payload_t), portMAX_DELAY); // wait forever
+		printf("downlinkHandler_task: Receive Data\n");
+
 		if(xReceivedBytes > 0)
 		{
 			// TODO: perhaps eventgroup to tell that we received updated conf? This could also be done in the configuration itself
@@ -46,7 +46,7 @@ void downlinkHandler_create(configuration_t configuration, MessageBufferHandle_t
 	
 	xTaskCreate(
 	downlinkHandler_task,
-	(const portCHAR *) "DownlinkHandler",
+	"DownlinkHandler",
 	DEF_STACK_DOWNLINK,
 	(void*)messageBuffer,
 	DEF_PRIORITY_TASK_LINK,
