@@ -1,6 +1,6 @@
 
 #include <ATMEGA_FreeRTOS.h>
-#include <semphr.h>
+#include "wrapper_semaphore.h"
 
 inline QueueHandle_t _xSemaphoreCreateMutex(){
 	return xSemaphoreCreateMutex();

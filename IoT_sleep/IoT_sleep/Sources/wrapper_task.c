@@ -1,4 +1,5 @@
-#include <task.h>
+#include <ATMEGA_FreeRTOS.h>
+#include "wrapper_task.h"
 
 inline BaseType_t _xTaskCreate(TaskFunction_t pxTaskCode,
 const char * const pcName,  /*lint !e971 Unqualified char types are allowed for strings and single characters only. */

@@ -263,6 +263,15 @@
     <Compile Include="drivers\twi.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Sources\wrapper_eventGroup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\wrapper_semaphore.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\wrapper_task.c">
+      <SubType>compile</SubType>
+    </Compile>
     <None Include="FreeRTOS\Example\main.c">
       <SubType>compile</SubType>
     </None>

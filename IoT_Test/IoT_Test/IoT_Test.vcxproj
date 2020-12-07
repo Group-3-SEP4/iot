@@ -41,9 +41,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_sensor.c" />
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration.c" />
-    <ClCompile Include="co2Test.cpp" />
     <ClCompile Include="configurationTest.cpp" />
-    <ClCompile Include="eeprom.c" />
     <ClCompile Include="IoTTesting.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -1,5 +1,5 @@
 #include <ATMEGA_FreeRTOS.h>
-#include <event_groups.h>
+#include "wrapper_eventGroup.h"
 
 inline BaseType_t _xEventGroupGetBits(EventGroupHandle_t xEventGroup)
 {

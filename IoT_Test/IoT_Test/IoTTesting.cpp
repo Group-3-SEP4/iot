@@ -6,21 +6,19 @@
 DEFINE_FFF_GLOBALS
 
 extern "C" {
-#include <ATMEGA_FreeRTOS.h>
-#include <semphr.h>
-#include <serial.h>
-#include "wrapper_semaphore.h"
-#include "wrapper_eventGroup.h"
-#include "wrapper_task.h"
-	
-#include <avr/eeprom.h>
-#include "configuration.h"
+	#include <ATMEGA_FreeRTOS.h>
+	#include <semphr.h>
+	#include <serial.h>
+	#include "wrapper_semaphore.h"
+	#include "wrapper_eventGroup.h"
+	#include "wrapper_task.h"
+		
+	#include <avr/eeprom.h>
+	#include "configuration.h"
 
-#include <mh_z19.h>
-#include <task.h>
-#include "co2_sensor.h"
-
-
+	#include <mh_z19.h>
+	#include <task.h>
+	#include "co2_sensor.h"
 }
 
 /* Semaphore fakes */
