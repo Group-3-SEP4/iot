@@ -46,6 +46,7 @@ void downlinkHandler_task(void* xMessageBuffer) {
 		} else {
 			printf("downlinkHandler_task: Received zero data\n");
 		}
+		
 	}
 }
 
@@ -62,6 +63,5 @@ void downlinkHandler_create(configuration_t configuration, MessageBufferHandle_t
 	DEF_PRIORITY_TASK_LINK,
 	NULL
 	);
-	
-	
 }
+
