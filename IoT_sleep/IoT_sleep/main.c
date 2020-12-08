@@ -12,6 +12,7 @@
 #include <message_buffer.h>
 #include <display_7seg.h>
 #include <lora_driver.h>
+#include <rc_servo.h>
 
 #include "definitions.h"
 #include "co2_sensor.h"
@@ -19,6 +20,7 @@
 #include "configuration.h"
 #include "uplinkHandler.h"
 #include "downlinkHandler.h"
+#include "servo.h"
 
 
 MessageBufferHandle_t msgBufferDownlink;
@@ -37,9 +39,9 @@ void create_operations(void){
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 	// TT
 	// RH
-	//SERVO - needs co2, TT, RH, config
+	servo_t servo = servo_create(SERVO_J14, eventGroupMeasure, eventGroupDataReady, configuration, co2Sensor);
 	
-	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor); //needs TT, RH, Output
+	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor, servo); //needs TT, RH, Output
 	
 	uplink_handler_create(msgBufferUplink);
 	downlink_handler_create(msgBufferDownlink, configuration);
@@ -60,6 +62,10 @@ void initialiseSystem()
 	// LoRaWAN initialization 
 	// Initialise the HAL layer and use 5 for LED driver priority
 	hal_create(5);
+	
+	// initialize the servo
+	rc_servo_create();
+	
 	// Initialise the LoRaWAN
 	msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	lora_driver_create(LORA_USART, msgBufferDownlink);

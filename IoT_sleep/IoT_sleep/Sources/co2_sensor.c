@@ -53,9 +53,6 @@ inline void co2_measure(co2_sensor_t sensor){
 				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
 				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
 			}
-			if (DEF_PRINT_TO_TERMINAL){
-			printf("Current ppm: %i\n", co2_getMeasurement(sensor)); // only for visual verification in terminal
-			}
 		}
 	}
 }
@@ -74,18 +71,18 @@ void co2_task_measure(void* pvParameters){
 }
 
 
-co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){
+co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady){
 	
 	co2_sensor_t _sensor = malloc(sizeof(co2_sensor));
 	if (NULL == _sensor){
 		return NULL;
 	}
 	
-	_sensor->value = 0;	
+	_sensor->value = DEF_DEFAULT_NA_SENSOR;	
 	
 	_co2_mutex = xSemaphoreCreateMutex();
 	
-	_eventGroupMeasure = eventGroupMeassure;
+	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
 	
 	_bitMeasureStart = DEF_BIT_MEASURE_START_CO2;

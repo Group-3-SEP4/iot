@@ -12,6 +12,7 @@
 #include "wrapper_eventGroup.h"
 #include "wrapper_messageBuffer.h"
 #include "co2_sensor.h"
+#include "servo.h"
 
 #include <lora_driver.h>
 
@@ -20,6 +21,7 @@ typedef struct dataPackage {
 	int16_t temperature;
 	int16_t humidity;
 	uint16_t co2;
+	uint16_t servo;
 } dataPackage;
 
 
@@ -31,6 +33,7 @@ static EventBits_t _bitMeasureStart;
 static EventBits_t _bitDataReady;
 
 static co2_sensor_t _co2_sensor;
+static servo_t _servo;
 static SemaphoreHandle_t _data_mutex;
 
 static lora_driver_payload_t _uplink_payload;
@@ -45,6 +48,7 @@ lora_driver_payload_t dataPackageHandler_getPayload(dataPackageHandler_t dataPac
 	{
 		// add more when implemented
 		co2_ppm = dataPackageHandler->co2;
+		servo = dataPackageHandler->servo;
 	
 		_xSemaphoreGive(_data_mutex);
 	}
@@ -59,7 +63,7 @@ lora_driver_payload_t dataPackageHandler_getPayload(dataPackageHandler_t dataPac
 	_uplink_payload.bytes[7] = servo & 0xFF;
 
 	if (DEF_PRINT_TO_TERMINAL){
-		printf("Payload data: CO2: %i ppm \n", co2_ppm);
+		printf("Payload data: CO2: %i ppm, Servo position: %i \n", co2_ppm, servo);
 	}
 
 	return _uplink_payload;
@@ -81,6 +85,7 @@ inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dat
 		if (_xSemaphoreTake (_data_mutex, DEF_WAIT_MUTEX_DATAPACKAGE) == pdTRUE) // protect shared data
 		{
 			dataPackage->co2 = co2_getMeasurement(_co2_sensor);
+			dataPackage->servo = servo_getPosition(_servo);
 			_xSemaphoreGive(_data_mutex);
 			
 			_xEventGroupClearBits(_eventGroupMeasure, _bitDataReady);
@@ -104,7 +109,7 @@ void dataPackageHandler_task(void* pvParameters){
 }
 
 
-dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, MessageBufferHandle_t messageBufferuplink, co2_sensor_t co2_sensor){
+dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, MessageBufferHandle_t messageBufferuplink, co2_sensor_t co2_sensor, servo_t servo){
 	
 	dataPackageHandler_t _dataPackageHandler = malloc(sizeof(dataPackage));
 	if (NULL == _dataPackageHandler){
@@ -116,6 +121,7 @@ dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeas
 	_dataPackageHandler->co2 = DEF_DEFAULT_NA_SENSOR;
 	
 	_co2_sensor = co2_sensor;
+	_servo = servo;
 	
 	_data_mutex = xSemaphoreCreateMutex();
 	
