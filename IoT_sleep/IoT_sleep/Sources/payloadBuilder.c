@@ -18,7 +18,7 @@ typedef struct payload_builder{
 
 
 payload_builder_t payload_builder_create(void){
-	payload_builder_t _new = pvPortMalloc(sizeof(payload_builder));
+	payload_builder_t _new = malloc(sizeof(*_new));
 
 	if (NULL == _new) return NULL;
 

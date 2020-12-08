@@ -50,7 +50,7 @@ void uplink_handler_task( void *pvParameters )
 	}
 	
 	float packagesSent = 0.0;
-	
+	vTaskDelay(150);
 	for(;;)
 	{
 		lora_driver_payload_t uplink_payload;
@@ -69,9 +69,9 @@ void uplink_handler_task( void *pvParameters )
 			status_leds_shortPuls(led_ST4);  // OPTIONAL
 			
 			char * returnCode = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &uplink_payload));
-			uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
+			//uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
 			
-			printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
+			//printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
 		}
 		else {
 			printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");

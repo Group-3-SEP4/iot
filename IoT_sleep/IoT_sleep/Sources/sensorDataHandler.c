@@ -16,10 +16,10 @@
 
 void sensorDataHandler_task(void *pvParameters);
 
-co2_sensor_t _co2Sensor;
-MessageBufferHandle_t _uplinkMessageBuffer;
-lora_driver_payload_t _uplink_payload;
-payload_builder_t _payloadBuilder;
+static co2_sensor_t _co2Sensor;
+static MessageBufferHandle_t _uplinkMessageBuffer;
+static lora_driver_payload_t _uplink_payload;
+static payload_builder_t _payloadBuilder;
 
 void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_sensor_t co2Sensor){
 	_uplinkMessageBuffer = messageBuffer;
@@ -40,7 +40,7 @@ void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_sensor_
 void sensorDataHandler_task(void *pvParameters){
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_FREQUENCY_UPLINK;
-	
+	vTaskDelay(100);
 	for (;;)
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
@@ -52,7 +52,7 @@ void sensorDataHandler_task(void *pvParameters){
 		
 		payload_builder_getLoRaPayload(_payloadBuilder, &_uplink_payload);
 		
-		printf("payload size: %d\n", sizeof(_uplink_payload));
+		//printf("payload size: %d\n", sizeof(_uplink_payload));
 		
 		size_t xBytesSent = xMessageBufferSend(
 			_uplinkMessageBuffer,

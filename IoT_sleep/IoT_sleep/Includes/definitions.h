@@ -8,16 +8,16 @@
 
 
 // define priorities
-#define DEF_PRIORITY_TASK_LINK				(tskIDLE_PRIORITY + 1)
+#define DEF_PRIORITY_TASK_LINK					(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_UPLINK				(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_CO2					(tskIDLE_PRIORITY + 2)
-#define DEF_PRIORITY_TASK_SENSOR_DATA_HANDLER	(tskIDLE_PRIORITY + 2)
+#define DEF_PRIORITY_TASK_SENSOR_DATA_HANDLER	(tskIDLE_PRIORITY + 1)
 
 
 // define task stack for each task
 #define DEF_STACK_UPLINK						(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_CO2							(configMINIMAL_STACK_SIZE + 200)
-#define DEF_STACK_DOWNLINK					(configMINIMAL_STACK_SIZE + 200)
+#define DEF_STACK_DOWNLINK						(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_SENSOR_DATA_HANDLER			(configMINIMAL_STACK_SIZE + 200)
 
 
@@ -48,12 +48,12 @@
 #define DEF_DEFAULT_NA_SENSOR					INT_MAX
 
 // define EEPROM addresses
-#define DEF_MEMLOC_TEMP						(uint16_t*)10
-#define DEF_MEMLOC_CO2_MIN					(uint16_t*)12
-#define DEF_MEMLOC_CO2_MAX					(uint16_t*)14
+#define DEF_MEMLOC_TEMP							(uint16_t*)10
+#define DEF_MEMLOC_CO2_MIN						(uint16_t*)12
+#define DEF_MEMLOC_CO2_MAX						(uint16_t*)14
 
 
 // define Message buffer sizes
-#define DEF_MESSAGE_BUFFER_UPLINK				200 // TODO: find a reasonable buffer size
+#define DEF_MESSAGE_BUFFER_UPLINK				(configMINIMAL_STACK_SIZE + 200) // TODO: find a reasonable buffer size
 
 #endif

@@ -73,7 +73,7 @@ void co2_task_measure(void* pvParameters){
 
 co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeassure, EventGroupHandle_t eventGroupDataReady){
 	
-	co2_sensor_t _sensor = malloc(sizeof(co2_sensor));
+	co2_sensor_t _sensor = pvPortMalloc(sizeof(*_sensor));
 	if (NULL == _sensor){
 		return NULL;
 	}

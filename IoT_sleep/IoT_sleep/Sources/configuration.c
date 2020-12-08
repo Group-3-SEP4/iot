@@ -19,10 +19,9 @@ typedef struct configuration {
 
 static SemaphoreHandle_t _confMutex;
 
-
 configuration_t configuration_create(void) {
 	
-	configuration_t self = pvPortMalloc(sizeof(configuration));
+	configuration_t self = malloc(sizeof(*self));
 	if (NULL == self){
 		return NULL;
 	}
@@ -31,6 +30,11 @@ configuration_t configuration_create(void) {
 	self->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
 	self->co2Range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
 	self->co2Range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
+
+	
+	//self->temp = 30;
+	//self->co2Range[MIN_CO2_FLAG] =200;
+	//self->co2Range[MAX_CO2_FLAG] = 800;
 	printf("configuration_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2Range[MIN_CO2_FLAG], self->co2Range[MAX_CO2_FLAG]);
 	return self;
 }

@@ -21,24 +21,14 @@
 #include "definitions.h"
 #include "sensorDataHandler.h"
 
-// Globals
-EventGroupHandle_t eventGroupMeasure = NULL;
-EventGroupHandle_t eventGroupDataReady = NULL;
-MessageBufferHandle_t uplinkMessageBuffer =NULL;
-MessageBufferHandle_t messageBuffer =NULL;
-configuration_t config = NULL;
-co2_sensor_t co2Sensor;
-
-// Locals
 void initialize_hardware(void);
-void initialize_globals(void);
 void start_tasks(void);
+
+static MessageBufferHandle_t _downlinkMessageBuffer =NULL;
 
 
 int main(void)
 {
-	initialize_globals();
-		
 	initialize_hardware(); // Must be done as the very first thing!!
 		
 	start_tasks();
@@ -52,31 +42,27 @@ int main(void)
 }
 
 
-void initialize_globals(void){
-	// read configuration
-	// initialize configuration
-	config = configuration_create();
+void start_tasks(void){
+// support structures
+	configuration_t config = configuration_create();
+	EventGroupHandle_t eventGroupMeasure  = xEventGroupCreate();
+	EventGroupHandle_t eventGroupDataReady = xEventGroupCreate();
 
-	// create event groups
-	eventGroupMeasure  = xEventGroupCreate();
-	eventGroupDataReady = xEventGroupCreate();
-
-	// create message buffers
-	uplinkMessageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
+	MessageBufferHandle_t uplinkMessageBuffer = xMessageBufferCreate( 100 );
 	if(NULL == uplinkMessageBuffer){
 		printf("Not enough memory available for uplink message buffer!!\n");
 	}
-	messageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
-}
+	
+	
+// tasks (will only start when this method exits)
+	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
 
-void start_tasks(void){
-	co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
+	// if both sensor_data_handler_create or downlinkHandler_create are executed, 
+	// lora_driver_setOtaaIdentity in uplink_handler returns UNKNOWN
 
-	uplink_handler_create(uplinkMessageBuffer);
-		
 	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
-
-	downlinkHandler_create(config, messageBuffer);
+	uplink_handler_create(uplinkMessageBuffer);
+	downlinkHandler_create(config, _downlinkMessageBuffer);
 }
 
 /*-----------------------------------------------------------*/
@@ -94,8 +80,12 @@ void initialize_hardware(void)
 	// Initialize the HAL layer and use 5 for LED driver priority
 	hal_create(5);
 		
+	_downlinkMessageBuffer = xMessageBufferCreate( 100 );
+	if(NULL == _downlinkMessageBuffer){
+		printf("Not enough memory available for downlink message buffer!!\n");
+	}
 	// Initialize the LoRaWAN driver without down-link buffer
-	lora_driver_create(1, messageBuffer);
+	lora_driver_create(1, _downlinkMessageBuffer);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);
