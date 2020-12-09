@@ -16,6 +16,7 @@
 
 #include "definitions.h"
 #include "co2_sensor.h"
+#include "ht_sensor.h"
 #include "dataPackageHandler.h"
 #include "configuration.h"
 #include "uplinkHandler.h"
@@ -37,11 +38,12 @@ void create_operations(void){
 	MessageBufferHandle_t msgBufferUplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 
 	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
-	// TT
-	// RH
-	servo_t servo = servo_create(SERVO_J14, eventGroupMeasure, eventGroupDataReady, configuration, co2Sensor);
 	
-	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor, servo); //needs TT, RH, Output
+	ht_sensor_t htSensor = ht_create(eventGroupMeasure, eventGroupDataReady);
+	
+	servo_t servo = servo_create(SERVO_J14, eventGroupMeasure, eventGroupDataReady, configuration, co2Sensor, htSensor);
+	
+	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor, htSensor, servo);
 	
 	uplink_handler_create(msgBufferUplink);
 	downlink_handler_create(msgBufferDownlink, configuration);

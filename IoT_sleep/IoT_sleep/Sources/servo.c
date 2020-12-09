@@ -13,6 +13,7 @@
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"
 #include "co2_sensor.h"
+#include "ht_sensor.h"
 #include "configuration.h"
 
 
@@ -32,10 +33,11 @@ static EventBits_t _bitDataReady;
 
 static configuration_t _configuration;
 static co2_sensor_t _co2_sensor;
+static ht_sensor_t _ht_sensor;
 
 uint16_t servo_getPosition(servo_t servo){
 	uint16_t _tmpPos = DEF_DEFAULT_NA_SENSOR;
-	if (_xSemaphoreTake (_servo_mutex, DEF_WAIT_MUTEX_SERVO) == pdTRUE)
+	if (_xSemaphoreTake (_servo_mutex, DEF_WAIT_MUTEX_SERVO_READ) == pdTRUE)
 	{
 		_tmpPos = servo->position;
 		_xSemaphoreGive(_servo_mutex);
@@ -61,9 +63,14 @@ static int8_t calculate_co2Claim(){
 	uint16_t p_gain = (configuration_getMaxCo2(_configuration) - configuration_getMinCo2(_configuration));
 	uint16_t currentValue = co2_getMeasurement(_co2_sensor);
 	int8_t claim = getClaim(currentValue, setpoint, p_gain);
-	if (DEF_PRINT_TO_TERMINAL){
-		printf("CO2 claim: current co2 value = %i, setpoint = %i, gain = %i, resulting claim: %i pct.\n", currentValue, setpoint, p_gain, claim);
-	}
+	return claim;
+}
+
+static int8_t calculate_tempClaim(){
+	uint16_t setpoint = configuration_getDefaultTemperatur(_configuration);
+	uint16_t p_gain = 2;
+	uint16_t currentValue = ht_getTemperature(_ht_sensor);
+	int8_t claim = getClaim(currentValue, setpoint, p_gain);
 	return claim;
 }
 
@@ -72,9 +79,18 @@ static void servo_regulate(servo_t servo){
 	if (_xSemaphoreTake (_servo_mutex, DEF_WAIT_MUTEX_SERVO) == pdTRUE) // protect shared data
 	{
 		int8_t co2Claim = calculate_co2Claim();
-		servo->position = co2Claim;
+		int8_t tempClaim = calculate_tempClaim();
+		int8_t maxClaim = 0;
 		
-		rc_servo_setPosition(servo->servoNo, co2Claim);
+		if (co2Claim > tempClaim){
+			maxClaim = co2Claim;
+		} else {
+			maxClaim = tempClaim;
+		}
+		
+		servo->position = maxClaim;
+		
+		rc_servo_setPosition(servo->servoNo, maxClaim);
 
 		_xSemaphoreGive(_servo_mutex);
 		
@@ -82,6 +98,10 @@ static void servo_regulate(servo_t servo){
 		{
 			_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
 			_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
+		}
+		
+		if (DEF_PRINT_TO_TERMINAL){
+			printf("Regulator MAX claim: %i, %i, %i pct.\n",tempClaim, co2Claim, maxClaim);
 		}
 	}
 }
@@ -101,7 +121,7 @@ void servo_task(void* pvParameters){
 }
 
 
-servo_t servo_create(uint8_t servoNo, EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, configuration_t config, co2_sensor_t co2){
+servo_t servo_create(uint8_t servoNo, EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, configuration_t config, co2_sensor_t co2, ht_sensor_t ht){
 	
 	servo_t _servo = malloc(sizeof(servo_t));
 	if (NULL == _servo){
@@ -110,6 +130,7 @@ servo_t servo_create(uint8_t servoNo, EventGroupHandle_t eventGroupMeasure, Even
 	
 	_configuration = config;
 	_co2_sensor = co2;
+	_ht_sensor = ht;
 	
 	_servo->servoNo = servoNo;
 	_servo->position = 0;

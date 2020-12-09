@@ -53,6 +53,9 @@ inline void co2_measure(co2_sensor_t sensor){
 				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
 				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
 			}
+			if (DEF_PRINT_TO_TERMINAL){
+				printf("Current CO2: %i\n", co2_getMeasurement(sensor));
+			}
 		}
 	}
 }
