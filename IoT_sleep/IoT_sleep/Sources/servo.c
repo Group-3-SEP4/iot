@@ -46,13 +46,14 @@ uint16_t servo_getPosition(servo_t servo){
 }
 
 static double getClaim(uint16_t currentValue, uint16_t setpoint, uint16_t p_gain){
-	double claim = 0;
+	double claim = 0.0;
 	if (p_gain > 0){
-		claim = (((double)(currentValue - setpoint) /(double) p_gain) * 100);
-		if (claim < 0){
-			claim = 0;
-		} else if (claim > 100){
-			claim = 100;
+		claim = (((double)(currentValue - setpoint) /(double) p_gain) * 100.0);
+		if (claim < 0.0){
+			claim = 0.0;
+		}
+		if (claim > 100.0){
+			claim = 100.0;
 		}
 	} 
 	return claim;
@@ -101,7 +102,7 @@ static void servo_regulate(servo_t servo){
 		}
 		
 		if (DEF_PRINT_TO_TERMINAL){
-			printf("Regulator MAX claim: %i, %i, %i pct.\n",tempClaim, co2Claim, maxClaim);
+			printf("Regulator claim: TT %i, CO2 %i, Max %i pct.\n",tempClaim, co2Claim, maxClaim);
 		}
 	}
 }

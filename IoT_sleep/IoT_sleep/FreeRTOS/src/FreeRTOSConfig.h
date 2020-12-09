@@ -53,11 +53,11 @@
 #define configUSE_TRACE_FACILITY            1
 #define configUSE_16_BIT_TICKS              0								// Use 32 bits ticks
 #define configIDLE_SHOULD_YIELD             1
-#define configTOTAL_HEAP_SIZE				4000
+#define configTOTAL_HEAP_SIZE				3500
 
 #define configUSE_MUTEXES                   1
 #define configUSE_RECURSIVE_MUTEXES         1
-#define configUSE_COUNTING_SEMAPHORES       1
+#define configUSE_COUNTING_SEMAPHORES       0 //we dont use
 #define configUSE_QUEUE_SETS                0
 #define configQUEUE_REGISTRY_SIZE           0
 #define configUSE_TIME_SLICING              1
@@ -68,7 +68,7 @@
 #define configSUPPORT_STATIC_ALLOCATION     0
 
 /* Timer definitions. */
-#define configUSE_TIMERS                    1
+#define configUSE_TIMERS                    0 //we dont use
 #define configTIMER_TASK_PRIORITY           ( ( UBaseType_t ) 3 )
 #define configTIMER_QUEUE_LENGTH            ( ( UBaseType_t ) 10 )
 #define configTIMER_TASK_STACK_DEPTH        ( 85 )

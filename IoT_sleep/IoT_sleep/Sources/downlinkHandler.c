@@ -11,7 +11,7 @@
 #include "wrapper_messageBuffer.h"
 #include "configuration.h"
 
-configuration_t _configuration;
+static configuration_t _configuration;
 
 void downlink_handler_task( void *pvParameters )
 {

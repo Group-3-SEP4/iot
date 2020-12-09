@@ -104,6 +104,7 @@ inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dat
 	}
 }
 
+// static bliver taget ved compile og ikke i stacken
 
 void dataPackageHandler_task(void* pvParameters){	
 	TickType_t xLastWakeTime = xTaskGetTickCount();

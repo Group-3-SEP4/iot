@@ -67,7 +67,7 @@ void initialiseSystem()
 	
 	// initialize the servo
 	rc_servo_create();
-	
+
 	// Initialise the LoRaWAN
 	msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	lora_driver_create(LORA_USART, msgBufferDownlink);
@@ -89,6 +89,8 @@ int main(void)
 	create_operations();
 
 	printf("Program Started!!\n");
+	
+	printf("Free Heap size: %i\n", xPortGetFreeHeapSize());
 	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 
 	while (1)
