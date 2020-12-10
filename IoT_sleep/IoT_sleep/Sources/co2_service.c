@@ -25,8 +25,6 @@ static SemaphoreHandle_t _mutex;
 static EventGroupHandle_t _event_group_data_collect;
 static EventGroupHandle_t _event_group_data_ready;
 
-static EventBits_t _bit_data_collect;
-static EventBits_t _bit_data_ready;
 
 uint16_t co2_service_get_measurement(co2_t sensor){
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
@@ -40,19 +38,19 @@ uint16_t co2_service_get_measurement(co2_t sensor){
 
 inline void co2_service_measure(co2_t sensor){
 	
-	mh_z19_returnCode_t _returnCode = mh_z19_takeMeassuring();
+	mh_z19_returnCode_t _return_code = mh_z19_takeMeassuring();
 	_vTaskDelay(DEF_DELAY_DRIVER_CO2); // delay must be placed here between takeMessuring() and check, since it takes time for the driver to measure (Async). If moved/deleted value will be 0 ppm.
-	if(_returnCode == MHZ19_OK)
+	if(_return_code == MHZ19_OK)
 	{
 		if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE) // protect shared data
 		{
 			mh_z19_getCo2Ppm(&sensor->ppm);
 			_xSemaphoreGive(_mutex);
 			
-			if (_xEventGroupGetBits(_event_group_data_collect) & _bit_data_collect) // checks eventMeasureStart bits
+			if (_xEventGroupGetBits(_event_group_data_collect) & DEF_BIT_DATA_COLLECT_CO2) // checks eventMeasureStart bits
 			{
-				_xEventGroupClearBits(_event_group_data_collect, _bit_data_collect); // clears eventMeasure bits
-				_xEventGroupSetBits(_event_group_data_ready, _bit_data_ready); // sets eventDataReady bits
+				_xEventGroupClearBits(_event_group_data_collect, DEF_BIT_DATA_COLLECT_CO2); // clears eventMeasure bits
+				_xEventGroupSetBits(_event_group_data_ready, DEF_BIT_DATA_READY_CO2); // sets eventDataReady bits
 			}
 			if (DEF_PRINT_TO_TERMINAL){
 			printf("Current ppm: %i\n", co2_service_get_measurement(sensor)); // only for visual verification in terminal
@@ -86,10 +84,6 @@ co2_t co2_service_create(EventGroupHandle_t event_group_data_collect, EventGroup
 	
 	_event_group_data_collect = event_group_data_collect;
 	_event_group_data_ready = event_group_data_ready;
-	
-	_bit_data_collect = DEF_BIT_MEASURE_START_CO2;
-	_bit_data_ready = DEF_BIT_DATA_READY_CO2;
-	
 	
 	mh_z19_create(DEF_IO_PORT_CO2, NULL); 
 	
