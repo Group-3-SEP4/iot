@@ -19,38 +19,49 @@ static bool initialized = false;
 void uplink_handler_task( void *pvParameters );
 static void _lora_setup(void);
 
-static MessageBufferHandle_t _uplink_message_buffer;
-
-static char _out_buf[100];
-
 void uplink_handler_create(MessageBufferHandle_t message_buffer)
 {
-	_uplink_message_buffer = message_buffer;
-	
 	xTaskCreate(
 	uplink_handler_task
-	,  (const portCHAR *)"uh_task"  // A name just for humans
-	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
-	,  NULL
-	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
+	,  (const portCHAR *)"uh_task"  
+	,  DEF_STACK_UPLINK  
+	,  message_buffer
+	,  DEF_PRIORITY_TASK_UPLINK  
 	,  NULL );
+}
+
+void uplink_handler_task_body(MessageBufferHandle_t uplink_message_buffer, float packagesSent){
+	lora_driver_payload_t uplink_payload;
+	size_t xReceivedBytes;
+	xReceivedBytes = xMessageBufferReceive(
+	uplink_message_buffer
+	,  ( void * ) &uplink_payload
+	,  sizeof( lora_driver_payload_t )
+	,  portMAX_DELAY
+	);
+	
+	if( xReceivedBytes > 0 )
+	{
+		display_7seg_display(packagesSent, 0);
+
+		status_leds_shortPuls(led_ST4);  // OPTIONAL
+		
+		lora_driver_sendUploadMessage(false, &uplink_payload);
+		//lora_driver_returnCode_t returnCode =lora_driver_sendUploadMessage(false, &uplink_payload);
+		//char * returnCodeStr = lora_driver_mapReturnCodeToText(returnCode);
+		//uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
+		
+		//printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
+	}
+	else {
+		//printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");
+	}
 }
 
 void uplink_handler_task( void *pvParameters )
 {
 	if (!initialized){
-		//TODO: figure out if this can be moved to initialization method in main
-		// Hardware reset of LoRaWAN transceiver
-		lora_driver_resetRn2483(1);
-		vTaskDelay(2);
-		lora_driver_resetRn2483(0);
-		// Give it a chance to wakeup
-		vTaskDelay(150);
-
-		lora_driver_flushBuffers(); // get rid of first version string from module after reset!
-		
 		_lora_setup();
-		
 		initialized = true;
 	}
 	
@@ -58,35 +69,27 @@ void uplink_handler_task( void *pvParameters )
 	
 	for(;;)
 	{
-		lora_driver_payload_t uplink_payload;
-		size_t xReceivedBytes;
-		xReceivedBytes = xMessageBufferReceive(
-		_uplink_message_buffer
-		,  ( void * ) &uplink_payload
-		,  sizeof( lora_driver_payload_t )
-		,  portMAX_DELAY
-		);
-		
-		if( xReceivedBytes > 0 )
-		{
-			display_7seg_display(++packagesSent, 0);
-
-			status_leds_shortPuls(led_ST4);  // OPTIONAL
-			
-			char * returnCode = lora_driver_mapReturnCodeToText(lora_driver_sendUploadMessage(false, &uplink_payload));
-			uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
-			
-			printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
-		}
-		else {
-			printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");
-		}
+		uplink_handler_task_body((MessageBufferHandle_t)pvParameters, ++packagesSent);
 	}
 }
 
-
 static void _lora_setup(void)
 {
+	char _out_buf[100];
+	
+	// Hardware reset of LoRaWAN transceiver
+	lora_driver_resetRn2483(1);
+	vTaskDelay(2);
+	lora_driver_resetRn2483(0);
+	// Give it a chance to wakeup
+	vTaskDelay(150);
+
+	lora_driver_flushBuffers(); // get rid of first version string from module after reset!
+	
+	/************************************************************************/
+	/*                                                                      */
+	/************************************************************************/
+	
 	lora_driver_returnCode_t rc;
 	status_leds_slowBlink(led_ST2); // OPTIONAL: Led the green led blink slowly while we are setting up LoRa
 
