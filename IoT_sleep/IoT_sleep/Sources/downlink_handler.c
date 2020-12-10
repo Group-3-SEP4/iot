@@ -10,7 +10,7 @@
 
 
 #include "downlink_handler.h"
-#include "configuration.h"
+#include "configuration_service.h"
 #include "definitions.h"
 
 

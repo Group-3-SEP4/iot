@@ -1,3 +1,7 @@
+/*
+*  Author: Aron 264237
+*/
+
 #include <stddef.h>
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>

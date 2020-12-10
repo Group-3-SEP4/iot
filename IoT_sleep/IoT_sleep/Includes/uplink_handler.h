@@ -1,3 +1,7 @@
+/*
+*  Author: Aron 264237
+*/
+
 #ifndef UPLINKHANDLER_H
 #define UPLINKHANDLER_H
 

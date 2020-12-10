@@ -14,8 +14,8 @@
 #include <display_7seg.h>
 #include <status_leds.h>
 #include <lora_driver.h>
-#include "co2_sensor.h"
-#include "configuration.h"
+#include "co2_service.h"
+#include "configuration_service.h"
 #include "uplink_handler.h"	
 #include "downlink_handler.h"
 #include "definitions.h"

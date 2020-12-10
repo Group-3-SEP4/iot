@@ -1,9 +1,7 @@
 /*
-* sensorDataHandler.c
-*
-* Created: 04/12/2020 21.12.28
-*  Author: agk13
+*  Author: Aron 264237
 */
+
 #include <ATMEGA_FreeRTOS.h>
 #include <message_buffer.h>
 #include <task.h>
@@ -16,12 +14,12 @@
 
 void sensor_data_handler_task(void *pvParameters);
 
-co2_sensor_t _co2Sensor;
+co2_service_t _co2Sensor;
 MessageBufferHandle_t _uplinkMessageBuffer;
 lora_driver_payload_t _uplink_payload;
 payload_builder_t _payloadBuilder;
 
-void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_sensor_t co2Sensor){
+void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_service_t co2Sensor){
 	_uplinkMessageBuffer = messageBuffer;
 	_co2Sensor = co2Sensor;
 	

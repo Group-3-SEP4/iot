@@ -3,7 +3,7 @@
 */
 #ifndef DOWNLINKHANDLER_H
 #define DOWNLINKHANDLER_H
-#include "configuration.h"
+#include "configuration_service.h"
 
 #include <message_buffer.h>
 
