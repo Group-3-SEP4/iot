@@ -27,14 +27,15 @@ static EventGroupHandle_t _event_group_data_ready;
 
 
 uint16_t co2_service_get_measurement(co2_t sensor){
-	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
+	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE)
 	{
-		_tmpValue = sensor->ppm;
+		tmp_value = sensor->ppm;
 		_xSemaphoreGive(_mutex);
 	}
-	return _tmpValue;
+	return tmp_value;
 }
+
 
 inline void co2_service_measure(co2_t sensor){
 	
@@ -85,7 +86,7 @@ co2_t co2_service_create(EventGroupHandle_t event_group_data_collect, EventGroup
 	_event_group_data_collect = event_group_data_collect;
 	_event_group_data_ready = event_group_data_ready;
 	
-	mh_z19_create(DEF_IO_PORT_CO2, NULL); 
+	mh_z19_create(MH_Z19_USART, NULL); 
 	
 	_xTaskCreate(
 		co2_service_task_measure,		/* Function that implements the task. */
