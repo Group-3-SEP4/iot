@@ -167,7 +167,7 @@
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\co2_sensor.h">
+    <Compile Include="Includes\co2_service.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\configuration.h">
@@ -200,7 +200,7 @@
     <Compile Include="Includes\Wrappers\wrapper_task.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\co2_sensor.c">
+    <Compile Include="Sources\co2_service.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\configuration.c">
