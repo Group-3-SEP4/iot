@@ -27,7 +27,7 @@ EventGroupHandle_t eventGroupDataReady = NULL;
 MessageBufferHandle_t uplinkMessageBuffer =NULL;
 MessageBufferHandle_t messageBuffer =NULL;
 configuration_t config = NULL;
-co2_sensor_t co2Sensor;
+co2_service_t co2_service;
 
 // Locals
 void initialize_hardware(void);
@@ -70,11 +70,11 @@ void initialize_globals(void){
 }
 
 void start_tasks(void){
-	co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
+	co2_service = co2_service_create(eventGroupMeasure, eventGroupDataReady);
 
 	uplink_handler_create(uplinkMessageBuffer);
 		
-	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
+	sensor_data_handler_create(uplinkMessageBuffer, co2_service);
 
 	downlinkHandler_create(config, messageBuffer);
 }
