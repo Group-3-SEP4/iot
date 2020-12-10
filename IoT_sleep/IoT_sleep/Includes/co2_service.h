@@ -1,8 +1,8 @@
 /*
  *  Author: Jacob 273962
  */ 
-#ifndef CO2_SENSOR_H
-#define CO2_SENSOR_H
+#ifndef CO2_SERVICE_H
+#define CO2_SERVICE_H
 
 #include <stdint.h>
 #include <event_groups.h>

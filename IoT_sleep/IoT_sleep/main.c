@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
-
-//#include <hal_defs.h>
 #include <ihal.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
@@ -14,6 +12,8 @@
 #include <display_7seg.h>
 #include <status_leds.h>
 #include <lora_driver.h>
+#include <rc_servo.h>
+
 #include "co2_service.h"
 #include "configuration_service.h"
 #include "uplink_handler.h"	
@@ -21,13 +21,14 @@
 #include "definitions.h"
 #include "sensor_data_handler.h"
 #include "ht_service.h"
+#include "servo_service.h"
 
 // Globals
-EventGroupHandle_t eventGroupMeasure = NULL;
-EventGroupHandle_t eventGroupDataReady = NULL;
-MessageBufferHandle_t uplinkMessageBuffer =NULL;
-MessageBufferHandle_t messageBuffer =NULL;
-configuration_t config = NULL;
+EventGroupHandle_t event_group_data_collect = NULL;
+EventGroupHandle_t event_group_data_ready = NULL;
+MessageBufferHandle_t message_buffer_uplink =NULL;
+MessageBufferHandle_t message_buffer_downlink =NULL;
+configuration_t configuration_service = NULL;
 
 // Locals
 void initialize_hardware(void);
@@ -55,29 +56,32 @@ int main(void)
 void initialize_globals(void){
 	// read configuration
 	// initialize configuration
-	config = configuration_service_create();
+	configuration_service = configuration_service_create();
 
 	// create event groups
-	eventGroupMeasure  = xEventGroupCreate();
-	eventGroupDataReady = xEventGroupCreate();
+	event_group_data_collect  = xEventGroupCreate();
+	event_group_data_ready = xEventGroupCreate();
 
 	// create message buffers
-	uplinkMessageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
-	if(NULL == uplinkMessageBuffer){
+	message_buffer_uplink = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
+	if(NULL == message_buffer_uplink){
 		printf("Not enough memory available for uplink message buffer!!\n");
 	}
-	messageBuffer = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
+	message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
 }
 
 void start_tasks(void){
-	co2_t co2_service = co2_service_create(eventGroupMeasure, eventGroupDataReady);
-	ht_t ht_service = ht_create(eventGroupMeasure, eventGroupDataReady);
-	
-	uplink_handler_create(uplinkMessageBuffer);
-		
-	sensor_data_handler_create(uplinkMessageBuffer, co2_service);
+	co2_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
 
-	downlink_handler_create(config, messageBuffer);
+	ht_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
+	
+	servo_t servo_service = servo_create(OUT_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
+		
+	sensor_data_handler_create(message_buffer_uplink, co2_service);
+	
+	uplink_handler_create(message_buffer_uplink);
+	
+	downlink_handler_create(configuration_service, message_buffer_downlink);
 }
 
 /*-----------------------------------------------------------*/
@@ -94,9 +98,12 @@ void initialize_hardware(void)
 	// LoRaWAN initialization 
 	// Initialize the HAL layer and use 5 for LED driver priority
 	hal_create(5);
+	
+	// initialize the servo
+	rc_servo_create();
 		
 	// Initialize the LoRaWAN driver without down-link buffer
-	lora_driver_create(1, messageBuffer);
+	lora_driver_create(LORA_USART, message_buffer_downlink);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);

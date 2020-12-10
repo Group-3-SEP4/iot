@@ -9,7 +9,7 @@
 #ifndef HAL_DEFS_H_
 #define HAL_DEFS_H_
 
-#include <serial/serial.h>
+#include <serial.h>
 
 // Lora Transceiver
 #define LORA_USART	ser_USART1
@@ -18,5 +18,8 @@
 
 // MH-Z19 CO2 Driver
 #define MH_Z19_USART ser_USART3
+
+// Servo outputs
+#define OUT_J14		0
  
 #endif /* HAL_DEFS_H_ */
