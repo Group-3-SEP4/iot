@@ -7,10 +7,10 @@
 #include <stdint.h>
 #include <event_groups.h>
 
-typedef struct co2_measurement* co2_service_t;
+typedef struct co2_measurement* co2_t;
 
-co2_service_t co2_service_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady);
-uint16_t co2_service_get_measurement(co2_service_t sensor);
-void co2_service_measure(co2_service_t sensor);
+co2_t co2_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready);
+uint16_t co2_service_get_measurement(co2_t sensor);
+void co2_service_measure(co2_t sensor);
 
 #endif

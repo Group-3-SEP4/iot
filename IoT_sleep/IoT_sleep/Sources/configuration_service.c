@@ -17,11 +17,9 @@
 typedef struct configuration {
 	uint16_t temp;
 	uint16_t co2_range[2]; // only min[0] and max[1]
-
 } configuration;
 
 static SemaphoreHandle_t _mutex;
-
 
 configuration_t configuration_service_create(void) {
 	
@@ -38,7 +36,7 @@ configuration_t configuration_service_create(void) {
 	return self;
 }
 
-uint16_t configuration_service_get_default_temperatur(configuration_t self) {
+uint16_t configuration_service_get_default_temperature(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 		_tempValue = self->temp;
@@ -47,10 +45,10 @@ uint16_t configuration_service_get_default_temperatur(configuration_t self) {
 	return _tempValue;
 }
 
-void configuration_service_set_default_temperatur(configuration_t self, uint16_t temp) {
+void configuration_service_set_default_temperature(configuration_t self, uint16_t temp) {
 printf("configuration_setDefaultTemperatur: set temp to: %d\n", temp);
 	if (self->temp != temp) {
-		if (_xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if conf. cant be run, wait forever.
+		if (_xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if config cant be run, wait forever.
 			eeprom_write_word(DEF_MEMLOC_TEMP, temp);
 			self->temp = temp;
 			_xSemaphoreGive(_mutex);	

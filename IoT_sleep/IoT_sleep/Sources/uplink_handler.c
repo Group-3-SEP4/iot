@@ -1,5 +1,5 @@
 /*
-*  Author: Aron 264237
+*  Author: Aron 264237, Jacob 273962
 */
 
 #include <stddef.h>
@@ -19,13 +19,13 @@ static bool initialized = false;
 void uplink_handler_task( void *pvParameters );
 static void _lora_setup(void);
 
-static MessageBufferHandle_t _uplinkMessageBuffer;
+static MessageBufferHandle_t _uplink_message_buffer;
 
 static char _out_buf[100];
 
-void uplink_handler_create(MessageBufferHandle_t messageBuffer)
+void uplink_handler_create(MessageBufferHandle_t message_buffer)
 {
-	_uplinkMessageBuffer = messageBuffer;
+	_uplink_message_buffer = message_buffer;
 	
 	xTaskCreate(
 	uplink_handler_task
@@ -61,7 +61,7 @@ void uplink_handler_task( void *pvParameters )
 		lora_driver_payload_t uplink_payload;
 		size_t xReceivedBytes;
 		xReceivedBytes = xMessageBufferReceive(
-		_uplinkMessageBuffer
+		_uplink_message_buffer
 		,  ( void * ) &uplink_payload
 		,  sizeof( lora_driver_payload_t )
 		,  portMAX_DELAY

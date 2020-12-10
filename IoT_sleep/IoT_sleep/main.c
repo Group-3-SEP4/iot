@@ -27,7 +27,7 @@ EventGroupHandle_t eventGroupDataReady = NULL;
 MessageBufferHandle_t uplinkMessageBuffer =NULL;
 MessageBufferHandle_t messageBuffer =NULL;
 configuration_t config = NULL;
-co2_service_t co2_service;
+co2_t co2_service;
 
 // Locals
 void initialize_hardware(void);
@@ -55,7 +55,7 @@ int main(void)
 void initialize_globals(void){
 	// read configuration
 	// initialize configuration
-	config = configuration_create();
+	config = configuration_service_create();
 
 	// create event groups
 	eventGroupMeasure  = xEventGroupCreate();
