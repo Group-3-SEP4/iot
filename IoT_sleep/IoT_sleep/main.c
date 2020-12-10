@@ -41,7 +41,6 @@ void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t
 	downlink_handler_create(configuration_service, message_buffer_downlink);
 }
 
-/*-----------------------------------------------------------*/
 
 void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
 {
