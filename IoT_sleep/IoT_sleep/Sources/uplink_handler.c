@@ -51,7 +51,7 @@ void uplink_handler_task_body(MessageBufferHandle_t uplink_message_buffer, float
 		char * returnCodeStr = lora_driver_mapReturnCodeToText(returnCode);
 		uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
 		
-		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
+		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCodeStr);
 	}
 	else {
 		//printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");
