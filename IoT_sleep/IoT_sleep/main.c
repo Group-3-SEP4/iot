@@ -41,7 +41,6 @@ void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t
 	downlink_handler_create(configuration_service, message_buffer_downlink);
 }
 
-/*-----------------------------------------------------------*/
 
 void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
 {
@@ -81,7 +80,7 @@ int main(void)
 	
 	start_tasks(event_group_data_collect, event_group_data_ready, message_buffer_uplink, message_buffer_downlink);
 
-	printf("Program Started!!\n");
+	printf("Program Started! free heap: %i\n", xPortGetMinimumEverFreeHeapSize());
 	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
 
 	while (1)
