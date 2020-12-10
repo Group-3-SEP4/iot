@@ -74,7 +74,7 @@
 
 // define values
 #define DEF_DEFAULT_NA_SENSOR					INT_MAX		
-#define DEF_PROPORTIONAL_GAIN_TEMP				2			
+#define DEF_PROPORTIONAL_GAIN_TEMP				4			
 
 
 // define EEPROM addresses
