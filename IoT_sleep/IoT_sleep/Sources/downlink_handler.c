@@ -16,41 +16,33 @@
 
 static configuration_t _configuration;
 
-void downlink_handler_task(void* message_buffer) {
-	printf("downlinkHandler_task: starting task\n");
-	// while loop
+inline void downlink_handler_task(void* message_buffer){
+	printf("downlink_handler_task: starting task\n");
 	
-	/* Receive the next message from the message buffer.  Wait in the Blocked
-    state (so not using any CPU processing time) for a maximum of 100ms for
-    a message to become available. */
-	
-//	uint8_t ucRxData[ 20 ];
 	for(;;) {
-		vTaskDelay(50); 
-		
+		vTaskDelay(50);
+		downlink_handler(message_buffer);
+	}
+}
+
+void downlink_handler(void* message_buffer) {
+	
 		lora_driver_payload_t downlink_payload;
 		uint8_t received_bytes;
 		
-		printf("downlink_handler_task: waiting for messages\n");
 		received_bytes = xMessageBufferReceive(message_buffer, (void*) &downlink_payload, sizeof(lora_driver_payload_t), portMAX_DELAY); // wait forever
 		
-		
-
 		if(received_bytes > 0)
-		{
-			printf("downlink_handler_task: ------------------- Receive Data\n");
-			// TODO: perhaps eventgroup to tell that we received updated conf? This could also be done in the configuration itself
-			//0012032003E8 // 18 800 1000
-			
-			configuration_service_set_default_temperature(_configuration, (uint16_t)((downlink_payload.bytes[0] << 8) + downlink_payload.bytes[1]));
+		{		
+			configuration_service_set_temperature(_configuration, (uint16_t)((downlink_payload.bytes[0] << 8) + downlink_payload.bytes[1]));
 			configuration_service_set_min_co2(_configuration, (uint16_t)((downlink_payload.bytes[2] << 8) + downlink_payload.bytes[3]));
 			configuration_service_set_max_co2(_configuration, (uint16_t)((downlink_payload.bytes[4] << 8) + downlink_payload.bytes[5]));
-			printf("downlink_handler_task: Received the following values[ temp: %d, Min Co2: %d, Max Co2: %d]\n", configuration_service_get_default_temperature(_configuration), configuration_service_get_min_co2(_configuration), configuration_service_get_max_co2(_configuration));
+			printf("downlink_handler_task: Received the following values[ temp: %d, Min Co2: %d, Max Co2: %d]\n", configuration_service_get_temperature(_configuration), configuration_service_get_min_co2(_configuration), configuration_service_get_max_co2(_configuration));
 		} else {
 			printf("downlink_handler_task: Received zero data\n");
 		}
 		
-	}
+	
 }
 
 void downlink_handler_create(configuration_t configuration, MessageBufferHandle_t message_buffer) {

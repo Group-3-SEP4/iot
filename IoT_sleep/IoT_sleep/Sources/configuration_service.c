@@ -23,7 +23,7 @@ static SemaphoreHandle_t _mutex;
 
 configuration_t configuration_service_create(void) {
 	
-	configuration_t self = pvPortMalloc(sizeof(configuration));
+	configuration_t self = malloc(sizeof(configuration));
 	if (NULL == self){
 		return NULL;
 	}
@@ -32,11 +32,11 @@ configuration_t configuration_service_create(void) {
 	self->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
 	self->co2_range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
 	self->co2_range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
-	printf("configuration_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2_range[MIN_CO2_FLAG], self->co2_range[MAX_CO2_FLAG]);
+	printf("configuration_service_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2_range[MIN_CO2_FLAG], self->co2_range[MAX_CO2_FLAG]);
 	return self;
 }
 
-uint16_t configuration_service_get_default_temperature(configuration_t self) {
+uint16_t configuration_service_get_temperature(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 		_tempValue = self->temp;
@@ -45,8 +45,7 @@ uint16_t configuration_service_get_default_temperature(configuration_t self) {
 	return _tempValue;
 }
 
-void configuration_service_set_default_temperature(configuration_t self, uint16_t temp) {
-printf("configuration_setDefaultTemperatur: set temp to: %d\n", temp);
+void configuration_service_set_temperature(configuration_t self, uint16_t temp) {
 	if (self->temp != temp) {
 		if (_xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if config cant be run, wait forever.
 			eeprom_write_word(DEF_MEMLOC_TEMP, temp);
