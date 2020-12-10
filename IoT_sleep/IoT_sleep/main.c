@@ -27,7 +27,6 @@ EventGroupHandle_t eventGroupDataReady = NULL;
 MessageBufferHandle_t uplinkMessageBuffer =NULL;
 MessageBufferHandle_t messageBuffer =NULL;
 configuration_t config = NULL;
-co2_t co2_service;
 
 // Locals
 void initialize_hardware(void);
@@ -70,7 +69,7 @@ void initialize_globals(void){
 }
 
 void start_tasks(void){
-	co2_service = co2_service_create(eventGroupMeasure, eventGroupDataReady);
+	co2_t co2_service = co2_service_create(eventGroupMeasure, eventGroupDataReady);
 
 	uplink_handler_create(uplinkMessageBuffer);
 		

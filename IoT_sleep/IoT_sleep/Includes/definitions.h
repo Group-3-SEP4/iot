@@ -22,8 +22,8 @@
 
 
 // define measure event groups bit flags
-#define DEF_BIT_MEASURE_START_CO2				(1 << 0)
-#define DEF_BIT_MEASURE_DONE					DEF_BIT_MEASURE_START_CO2
+#define DEF_BIT_DATA_COLLECT_CO2				(1 << 0)
+#define DEF_BIT_MEASURE_DONE					DEF_BIT_DATA_COLLECT_CO2
 
 
 // define data ready event groups bit flags
@@ -48,9 +48,9 @@
 #define DEF_DEFAULT_NA_SENSOR					INT_MAX
 
 // define EEPROM addresses
-#define DEF_MEMLOC_TEMP						(uint16_t*)10
-#define DEF_MEMLOC_CO2_MIN					(uint16_t*)12
-#define DEF_MEMLOC_CO2_MAX					(uint16_t*)14
+#define DEF_MEMLOC_TEMP							(uint16_t*)10
+#define DEF_MEMLOC_CO2_MIN						(uint16_t*)12
+#define DEF_MEMLOC_CO2_MAX						(uint16_t*)14
 
 
 // define Message buffer sizes
