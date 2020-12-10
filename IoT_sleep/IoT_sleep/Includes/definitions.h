@@ -11,14 +11,16 @@
 // define priorities
 #define DEF_PRIORITY_TASK_LINK					(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_UPLINK				(tskIDLE_PRIORITY + 1)
+#define DEF_PRIORITY_TASK_SENSOR_DATA_HANDLER	(tskIDLE_PRIORITY + 1)
 #define DEF_PRIORITY_TASK_CO2					(tskIDLE_PRIORITY + 2)
-#define DEF_PRIORITY_TASK_SENSOR_DATA_HANDLER	(tskIDLE_PRIORITY + 2)
+#define DEF_PRIORITY_TASK_HT					(tskIDLE_PRIORITY + 2)
 #define DEF_PRIORITY_TASK_SERVO					(tskIDLE_PRIORITY + 3)
 
 
 // define task stack for each task
 #define DEF_STACK_UPLINK						(configMINIMAL_STACK_SIZE + 200)
 #define DEF_STACK_CO2							(configMINIMAL_STACK_SIZE)
+#define DEF_STACK_HT							(configMINIMAL_STACK_SIZE)
 #define DEF_STACK_DOWNLINK						(configMINIMAL_STACK_SIZE)
 #define DEF_STACK_SENSOR_DATA_HANDLER			(configMINIMAL_STACK_SIZE)
 #define DEF_STACK_SERVO							(configMINIMAL_STACK_SIZE + 200)
@@ -26,15 +28,16 @@
 
 // define measure event groups bit flags
 #define DEF_BIT_DATA_COLLECT_CO2				(1 << 0)
+#define DEF_BIT_DATA_COLLECT_HT					(1 << 1)
 #define DEF_BIT_DATA_COLLECT_SERVO				(1 << 2)
-#define DEF_BIT_COLLECT_START					(DEF_BIT_DATA_COLLECT_CO2 | DEF_BIT_DATA_COLLECT_SERVO)
+#define DEF_BIT_COLLECT_START					(DEF_BIT_DATA_COLLECT_CO2 | DEF_BIT_DATA_COLLECT_HT | DEF_BIT_DATA_COLLECT_SERVO)
 
 
 // define data ready event groups bit flags
-#define DEF_BIT_DATA_READY_CO2					(1 << 3)
-#define DEF_BIT_DATA_READY_SERVO				(1 << 5)
-#define DEF_BIT_DATA_READY						(DEF_BIT_DATA_READY_CO2 | DEF_BIT_DATA_READY_SERVO)
-
+#define DEF_BIT_DATA_READY_CO2					(1 << 0)
+#define DEF_BIT_DATA_READY_HT					(1 << 1)
+#define DEF_BIT_DATA_READY_SERVO				(1 << 2)
+#define DEF_BIT_DATA_READY						(DEF_BIT_DATA_READY_CO2 | DEF_BIT_DATA_READY_HT | DEF_BIT_DATA_READY_SERVO)
 
 // define time constraints
 #define DEF_WAIT_DEFAULT						pdMS_TO_TICKS(200) // default wait time
@@ -46,10 +49,15 @@
 #define DEF_DELAY_DRIVER_CO2					pdMS_TO_TICKS(300)
 #define DEF_WAIT_MUTEX_CO2						DEF_WAIT_DEFAULT
 
+#define DEF_DELAY_TASK_HT						DEF_TASK_DEFAULT_COLLECT_DATA
+#define DEF_DELAY_DRIVER_HT						pdMS_TO_TICKS(50)
+#define DEF_WAIT_MUTEX_HT_WRITE					DEF_WAIT_DEFAULT
+#define DEF_WAIT_MUTEX_T_READ					DEF_WAIT_DEFAULT
+#define DEF_WAIT_MUTEX_H_READ					DEF_WAIT_DEFAULT
+
 #define DEF_DELAY_TASK_SERVO					DEF_TASK_DEFAULT_COLLECT_DATA
 #define DEF_WAIT_MUTEX_SERVO_WRITE				DEF_WAIT_DEFAULT
 #define DEF_WAIT_MUTEX_SERVO_READ				portMAX_DELAY
-
 
 // define I/O
 #define DEF_PRINT_TO_TERMINAL					true
@@ -67,6 +75,7 @@
 
 
 // define Message buffer sizes
-#define DEF_MESSAGE_BUFFER_UPLINK				200 // TODO: find a reasonable buffer size
+#define DEF_MESSAGE_BUFFER_UPLINK				sizeof(lora_driver_payload_t)*2
+#define DEF_MESSAGE_BUFFER_DOWNLINK				sizeof(lora_driver_payload_t)*2
 
 #endif

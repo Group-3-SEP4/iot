@@ -20,13 +20,15 @@
 #include "downlink_handler.h"
 #include "definitions.h"
 #include "sensor_data_handler.h"
+#include "ht_service.h"
+#include "servo_service.h"
 
 // Globals
 EventGroupHandle_t event_group_data_collect = NULL;
 EventGroupHandle_t event_group_data_ready = NULL;
-MessageBufferHandle_t uplinkMessageBuffer =NULL;
-MessageBufferHandle_t messageBuffer =NULL;
-configuration_t config = NULL;
+MessageBufferHandle_t message_buffer_uplink =NULL;
+MessageBufferHandle_t message_buffer_downlink =NULL;
+configuration_t configuration_service = NULL;
 
 // Locals
 void initialize_hardware(void);
@@ -54,30 +56,32 @@ int main(void)
 void initialize_globals(void){
 	// read configuration
 	// initialize configuration
-	config = configuration_service_create();
+	configuration_service = configuration_service_create();
 
 	// create event groups
 	event_group_data_collect  = xEventGroupCreate();
 	event_group_data_ready = xEventGroupCreate();
 
 	// create message buffers
-	uplinkMessageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
-	if(NULL == uplinkMessageBuffer){
+	message_buffer_uplink = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
+	if(NULL == message_buffer_uplink){
 		printf("Not enough memory available for uplink message buffer!!\n");
 	}
-	messageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
+	message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
 }
 
 void start_tasks(void){
 	co2_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
+
+	ht_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
 	
 	servo_t servo_service = servo_create(OUT_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
-
-	uplink_handler_create(uplinkMessageBuffer);
 		
-	sensor_data_handler_create(uplinkMessageBuffer, co2_service);
-
-	downlink_handler_create(config, messageBuffer);
+	sensor_data_handler_create(message_buffer_uplink, co2_service);
+	
+	uplink_handler_create(message_buffer_uplink);
+	
+	downlink_handler_create(configuration_service, message_buffer_downlink);
 }
 
 /*-----------------------------------------------------------*/
@@ -99,7 +103,7 @@ void initialize_hardware(void)
 	rc_servo_create();
 		
 	// Initialize the LoRaWAN driver without down-link buffer
-	lora_driver_create(LORA_USART, messageBuffer);
+	lora_driver_create(LORA_USART, message_buffer_downlink);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);

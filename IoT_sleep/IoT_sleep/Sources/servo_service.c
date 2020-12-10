@@ -68,7 +68,7 @@ static int8_t get_co2_claim(){
 }
 
 static int8_t get_temp_claim(){
-	uint16_t setpoint = configuration_service_get_default_temperature(_configuration_service);
+	uint16_t setpoint = configuration_service_get_temperature(_configuration_service);
 	uint16_t p_gain = DEF_PROPORTIONAL_GAIN_TEMP;
 	uint16_t currentValue = ht_service_get_temperature(_ht_service);
 	int8_t claim = calculate_claim(currentValue, setpoint, p_gain);
