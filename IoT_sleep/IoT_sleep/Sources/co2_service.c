@@ -62,7 +62,7 @@ inline void co2_service_measure(co2_t sensor){
 void co2_service_task_measure(void* pvParameters){
 	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
-	const TickType_t xFrequency = DEF_DELAY_TASK_CO2;
+	const TickType_t xFrequency = DEF_DELAY_TASK_MEASUREMENT;
 	
 	for (;;)
 	{

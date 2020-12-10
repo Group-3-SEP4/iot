@@ -20,6 +20,7 @@
 #include "downlink_handler.h"
 #include "definitions.h"
 #include "sensor_data_handler.h"
+#include "ht_service.h"
 
 // Globals
 EventGroupHandle_t eventGroupMeasure = NULL;
@@ -70,7 +71,8 @@ void initialize_globals(void){
 
 void start_tasks(void){
 	co2_t co2_service = co2_service_create(eventGroupMeasure, eventGroupDataReady);
-
+	ht_t ht_service = ht_create(eventGroupMeasure, eventGroupDataReady);
+	
 	uplink_handler_create(uplinkMessageBuffer);
 		
 	sensor_data_handler_create(uplinkMessageBuffer, co2_service);
