@@ -14,12 +14,12 @@
 #include <display_7seg.h>
 #include <status_leds.h>
 #include <lora_driver.h>
-#include "co2_sensor.h"
-#include "configuration.h"
-#include "uplinkHandler.h"	
-#include "downlinkHandler.h"
+#include "co2_service.h"
+#include "configuration_service.h"
+#include "uplink_handler.h"	
+#include "downlink_handler.h"
 #include "definitions.h"
-#include "sensorDataHandler.h"
+#include "sensor_data_handler.h"
 
 // Globals
 EventGroupHandle_t eventGroupMeasure = NULL;
@@ -27,7 +27,7 @@ EventGroupHandle_t eventGroupDataReady = NULL;
 MessageBufferHandle_t uplinkMessageBuffer =NULL;
 MessageBufferHandle_t messageBuffer =NULL;
 configuration_t config = NULL;
-co2_sensor_t co2Sensor;
+co2_t co2_service;
 
 // Locals
 void initialize_hardware(void);
@@ -55,7 +55,7 @@ int main(void)
 void initialize_globals(void){
 	// read configuration
 	// initialize configuration
-	config = configuration_create();
+	config = configuration_service_create();
 
 	// create event groups
 	eventGroupMeasure  = xEventGroupCreate();
@@ -70,13 +70,13 @@ void initialize_globals(void){
 }
 
 void start_tasks(void){
-	co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
+	co2_service = co2_service_create(eventGroupMeasure, eventGroupDataReady);
 
 	uplink_handler_create(uplinkMessageBuffer);
 		
-	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
+	sensor_data_handler_create(uplinkMessageBuffer, co2_service);
 
-	downlinkHandler_create(config, messageBuffer);
+	downlink_handler_create(config, messageBuffer);
 }
 
 /*-----------------------------------------------------------*/

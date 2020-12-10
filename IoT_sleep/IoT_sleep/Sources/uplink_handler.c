@@ -1,3 +1,7 @@
+/*
+*  Author: Aron 264237, Jacob 273962
+*/
+
 #include <stddef.h>
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
@@ -5,8 +9,9 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 #include <display_7seg.h>
+#include "uplink_handler.h"
 #include "definitions.h"
-#include "payloadBuilder.h"
+#include "payload_builder.h"
 #include "secrets.h"
 
 static bool initialized = false;
@@ -14,17 +19,17 @@ static bool initialized = false;
 void uplink_handler_task( void *pvParameters );
 static void _lora_setup(void);
 
-static MessageBufferHandle_t _uplinkMessageBuffer;
+static MessageBufferHandle_t _uplink_message_buffer;
 
 static char _out_buf[100];
 
-void uplink_handler_create(MessageBufferHandle_t messageBuffer)
+void uplink_handler_create(MessageBufferHandle_t message_buffer)
 {
-	_uplinkMessageBuffer = messageBuffer;
+	_uplink_message_buffer = message_buffer;
 	
 	xTaskCreate(
 	uplink_handler_task
-	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
+	,  (const portCHAR *)"uh_task"  // A name just for humans
 	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
 	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
@@ -56,7 +61,7 @@ void uplink_handler_task( void *pvParameters )
 		lora_driver_payload_t uplink_payload;
 		size_t xReceivedBytes;
 		xReceivedBytes = xMessageBufferReceive(
-		_uplinkMessageBuffer
+		_uplink_message_buffer
 		,  ( void * ) &uplink_payload
 		,  sizeof( lora_driver_payload_t )
 		,  portMAX_DELAY
@@ -76,7 +81,6 @@ void uplink_handler_task( void *pvParameters )
 		else {
 			printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");
 		}
-		
 	}
 }
 

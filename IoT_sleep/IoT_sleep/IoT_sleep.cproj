@@ -167,28 +167,28 @@
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\co2_sensor.h">
+    <Compile Include="Includes\co2_service.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\configuration.h">
+    <Compile Include="Includes\configuration_service.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\definitions.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\payloadBuilder.h">
+    <Compile Include="Includes\downlink_handler.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\downlinkHandler.h">
+    <Compile Include="Includes\payload_builder.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\secrets.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\sensorDataHandler.h">
+    <Compile Include="Includes\sensor_data_handler.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\uplinkHandler.h">
+    <Compile Include="Includes\uplink_handler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\Wrappers\wrapper_eventGroup.h">
@@ -200,22 +200,13 @@
     <Compile Include="Includes\Wrappers\wrapper_task.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\co2_sensor.c">
+    <Compile Include="Sources\co2_service.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\configuration.c">
+    <Compile Include="Sources\configuration_service.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\payloadBuilder.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Sources\sensorDataHandler.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Sources\downlinkHandler.c">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Sources\uplinkHandler.c">
+    <Compile Include="Sources\downlink_handler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\fifo.h">
@@ -279,6 +270,15 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\twi.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\payload_builder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\sensor_data_handler.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\uplink_handler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\wrapper_eventGroup.c">
