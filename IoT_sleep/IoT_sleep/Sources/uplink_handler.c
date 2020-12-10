@@ -46,12 +46,12 @@ void uplink_handler_task_body(MessageBufferHandle_t uplink_message_buffer, float
 
 		status_leds_shortPuls(led_ST4);  // OPTIONAL
 		
-		lora_driver_sendUploadMessage(false, &uplink_payload);
-		//lora_driver_returnCode_t returnCode =lora_driver_sendUploadMessage(false, &uplink_payload);
-		//char * returnCodeStr = lora_driver_mapReturnCodeToText(returnCode);
-		//uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
+		//lora_driver_sendUploadMessage(false, &uplink_payload);
+		lora_driver_returnCode_t returnCode =lora_driver_sendUploadMessage(false, &uplink_payload);
+		char * returnCodeStr = lora_driver_mapReturnCodeToText(returnCode);
+		uint16_t co2Value = (uplink_payload.bytes[4] << 8) | uplink_payload.bytes[5];
 		
-		//printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
+		printf("Upload Message: CO2 value: %i ppm - >%s<\n", co2Value, returnCode);
 	}
 	else {
 		//printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");
