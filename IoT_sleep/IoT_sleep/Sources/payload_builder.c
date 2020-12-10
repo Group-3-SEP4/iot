@@ -1,12 +1,9 @@
 /*
-* payloadBuilder.c
-*
-* Created: 04/12/2020 20.24.15
-*  Author: agk13
+*  Author: Aron 
 */
 
 #include <stdlib.h>
-#include "payloadBuilder.h"
+#include "payload_builder.h"
 #include "definitions.h"
 
 typedef struct payload_builder{
@@ -30,27 +27,27 @@ payload_builder_t payload_builder_create(void){
 	return _new;
 }
 
-void payload_builder_setCo2_ppm(payload_builder_t self, uint16_t co2_ppm){
+void payload_builder_set_co2_ppm(payload_builder_t self, uint16_t co2_ppm){
 	if (NULL == self) return;
 	self->co2_ppm = co2_ppm;
 }
 
-void payload_builder_setHumidity(payload_builder_t self, uint16_t humidity){
+void payload_builder_set_humidity(payload_builder_t self, uint16_t humidity){
 	if (NULL == self) return;
 	self->humidity = humidity;
 }
 
-void payload_builder_setTemperature(payload_builder_t self, uint16_t temperature){
+void payload_builder_set_temperature(payload_builder_t self, uint16_t temperature){
 	if (NULL == self) return;
 	self->temperature = temperature;
 }
 
-void payload_builder_setServoPosition(payload_builder_t self, uint16_t servo_position){
+void payload_builder_set_servo_position(payload_builder_t self, uint16_t servo_position){
 	if (NULL == self) return;
 	self->servo_position = servo_position;
 }
 
-void payload_builder_getLoRaPayload(payload_builder_t self, lora_driver_payload_t *payload){
+void payload_builder_get_lora_payload(payload_builder_t self, lora_driver_payload_t *payload){
 	if (NULL == self) return;
 	
 	payload->len = 8;

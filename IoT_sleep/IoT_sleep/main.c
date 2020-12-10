@@ -16,10 +16,10 @@
 #include <lora_driver.h>
 #include "co2_sensor.h"
 #include "configuration.h"
-#include "uplinkHandler.h"	
+#include "uplink_handler.h"	
 #include "downlinkHandler.h"
 #include "definitions.h"
-#include "sensorDataHandler.h"
+#include "sensor_data_handler.h"
 
 // Globals
 EventGroupHandle_t eventGroupMeasure = NULL;

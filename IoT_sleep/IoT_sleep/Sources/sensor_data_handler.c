@@ -8,13 +8,13 @@
 #include <message_buffer.h>
 #include <task.h>
 #include <stdio.h>
-#include "sensorDataHandler.h"
-#include "co2_sensor.h"
-#include "payloadBuilder.h"
+#include "sensor_data_handler.h"
+#include "co2_service.h"
+#include "payload_builder.h"
 #include "definitions.h"
 #include "FreeRTOSConfig.h"
 
-void sensorDataHandler_task(void *pvParameters);
+void sensor_data_handler_task(void *pvParameters);
 
 co2_sensor_t _co2Sensor;
 MessageBufferHandle_t _uplinkMessageBuffer;
@@ -28,8 +28,8 @@ void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_sensor_
 	_payloadBuilder = payload_builder_create();
 	
 	xTaskCreate(
-		sensorDataHandler_task,		/* Function that implements the task. */
-		"Sensor data handler task",		/* Text name for the task. */
+		sensor_data_handler_task,		/* Function that implements the task. */
+		"sdh_task",		/* Text name for the task. */
 		DEF_STACK_SENSOR_DATA_HANDLER,			/* Stack size in words, not bytes. */
 		NULL,				/* Parameter passed into the task. */
 		DEF_PRIORITY_TASK_SENSOR_DATA_HANDLER,	/* Priority at which the task is created. */
@@ -37,7 +37,7 @@ void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_sensor_
 	);
 }
 
-void sensorDataHandler_task(void *pvParameters){
+void sensor_data_handler_task(void *pvParameters){
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_FREQUENCY_UPLINK;
 	
@@ -46,13 +46,13 @@ void sensorDataHandler_task(void *pvParameters){
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
 		
 		// TODO: get the value with smphr or mutex
-		uint16_t co2_ppm = co2_getMeasurement(_co2Sensor);
+		uint16_t co2_ppm = co2_service_get_measurement(_co2Sensor);
 		
-		payload_builder_setCo2_ppm(_payloadBuilder,co2_ppm);
+		payload_builder_set_co2_ppm(_payloadBuilder,co2_ppm);
 		
-		payload_builder_getLoRaPayload(_payloadBuilder, &_uplink_payload);
+		payload_builder_get_lora_payload(_payloadBuilder, &_uplink_payload);
 		
-		printf("payload size: %d\n", sizeof(_uplink_payload));
+		//printf("payload size: %d\n", sizeof(_uplink_payload));
 		
 		size_t xBytesSent = xMessageBufferSend(
 			_uplinkMessageBuffer,

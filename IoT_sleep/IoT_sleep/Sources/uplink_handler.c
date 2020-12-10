@@ -5,8 +5,9 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 #include <display_7seg.h>
+#include "uplink_handler.h"
 #include "definitions.h"
-#include "payloadBuilder.h"
+#include "payload_builder.h"
 #include "secrets.h"
 
 static bool initialized = false;
@@ -24,7 +25,7 @@ void uplink_handler_create(MessageBufferHandle_t messageBuffer)
 	
 	xTaskCreate(
 	uplink_handler_task
-	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
+	,  (const portCHAR *)"uh_task"  // A name just for humans
 	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
 	,  NULL
 	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
@@ -76,7 +77,6 @@ void uplink_handler_task( void *pvParameters )
 		else {
 			printf("uplinkHandler encountered an error reading from the uplinkMessageBuffer");
 		}
-		
 	}
 }
 

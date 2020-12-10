@@ -1,9 +1,6 @@
 /*
- * sensorDataHandler.h
- *
- * Created: 04/12/2020 21.08.56
- *  Author: agk13
- */ 
+*  Author: Aron
+*/
 
 #pragma once
 #include "co2_sensor.h"
