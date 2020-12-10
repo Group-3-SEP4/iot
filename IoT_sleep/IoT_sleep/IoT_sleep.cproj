@@ -179,7 +179,7 @@
     <Compile Include="Includes\payloadBuilder.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\downlinkHandler.h">
+    <Compile Include="Includes\downlink_handler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\secrets.h">
@@ -212,7 +212,7 @@
     <Compile Include="Sources\sensorDataHandler.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\downlinkHandler.c">
+    <Compile Include="Sources\downlink_handler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\uplinkHandler.c">

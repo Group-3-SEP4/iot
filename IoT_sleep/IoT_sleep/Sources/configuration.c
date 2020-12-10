@@ -13,11 +13,11 @@
 
 typedef struct configuration {
 	uint16_t temp;
-	uint16_t co2Range[2]; // only min[0] and max[1]
+	uint16_t co2_range[2]; // only min[0] and max[1]
 
 } configuration;
 
-static SemaphoreHandle_t _confMutex;
+static SemaphoreHandle_t _mutex;
 
 
 configuration_t configuration_create(void) {
@@ -26,71 +26,71 @@ configuration_t configuration_create(void) {
 	if (NULL == self){
 		return NULL;
 	}
-	_confMutex = _xSemaphoreCreateMutex();
+	_mutex = _xSemaphoreCreateMutex();
 	
 	self->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
-	self->co2Range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
-	self->co2Range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
-	printf("configuration_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2Range[MIN_CO2_FLAG], self->co2Range[MAX_CO2_FLAG]);
+	self->co2_range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
+	self->co2_range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
+	printf("configuration_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2_range[MIN_CO2_FLAG], self->co2_range[MAX_CO2_FLAG]);
 	return self;
 }
 
-uint16_t configuration_getDefaultTemperatur(configuration_t self) {
+uint16_t configuration_get_default_temperatur(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
-	if (_xSemaphoreTake(_confMutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+	if (_xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 		_tempValue = self->temp;
-		_xSemaphoreGive(_confMutex);
+		_xSemaphoreGive(_mutex);
 	}
 	return _tempValue;
 }
 
-void configuration_setDefaultTemperatur(configuration_t self, uint16_t temp) {
+void configuration_set_default_temperatur(configuration_t self, uint16_t temp) {
 printf("configuration_setDefaultTemperatur: set temp to: %d\n", temp);
 	if (self->temp != temp) {
-		if (_xSemaphoreTake(_confMutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if conf. cant be run, wait forever.
+		if (_xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if conf. cant be run, wait forever.
 			eeprom_write_word(DEF_MEMLOC_TEMP, temp);
 			self->temp = temp;
-			_xSemaphoreGive(_confMutex);	
+			_xSemaphoreGive(_mutex);	
 		}			
 	}
 }
 
-uint16_t configuration_getMinCo2(configuration_t self) {
+uint16_t configuration_get_min_co2(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
-	if (xSemaphoreTake(_confMutex, DEF_WAIT_DEFAULT) == pdTRUE) {
-		_tempValue = self->co2Range[MIN_CO2_FLAG];
-		xSemaphoreGive(_confMutex);
+	if (xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+		_tempValue = self->co2_range[MIN_CO2_FLAG];
+		xSemaphoreGive(_mutex);
 	}
 	return _tempValue;
 }
 
-void configuration_setMinCo2(configuration_t self, uint16_t min) {
+void configuration_set_min_co2(configuration_t self, uint16_t min) {
 
-	if (self->co2Range[MIN_CO2_FLAG] != min) {
-		if (xSemaphoreTake(_confMutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) {
+	if (self->co2_range[MIN_CO2_FLAG] != min) {
+		if (xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) {
 			eeprom_write_word(DEF_MEMLOC_CO2_MIN, min);
-			self->co2Range[MIN_CO2_FLAG] = min;
-			xSemaphoreGive(_confMutex);
-		}		
+			self->co2_range[MIN_CO2_FLAG] = min;
+			xSemaphoreGive(_mutex);
+		}
 	}
 }
 
 
-uint16_t configuration_getMaxCo2(configuration_t self) {
+uint16_t configuration_get_max_co2(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
-	if (xSemaphoreTake(_confMutex, DEF_WAIT_DEFAULT) == pdTRUE) {
-		_tempValue = self->co2Range[MAX_CO2_FLAG];
-		xSemaphoreGive(_confMutex);
+	if (xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+		_tempValue = self->co2_range[MAX_CO2_FLAG];
+		xSemaphoreGive(_mutex);
 	}
 	return _tempValue;
 }
 
-void configuration_setMaxCo2(configuration_t self, uint16_t max) {
-	if (self->co2Range[MAX_CO2_FLAG] != max) {
-		if (xSemaphoreTake(_confMutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+void configuration_set_max_co2(configuration_t self, uint16_t max) {
+	if (self->co2_range[MAX_CO2_FLAG] != max) {
+		if (xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 			eeprom_write_word(DEF_MEMLOC_CO2_MAX, max);
-			self->co2Range[MAX_CO2_FLAG] = max;
-			xSemaphoreGive(_confMutex);
+			self->co2_range[MAX_CO2_FLAG] = max;
+			xSemaphoreGive(_mutex);
 		}
 	}
 }

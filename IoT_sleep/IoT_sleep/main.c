@@ -17,7 +17,7 @@
 #include "co2_sensor.h"
 #include "configuration.h"
 #include "uplinkHandler.h"	
-#include "downlinkHandler.h"
+#include "downlink_handler.h"
 #include "definitions.h"
 #include "sensorDataHandler.h"
 
@@ -76,7 +76,7 @@ void start_tasks(void){
 		
 	sensor_data_handler_create(uplinkMessageBuffer, co2Sensor);
 
-	downlinkHandler_create(config, messageBuffer);
+	downlink_handler_create(config, messageBuffer);
 }
 
 /*-----------------------------------------------------------*/
