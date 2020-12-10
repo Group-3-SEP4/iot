@@ -66,7 +66,7 @@ void initialize_globals(void){
 	if(NULL == uplinkMessageBuffer){
 		printf("Not enough memory available for uplink message buffer!!\n");
 	}
-	messageBuffer = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
+	messageBuffer = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
 }
 
 void start_tasks(void){

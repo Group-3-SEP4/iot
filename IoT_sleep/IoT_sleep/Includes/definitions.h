@@ -55,5 +55,6 @@
 
 // define Message buffer sizes
 #define DEF_MESSAGE_BUFFER_UPLINK				200 // TODO: find a reasonable buffer size
+#define DEF_MESSAGE_BUFFER_DOWNLINK				sizeof(lora_driver_payload_t)*2
 
 #endif
