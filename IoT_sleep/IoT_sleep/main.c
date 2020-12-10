@@ -23,54 +23,11 @@
 #include "ht_service.h"
 #include "servo_service.h"
 
-// Globals
-EventGroupHandle_t event_group_data_collect = NULL;
-EventGroupHandle_t event_group_data_ready = NULL;
-MessageBufferHandle_t message_buffer_uplink =NULL;
-MessageBufferHandle_t message_buffer_downlink =NULL;
-configuration_t configuration_service = NULL;
 
-// Locals
-void initialize_hardware(void);
-void initialize_globals(void);
-void start_tasks(void);
-
-
-int main(void)
-{
-	initialize_globals();
-		
-	initialize_hardware(); // Must be done as the very first thing!!
-		
-	start_tasks();
-
-	printf("Program Started!!\n");
-	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
-
-	while (1)
-	{
-	}
-}
-
-
-void initialize_globals(void){
-	// read configuration
-	// initialize configuration
-	configuration_service = configuration_service_create();
-
-	// create event groups
-	event_group_data_collect  = xEventGroupCreate();
-	event_group_data_ready = xEventGroupCreate();
-
-	// create message buffers
-	message_buffer_uplink = xMessageBufferCreate( DEF_MESSAGE_BUFFER_UPLINK );
-	if(NULL == message_buffer_uplink){
-		printf("Not enough memory available for uplink message buffer!!\n");
-	}
-	message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
-}
-
-void start_tasks(void){
+void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, MessageBufferHandle_t message_buffer_uplink, MessageBufferHandle_t message_buffer_downlink){
+	
+	configuration_t configuration_service = configuration_service_create();
+	
 	co2_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
 
 	ht_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
@@ -86,7 +43,7 @@ void start_tasks(void){
 
 /*-----------------------------------------------------------*/
 
-void initialize_hardware(void)
+void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
 {
 	// Set output ports for LEDs used in the example
 	DDRA |= _BV(DDA0) | _BV(DDA7);
@@ -112,3 +69,22 @@ void initialize_hardware(void)
 	display_7seg_powerUp();
 }
 
+
+int main(void)
+{
+	EventGroupHandle_t event_group_data_collect = xEventGroupCreate();
+	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
+	MessageBufferHandle_t message_buffer_uplink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_UPLINK);
+	MessageBufferHandle_t message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
+	
+	initialize_hardware(message_buffer_downlink); // Must be done as the very first thing!!
+	
+	start_tasks(event_group_data_collect, event_group_data_ready, message_buffer_uplink, message_buffer_downlink);
+
+	printf("Program Started!!\n");
+	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
+
+	while (1)
+	{
+	}
+}
