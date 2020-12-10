@@ -27,7 +27,7 @@ static EventGroupHandle_t _event_group_data_ready;
 
 int16_t ht_get_temperature(ht_t sensor) {
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
-	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_TEMP_READ) == pdTRUE)
+	if (_xSemaphoreTake (_mutex, DEF_WAIT_DEFAULT) == pdTRUE)
 	{
 		_tmpValue = sensor->temperature;
 		_xSemaphoreGive(_mutex);
@@ -37,7 +37,7 @@ int16_t ht_get_temperature(ht_t sensor) {
 
 uint16_t ht_get_humidity(ht_t sensor) {
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
-	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_HUM_READ) == pdTRUE)
+	if (_xSemaphoreTake (_mutex, DEF_WAIT_DEFAULT) == pdTRUE)
 	{
 		_tmpValue = sensor->humidity;
 		_xSemaphoreGive(_mutex);
@@ -45,9 +45,9 @@ uint16_t ht_get_humidity(ht_t sensor) {
 	return _tmpValue;
 }
 
-inline void ht_measure(ht_t sensor){
+void ht_measure(ht_t sensor){
 	
-	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_HUM_TEMP_WRITE) == pdTRUE) // protect shared data
+	if (_xSemaphoreTake (_mutex, DEF_WAIT_DEFAULT) == pdTRUE) // protect shared data
 	{
 		hih8120_wakeup();
 		vTaskDelay(50);
@@ -58,11 +58,15 @@ inline void ht_measure(ht_t sensor){
 		{
 			sensor->humidity = hih8120_getHumidity();
 			sensor->temperature = hih8120_getTemperature();
+			printf("Temp: %i, Hum: %i \n", sensor->temperature, sensor->humidity);
+			//printf("Free stack: %d, minimum heap: %d\n",xPortGetFreeHeapSize(), xPortGetMinimumEverFreeHeapSize());
+			printf("Stack high water mark: %d\n", uxTaskGetStackHighWaterMark(NULL));
+			
 			_xSemaphoreGive(_mutex);
-			if (_xEventGroupGetBits(_event_group_data_collect) & DEF_BIT_MEASURE_START_HUM_TEMP) // checks eventMeasureStart bits
+			if (_xEventGroupGetBits(_event_group_data_collect) & DEF_BIT_DATA_COLLECT_HT) // checks eventMeasureStart bits
 			{
-				_xEventGroupClearBits(_event_group_data_collect, DEF_BIT_MEASURE_START_HUM_TEMP); // clears eventMeasure bits
-				_xEventGroupSetBits(_event_group_data_ready, DEF_BIT_DATA_READY_HUM_TEMP); // sets eventDataReady bits
+				_xEventGroupClearBits(_event_group_data_collect, DEF_BIT_DATA_COLLECT_HT); // clears eventMeasure bits
+				_xEventGroupSetBits(_event_group_data_ready, DEF_BIT_DATA_READY_HT); // sets eventDataReady bits
 			}
 
 			if (DEF_PRINT_TO_TERMINAL){
@@ -78,7 +82,7 @@ void ht_task(void* pv_parameters){
 
 
 	TickType_t x_last_wake_time = xTaskGetTickCount();
-	const TickType_t x_frequency = DEF_DELAY_TASK_HUM_TEMP;
+	const TickType_t x_frequency = DEF_DELAY_TASK_MEASUREMENT;
 		
 	for (;;)
 	{
@@ -109,9 +113,9 @@ ht_t ht_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t e
 	xTaskCreate(
 	ht_task,
 	"ht_measure_task",
-	DEF_STACK_HUM_TEMP,
+	DEF_STACK_HT,
 	sensor,
-	DEF_PRIORITY_TASK_HUM_TEMP,
+	DEF_PRIORITY_TASK_HT,
 	NULL
 	);
 	
