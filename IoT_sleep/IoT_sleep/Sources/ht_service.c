@@ -69,9 +69,6 @@ void ht_service_measure(ht_t sensor){
 				_xEventGroupClearBits(_event_group_data_collect, DEF_BIT_DATA_COLLECT_HT); // clears eventMeasure bits
 				_xEventGroupSetBits(_event_group_data_ready, DEF_BIT_DATA_READY_HT); // sets eventDataReady bits
 			}
-
-
-			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(sensor), ht_service_get_humidity(sensor));
 			
 		} else {
 			s_print("WARNING", CLASS_NAME, "hih8120 is not ready");

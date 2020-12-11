@@ -94,7 +94,7 @@ SemaphoreHandle_t mutex_print;
 #define s_print(level, tag, msg, ...) do { \
 	if (NULL != mutex_print && (DEF_PRINT_TO_TERMINAL == true || strcmp("INFO", level) != 0)){ \
 		if (xSemaphoreTake(mutex_print, DEF_WAIT_DEFAULT) == pdTRUE) { \
-			printf(level "\t --- [" tag "] :  "  msg "\n", ##__VA_ARGS__); \
+			printf("%-7s --- %-25s :  "  msg "\n", level, tag, ##__VA_ARGS__); \
 			xSemaphoreGive(mutex_print); \
 		} \
 	} \
