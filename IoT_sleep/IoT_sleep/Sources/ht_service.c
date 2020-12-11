@@ -62,6 +62,7 @@ void ht_service_measure(ht_t sensor){
 			s_print("INFO", CLASS_NAME, "Temp: %i, Hum: %i ", sensor->temperature, sensor->humidity);
 			//s_print("Free stack: %d, minimum heap: %d",xPortGetFreeHeapSize(), xPortGetMinimumEverFreeHeapSize());
 			s_print("INFO", CLASS_NAME, "Stack high water mark: %d", uxTaskGetStackHighWaterMark(NULL));
+			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(sensor), ht_service_get_humidity(sensor));
 			
 			_xSemaphoreGive(_mutex);
 			if (_xEventGroupGetBits(_event_group_data_collect) & DEF_BIT_DATA_COLLECT_HT) // checks eventMeasureStart bits
@@ -71,7 +72,7 @@ void ht_service_measure(ht_t sensor){
 			}
 
 
-			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(sensor), ht_service_get_humidity(sensor));
+			
 			
 		} else {
 			s_print("WARNING", CLASS_NAME, "hih8120 is not ready");
