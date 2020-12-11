@@ -11,6 +11,8 @@
 #include "definitions.h"
 #include "FreeRTOSConfig.h"
 
+#define CLASS_NAME "sensor_data_handler.c"
+
 void sensor_data_handler_task(void *pvParameters);
 
 co2_t _co2_service;
@@ -39,7 +41,7 @@ void sensor_data_handler_task_body(payload_builder_t payload_builder){
 	
 	payload_builder_get_lora_payload(payload_builder, &_uplink_payload);
 	
-	//printf("payload size: %d\n", sizeof(_uplink_payload));
+	//s_print("INFO", CLASS_NAME, "payload size: %d", sizeof(_uplink_payload));
 	
 	size_t xBytesSent = xMessageBufferSend(
 	_uplink_message_buffer,
@@ -49,7 +51,7 @@ void sensor_data_handler_task_body(payload_builder_t payload_builder){
 	);// TODO: standardize the wait time
 	if( xBytesSent != sizeof( _uplink_payload ) )
 	{
-		//printf("Uplink message buffer full, cannot send payload of size %d\n", sizeof(_uplink_payload));
+		s_print("ERROR", CLASS_NAME, "Uplink message buffer full, cannot send payload of size %d", sizeof(_uplink_payload));
 	}
 }
 

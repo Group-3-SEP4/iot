@@ -13,6 +13,7 @@
 #include "wrapper_eventGroup.h"
 #include "ht_service.h"
 
+#define CLASS_NAME	"ht_service.c"
 
 typedef struct ht_measurement {
 	uint16_t humidity;
@@ -58,9 +59,9 @@ void ht_service_measure(ht_t sensor){
 		{
 			sensor->humidity = hih8120_getHumidity();
 			sensor->temperature = hih8120_getTemperature();
-			printf("Temp: %i, Hum: %i \n", sensor->temperature, sensor->humidity);
-			//printf("Free stack: %d, minimum heap: %d\n",xPortGetFreeHeapSize(), xPortGetMinimumEverFreeHeapSize());
-			printf("Stack high water mark: %d\n", uxTaskGetStackHighWaterMark(NULL));
+			s_print("Temp: %i, Hum: %i ", sensor->temperature, sensor->humidity);
+			//s_print("Free stack: %d, minimum heap: %d",xPortGetFreeHeapSize(), xPortGetMinimumEverFreeHeapSize());
+			s_print("Stack high water mark: %d", uxTaskGetStackHighWaterMark(NULL));
 			
 			_xSemaphoreGive(_mutex);
 			if (_xEventGroupGetBits(_event_group_data_collect) & DEF_BIT_DATA_COLLECT_HT) // checks eventMeasureStart bits
@@ -69,9 +70,11 @@ void ht_service_measure(ht_t sensor){
 				_xEventGroupSetBits(_event_group_data_ready, DEF_BIT_DATA_READY_HT); // sets eventDataReady bits
 			}
 
-			if (DEF_PRINT_TO_TERMINAL){
-				printf("ht_measure: Current temperature and humidity: %i, %i\n", ht_service_get_temperature(sensor), ht_service_get_humidity(sensor));
-			}
+
+			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(sensor), ht_service_get_humidity(sensor));
+			
+		} else {
+			s_print("WARNING", CLASS_NAME, "hih8120 is not ready");
 		}
 	}
 }

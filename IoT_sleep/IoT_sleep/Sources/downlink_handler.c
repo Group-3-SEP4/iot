@@ -7,12 +7,11 @@
 #include <stddef.h>
 #include <message_buffer.h>
 #include <lora_driver.h>
-
-
 #include "downlink_handler.h"
 #include "configuration_service.h"
 #include "definitions.h"
 
+#define CLASS_NAME	"downlink_handler.c"
 
 configuration_t _configuration;
 
@@ -28,16 +27,16 @@ void downlink_handler(void* message_buffer) {
 			configuration_service_set_temperature(_configuration, (uint16_t)((downlink_payload.bytes[0] << 8) + downlink_payload.bytes[1]));
 			configuration_service_set_min_co2(_configuration, (uint16_t)((downlink_payload.bytes[2] << 8) + downlink_payload.bytes[3]));
 			configuration_service_set_max_co2(_configuration, (uint16_t)((downlink_payload.bytes[4] << 8) + downlink_payload.bytes[5]));
-			printf("downlink_handler_task: Received the following values[ temp: %d, Min Co2: %d, Max Co2: %d]\n", configuration_service_get_temperature(_configuration), configuration_service_get_min_co2(_configuration), configuration_service_get_max_co2(_configuration));
+			s_print("INFO", CLASS_NAME, "Received the following values[ temp: %d, Min Co2: %d, Max Co2: %d]", configuration_service_get_temperature(_configuration), configuration_service_get_min_co2(_configuration), configuration_service_get_max_co2(_configuration));
 		} else {
-			printf("downlink_handler_task: Received zero data\n");
+			s_print("WARNING", CLASS_NAME, "Received zero data");
 		}
 		
 	
 }
 
 void downlink_handler_task(void* message_buffer){
-	printf("downlink_handler_task: starting task\n");
+	s_print("INFO", CLASS_NAME, "starting task");
 	
 	for(;;) {
 		vTaskDelay(50);

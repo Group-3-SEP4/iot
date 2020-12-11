@@ -23,6 +23,7 @@
 #include "ht_service.h"
 #include "servo_service.h"
 
+#define CLASS_NAME		"main.c"
 
 void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, MessageBufferHandle_t message_buffer_uplink, MessageBufferHandle_t message_buffer_downlink){
 	
@@ -75,12 +76,15 @@ int main(void)
 	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
 	MessageBufferHandle_t message_buffer_uplink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_UPLINK);
 	MessageBufferHandle_t message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
+	mutex_print = xSemaphoreCreateMutex(); // initialize secure print mutex
+	
+	
 	
 	initialize_hardware(message_buffer_downlink); // Must be done as the very first thing!!
 	
 	start_tasks(event_group_data_collect, event_group_data_ready, message_buffer_uplink, message_buffer_downlink);
-
-	printf("Program Started! free heap: %i\n", xPortGetMinimumEverFreeHeapSize());
+	s_print("START", CLASS_NAME, "Program Started.");
+	s_print("INFO", CLASS_NAME, "Free heap: %i", xPortGetMinimumEverFreeHeapSize());
 	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
 
 	while (1)
