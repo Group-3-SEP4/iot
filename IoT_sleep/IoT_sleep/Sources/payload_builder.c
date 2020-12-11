@@ -1,7 +1,6 @@
 /*
 *  Author: Aron 264237
 */
-
 #include <stdlib.h>
 #include "payload_builder.h"
 #include "definitions.h"
@@ -12,7 +11,6 @@ typedef struct payload_builder{
 	uint16_t humidity;
 	uint16_t servo_position;
 } payload_builder;
-
 
 payload_builder_t payload_builder_create(void){
 	payload_builder_t _new = pvPortMalloc(sizeof(payload_builder));

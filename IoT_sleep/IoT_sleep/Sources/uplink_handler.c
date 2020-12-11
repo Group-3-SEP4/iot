@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
-#include <message_buffer.h>
+//#include <message_buffer.h>
 #include <lora_driver.h>
 #include <status_leds.h>
 #include <display_7seg.h>
@@ -13,6 +13,7 @@
 #include "definitions.h"
 #include "payload_builder.h"
 #include "secrets.h"
+#include "wrapper_message_buffer.h"
 
 static bool initialized = false;
 
@@ -33,7 +34,7 @@ void uplink_handler_create(MessageBufferHandle_t message_buffer)
 void uplink_handler_task_body(MessageBufferHandle_t uplink_message_buffer, float packagesSent){
 	lora_driver_payload_t uplink_payload;
 	size_t xReceivedBytes;
-	xReceivedBytes = xMessageBufferReceive(
+	xReceivedBytes = _xMessageBufferReceive(
 	uplink_message_buffer
 	,  ( void * ) &uplink_payload
 	,  sizeof( lora_driver_payload_t )

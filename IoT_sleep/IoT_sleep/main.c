@@ -32,20 +32,20 @@ void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t
 	ht_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
 	
 	servo_t servo_service = servo_service_create(
-	OUT_J14, 
-	event_group_data_collect, 
-	event_group_data_ready, 
-	configuration_service, 
-	co2_service, 
-	ht_service);
+		OUT_J14, 
+		event_group_data_collect, 
+		event_group_data_ready, 
+		configuration_service, 
+		co2_service, 
+		ht_service);
 		
 	sensor_data_handler_create(
-	message_buffer_uplink,
-	event_group_data_collect, 
-	event_group_data_ready, 
-	co2_service, 
-	ht_service, 
-	servo_service);
+		message_buffer_uplink,
+		event_group_data_collect, 
+		event_group_data_ready, 
+		co2_service, 
+		ht_service, 
+		servo_service);
 	
 	uplink_handler_create(message_buffer_uplink);
 	
