@@ -201,6 +201,9 @@
     <Compile Include="Includes\Wrappers\wrapper_eventGroup.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\Wrappers\wrapper_message_buffer.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\Wrappers\wrapper_semaphore.h">
       <SubType>compile</SubType>
     </Compile>
@@ -295,6 +298,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\Wrappers\wrapper_eventGroup.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\Wrappers\wrapper_message_buffer.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\Wrappers\wrapper_semaphore.c">

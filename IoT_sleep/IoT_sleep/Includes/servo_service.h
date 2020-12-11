@@ -10,6 +10,13 @@
 
 typedef struct servo* servo_t;
 
-servo_t servo_create(uint8_t servo_no, EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, configuration_t configuration_service, co2_t co2_service, ht_t ht_service);
-uint16_t servo_get_position(servo_t servo);
+servo_t servo_service_create(
+uint8_t servo_no, 
+EventGroupHandle_t event_group_data_collect, 
+EventGroupHandle_t event_group_data_ready, 
+configuration_t configuration_service, 
+co2_t co2_service, 
+ht_t ht_service);
+
+uint16_t servo_service_get_position(servo_t servo);
 #endif

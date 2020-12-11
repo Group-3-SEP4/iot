@@ -19,3 +19,17 @@ inline BaseType_t _xEventGroupSetBits(EventGroupHandle_t xEventGroup, EventBits_
 {
 	return xEventGroupSetBits(xEventGroup, bits);
 }
+
+inline BaseType_t _xEventGroupWaitBits(
+const EventGroupHandle_t xEventGroup
+, const EventBits_t uxBitsToWaitFor
+, const BaseType_t xClearOnExit
+, const BaseType_t xWaitForAllBits
+, TickType_t xTicksToWait){
+	return xEventGroupWaitBits(
+	xEventGroup
+	, uxBitsToWaitFor
+	, xClearOnExit
+	, xWaitForAllBits
+	, xTicksToWait);
+}
