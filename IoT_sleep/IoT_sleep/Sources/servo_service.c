@@ -26,7 +26,6 @@ typedef struct servo {
 	uint16_t position;
 } servo;
 
-
 static SemaphoreHandle_t _mutex;
 
 static EventGroupHandle_t _event_group_data_collect;
@@ -36,7 +35,7 @@ static configuration_t _configuration_service;
 static co2_t _co2_service;
 static ht_t _ht_service;
 
-uint16_t servo_getPosition(servo_t servo){
+uint16_t servo_service_get_position(servo_t servo){
 	uint16_t tmp_pos = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_SERVO_READ) == pdTRUE)
 	{
@@ -122,7 +121,7 @@ void servo_task(void* pvParameters){
 }
 
 
-servo_t servo_create(uint8_t servo_no, EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, configuration_t configuration_service, co2_t co2_service, ht_t ht_service){
+servo_t servo_service_create(uint8_t servo_no, EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, configuration_t configuration_service, co2_t co2_service, ht_t ht_service){
 	
 	servo_t _servo = malloc(sizeof(servo_t));
 	if (NULL == _servo){
