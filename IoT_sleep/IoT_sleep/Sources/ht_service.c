@@ -74,7 +74,7 @@ void ht_service_measure(ht_t sensor){
 			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(sensor), ht_service_get_humidity(sensor));
 			
 		} else {
-			s_print("WARNING", CLASS_NAME, "hih8120 is not ready", NULL);
+			s_print("WARNING", CLASS_NAME, "hih8120 is not ready");
 		}
 	}
 }
