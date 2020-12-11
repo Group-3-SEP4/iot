@@ -29,14 +29,14 @@ void downlink_handler(void* message_buffer) {
 			configuration_service_set_max_co2(_configuration, (uint16_t)((downlink_payload.bytes[4] << 8) + downlink_payload.bytes[5]));
 			s_print("INFO", CLASS_NAME, "Received the following values[ temp: %d, Min Co2: %d, Max Co2: %d]", configuration_service_get_temperature(_configuration), configuration_service_get_min_co2(_configuration), configuration_service_get_max_co2(_configuration));
 		} else {
-			s_print("WARNING", CLASS_NAME, "Received zero data");
+			s_print("WARNING", CLASS_NAME, "Received zero data", "");
 		}
 		
 	
 }
 
 void downlink_handler_task(void* message_buffer){
-	s_print("INFO", CLASS_NAME, "starting task");
+	s_print("INFO", CLASS_NAME, "starting task", "");
 	
 	for(;;) {
 		vTaskDelay(50);
