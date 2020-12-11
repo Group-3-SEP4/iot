@@ -33,14 +33,14 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\drivers;.;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Sources\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\drivers;.;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>.;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\drivers;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\Includes;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_Test\IoT_Test;C:\Users\ghost\Documents\GitHub\IT-SEP4-A20\iot\IoT_sleep\IoT_sleep\FreeRTOS\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_sensor.c" />
-    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_service.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration_service.c" />
     <ClCompile Include="configurationTest.cpp" />
     <ClCompile Include="IoTTesting.cpp" />
   </ItemGroup>

@@ -14,11 +14,11 @@ extern "C" {
 	#include "wrapper_task.h"
 		
 	#include <avr/eeprom.h>
-	#include "configuration.h"
+	#include "configuration_service.h"
 
 	#include <mh_z19.h>
 	#include <task.h>
-	#include "co2_sensor.h"
+	#include "co2_service.h"
 }
 
 /* Semaphore fakes */
@@ -76,7 +76,7 @@ TEST_F(configuration_test, createNotNull) {
 	//Arrange
 
 	//Act
-	configuration_t conf = configuration_create();
+	configuration_t conf = configuration_service_create();
 
 	//Assert
 	ASSERT_NE(conf, nullptr);
@@ -88,7 +88,7 @@ TEST_F(configuration_test, createCallEepromAtCreate) {
 	//Arrange
 
 	//Act
-	configuration_t conf = configuration_create();
+	configuration_t conf = configuration_service_create();
 
 	//Assert
 	ASSERT_EQ(3, eeprom_read_word_fake.call_count);
@@ -106,10 +106,10 @@ TEST_F(configuration_test, getStoredValues) {
 
 
 	//Act
-	configuration_t conf = configuration_create();
-	uint16_t temp = configuration_getDefaultTemperatur(conf);
-	uint16_t min = configuration_getMinCo2(conf);
-	uint16_t max = configuration_getMaxCo2(conf);
+	configuration_t conf = configuration_service_create();
+	uint16_t temp = configuration_service_get_temperature(conf);
+	uint16_t min = configuration_service_get_min_co2(conf);
+	uint16_t max = configuration_service_get_max_co2(conf);
 
 	//Assert
 	EXPECT_EQ(3, _xSemaphoreTake_fake.call_count);
@@ -126,7 +126,7 @@ TEST_F(configuration_test, validateCorrectMemoryReadLocationOnCreate) {
 	//Arrange
 
 	//Act
-	configuration_t conf = configuration_create();
+	configuration_t conf = configuration_service_create();
 
 
 	//Assert
@@ -169,7 +169,7 @@ TEST_F(co2_test, CanInitializeWithCreateFunction) {
 
 	// Arrange
 	// Act
-	co2_sensor_t sensor = co2_create(NULL, NULL);
+	co2_t sensor = co2_service_create(NULL, NULL);
 
 	// Assert
 	ASSERT_NE(sensor, nullptr);
@@ -181,7 +181,7 @@ TEST_F(co2_test, CreateInitialize_mhz19_driver) {
 
 	// Arrange
 	// Act
-	co2_sensor_t sensor = co2_create(NULL, NULL);
+	co2_t sensor = co2_service_create(NULL, NULL);
 
 	// Assert
 	ASSERT_EQ(1, mh_z19_create_fake.call_count);
@@ -193,11 +193,10 @@ TEST_F(co2_test, CreateInitialize_mhz19_driver_with_argument) {
 	// Arrange
 
 	// Act
-	co2_sensor_t sensor = co2_create(NULL, NULL);
+	co2_t sensor = co2_service_create(NULL, NULL);
 
 	// Assert
-	ASSERT_EQ(DEF_IO_PORT_CO2, mh_z19_create_fake.arg0_val);
-
+	ASSERT_EQ(MH_Z19_USART, mh_z19_create_fake.arg0_val);
 }
 
 

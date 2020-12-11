@@ -57,9 +57,9 @@ void configuration_service_set_temperature(configuration_t self, uint16_t temp) 
 
 uint16_t configuration_service_get_min_co2(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
-	if (xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+	if (_xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 		_tempValue = self->co2_range[MIN_CO2_FLAG];
-		xSemaphoreGive(_mutex);
+		_xSemaphoreGive(_mutex);
 	}
 	return _tempValue;
 }
@@ -67,10 +67,10 @@ uint16_t configuration_service_get_min_co2(configuration_t self) {
 void configuration_service_set_min_co2(configuration_t self, uint16_t min) {
 
 	if (self->co2_range[MIN_CO2_FLAG] != min) {
-		if (xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) {
+		if (_xSemaphoreTake(_mutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) {
 			eeprom_write_word(DEF_MEMLOC_CO2_MIN, min);
 			self->co2_range[MIN_CO2_FLAG] = min;
-			xSemaphoreGive(_mutex);
+			_xSemaphoreGive(_mutex);
 		}
 	}
 }
@@ -78,19 +78,19 @@ void configuration_service_set_min_co2(configuration_t self, uint16_t min) {
 
 uint16_t configuration_service_get_max_co2(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
-	if (xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+	if (_xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 		_tempValue = self->co2_range[MAX_CO2_FLAG];
-		xSemaphoreGive(_mutex);
+		_xSemaphoreGive(_mutex);
 	}
 	return _tempValue;
 }
 
 void configuration_service_set_max_co2(configuration_t self, uint16_t max) {
 	if (self->co2_range[MAX_CO2_FLAG] != max) {
-		if (xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
+		if (_xSemaphoreTake(_mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
 			eeprom_write_word(DEF_MEMLOC_CO2_MAX, max);
 			self->co2_range[MAX_CO2_FLAG] = max;
-			xSemaphoreGive(_mutex);
+			_xSemaphoreGive(_mutex);
 		}
 	}
 }
