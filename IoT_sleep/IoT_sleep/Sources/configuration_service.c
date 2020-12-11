@@ -11,8 +11,10 @@
 #include "definitions.h"
 #include "wrapper_semaphore.h"
 
-#define MIN_CO2_FLAG 0
-#define MAX_CO2_FLAG 1
+#define CLASS_NAME		"configuration_service.c"
+#define MIN_CO2_FLAG	0
+#define MAX_CO2_FLAG	1
+
 
 typedef struct configuration {
 	uint16_t temp;
@@ -32,7 +34,7 @@ configuration_t configuration_service_create(void) {
 	self->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
 	self->co2_range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
 	self->co2_range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
-	printf("configuration_service_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2_range[MIN_CO2_FLAG], self->co2_range[MAX_CO2_FLAG]);
+	s_print("INFO", CLASS_NAME, "EEPROM values: %d, %d, %d", self->temp, self->co2_range[MIN_CO2_FLAG], self->co2_range[MAX_CO2_FLAG]);
 	return self;
 }
 

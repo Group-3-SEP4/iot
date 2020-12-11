@@ -16,6 +16,8 @@
 #include "wrapper_eventGroup.h"
 #include "wrapper_task.h"
 
+#define CLASS_NAME		"co2_service.c"
+
 typedef struct co2_measurement {
 	uint16_t ppm;
 } co2_measurement;
@@ -54,7 +56,7 @@ inline void co2_service_measure(co2_t sensor){
 				_xEventGroupSetBits(_event_group_data_ready, DEF_BIT_DATA_READY_CO2); // sets eventDataReady bits
 			}
 			if (DEF_PRINT_TO_TERMINAL){
-			printf("Current ppm: %i\n", co2_service_get_measurement(sensor)); // only for visual verification in terminal
+			s_print("INFO", CLASS_NAME, "Current ppm: %i", co2_service_get_measurement(sensor)); // only for visual verification in terminal
 			}
 		}
 	}

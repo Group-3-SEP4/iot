@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <hal_defs.h>
+#include <semphr.h>
 
 
 // define priorities
@@ -77,5 +78,30 @@
 // define Message buffer sizes
 #define DEF_MESSAGE_BUFFER_UPLINK				sizeof(lora_driver_payload_t)*2
 #define DEF_MESSAGE_BUFFER_DOWNLINK				sizeof(lora_driver_payload_t)*2
+
+
+
+
+
+
+/*
+	SECURE PRINT
+	define a variadic macro called s_print, checks if mutex has been setup while check if its allowed to print, take semaphore, printf with concatenate newline, release semaphore.
+	Mutex has to be initialized before usage with xSemaphoreCreateMutex() method.
+*/
+SemaphoreHandle_t mutex_print;
+#define s_print(level, tag, msg, ...) do { \
+	if (NULL != mutex_print && (DEF_PRINT_TO_TERMINAL == true || strcmp("INFO", level) != 0){ \
+		if (xSemaphoreTake(mutex_print, DEF_WAIT_DEFAULT) == pdTRUE) { \
+			printf(level "\t --- [" tag "] :  "  msg "\n", __VA_ARGS__); \
+			xSemaphoreGive(mutex_print); \
+		} \
+	} \
+} while (0)
+
+
+
+
+
 
 #endif

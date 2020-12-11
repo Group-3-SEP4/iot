@@ -19,6 +19,7 @@
 #include "ht_service.h"
 #include "configuration_service.h"
 
+#define CLASS_NAME "servo_service.c"
 
 typedef struct servo {
 	uint8_t servo_no;
@@ -102,9 +103,8 @@ static void servo_regulate(servo_t servo){
 		}
 	}
 	
-	if (DEF_PRINT_TO_TERMINAL){
-		printf("Regulator claim: TT %i, CO2 %i, Max %i pct.\n",temp_claim, co2_claim, max_claim);
-	}
+	s_print("INFO", CLASS_NAME, "Regulator claim: TT %i, CO2 %i, Max %i pct.",temp_claim, co2_claim, max_claim);
+	
 }
 
 
