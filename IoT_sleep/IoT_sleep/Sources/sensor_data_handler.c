@@ -5,20 +5,36 @@
 #include <message_buffer.h>
 #include <task.h>
 #include <stdio.h>
+#include <event_groups.h>
 #include "sensor_data_handler.h"
 #include "co2_service.h"
+#include "ht_service.h"
+#include "servo_service.h"
 #include "payload_builder.h"
 #include "definitions.h"
 #include "FreeRTOSConfig.h"
 
 void sensor_data_handler_task(void *pvParameters);
 
-co2_t _co2_service;
-MessageBufferHandle_t _uplink_message_buffer;
+static MessageBufferHandle_t _uplink_message_buffer;
+static EventGroupHandle_t _event_group_data_collect;
+static EventGroupHandle_t _event_group_data_ready;
 
-void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_t co2_service){
+static co2_t _co2_service;
+static ht_t _ht_service;
+static servo_t _servo_service;
+
+void sensor_data_handler_create(
+	MessageBufferHandle_t messageBuffer, 
+	EventGroupHandle_t event_group_data_collect, 
+	EventGroupHandle_t event_group_data_ready, 
+	co2_t co2_service, 
+	ht_t ht_service, 
+	servo_t servo_service){
 	_uplink_message_buffer = messageBuffer;
 	_co2_service = co2_service;
+	_ht_service = ht_service;
+	_servo_service = _servo_service;
 	
 	xTaskCreate(
 	sensor_data_handler_task,		/* Function that implements the task. */
@@ -33,9 +49,10 @@ void sensor_data_handler_create(MessageBufferHandle_t messageBuffer, co2_t co2_s
 void sensor_data_handler_task_body(payload_builder_t payload_builder){
 	lora_driver_payload_t _uplink_payload;
 	
-	uint16_t co2_ppm = co2_service_get_measurement(_co2_service);
-	
-	payload_builder_set_co2_ppm(payload_builder,co2_ppm);
+	payload_builder_set_co2_ppm(payload_builder, co2_service_get_measurement(_co2_service));
+	payload_builder_set_humidity(payload_builder, ht_service_get_humidity(_ht_service));
+	payload_builder_set_temperature(payload_builder, ht_service_get_temperature(_ht_service));
+	payload_builder_set_servo_position(payload_builder, servo_service_get_position(_servo_service));
 	
 	payload_builder_get_lora_payload(payload_builder, &_uplink_payload);
 	
@@ -58,9 +75,26 @@ void sensor_data_handler_task(void *pvParameters){
 
 	TickType_t xLastWakeTime = xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_FREQUENCY_UPLINK;
+	EventBits_t uxBits;
 	for (;;)
 	{
 		vTaskDelayUntil( &xLastWakeTime, xFrequency );
-		sensor_data_handler_task_body(_payload_builder);
+		xEventGroupSetBits(_event_group_data_collect, DEF_BIT_DATA_COLLECT_ALL);
+	
+		uxBits = xEventGroupWaitBits(
+		_event_group_data_ready, /* The event group being tested. */
+		DEF_BIT_DATA_READY_ALL, /* The bits within the event group to wait for. */
+		pdTRUE, /* DEF_BIT_DATA_READY_ALL should be cleared before returning. */
+		pdTRUE, /* wait for all bits*/
+		portMAX_DELAY ); /* Wait a maximum of 100ms for either bit to be set. */
+		if( ( uxBits & DEF_BIT_DATA_READY_ALL  ) == ( DEF_BIT_DATA_READY_ALL ) )
+		{
+			/*Success */
+			sensor_data_handler_task_body(_payload_builder);
+		}
+		//else
+		//{
+			///* time ran out, won't happen*/
+		//}
 	}
 }

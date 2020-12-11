@@ -23,7 +23,6 @@
 #include "ht_service.h"
 #include "servo_service.h"
 
-
 void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, MessageBufferHandle_t message_buffer_uplink, MessageBufferHandle_t message_buffer_downlink){
 	
 	configuration_t configuration_service = configuration_service_create();
@@ -32,15 +31,26 @@ void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t
 
 	ht_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
 	
-	servo_t servo_service = servo_create(OUT_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
+	servo_t servo_service = servo_service_create(
+	OUT_J14, 
+	event_group_data_collect, 
+	event_group_data_ready, 
+	configuration_service, 
+	co2_service, 
+	ht_service);
 		
-	sensor_data_handler_create(message_buffer_uplink, co2_service);
+	sensor_data_handler_create(
+	message_buffer_uplink,
+	event_group_data_collect, 
+	event_group_data_ready, 
+	co2_service, 
+	ht_service, 
+	servo_service);
 	
 	uplink_handler_create(message_buffer_uplink);
 	
 	downlink_handler_create(configuration_service, message_buffer_downlink);
 }
-
 
 void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
 {
@@ -67,7 +77,6 @@ void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
 	// Power up the display
 	display_7seg_powerUp();
 }
-
 
 int main(void)
 {
