@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration.c">
-      <Filter>ProductionCode</Filter>
-    </ClCompile>
     <ClCompile Include="configurationTest.cpp" />
     <ClCompile Include="IoTTesting.cpp" />
-    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_sensor.c">
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration_service.c">
+      <Filter>ProductionCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_service.c">
       <Filter>ProductionCode</Filter>
     </ClCompile>
   </ItemGroup>
