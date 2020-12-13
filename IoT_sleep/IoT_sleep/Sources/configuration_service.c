@@ -7,6 +7,7 @@
 #include <avr/eeprom.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
+#include "secure_print.h"
 #include "configuration_service.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"

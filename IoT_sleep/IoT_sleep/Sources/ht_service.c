@@ -8,6 +8,7 @@
 #include <event_groups.h>
 #include <semphr.h>
 #include <hih8120.h>
+#include "secure_print.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"

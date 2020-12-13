@@ -7,6 +7,7 @@
 #include <stddef.h>
 #include <message_buffer.h>
 #include <lora_driver.h>
+#include "secure_print.h"
 #include "downlink_handler.h"
 #include "configuration_service.h"
 #include "definitions.h"

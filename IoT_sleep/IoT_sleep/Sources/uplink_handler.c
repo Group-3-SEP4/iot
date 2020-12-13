@@ -9,6 +9,7 @@
 #include <lora_driver.h>
 #include <status_leds.h>
 #include <display_7seg.h>
+#include "secure_print.h"
 #include "uplink_handler.h"
 #include "definitions.h"
 #include "payload_builder.h"

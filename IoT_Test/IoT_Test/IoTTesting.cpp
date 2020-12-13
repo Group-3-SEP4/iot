@@ -1,5 +1,4 @@
-#include "definitions.h"
-
+#include "definitions.h"	
 #include "gtest/gtest.h"
 #include "../fff/fff.h"
 
@@ -12,7 +11,8 @@ extern "C" {
 	#include "wrapper_semaphore.h"
 	#include "wrapper_eventGroup.h"
 	#include "wrapper_task.h"
-		
+
+	#include "secure_print.h"
 	#include <avr/eeprom.h>
 	#include "configuration_service.h"
 
@@ -20,6 +20,8 @@ extern "C" {
 	#include <task.h>
 	#include "co2_service.h"
 }
+/* fake s_print */
+FAKE_VOID_FUNC4_VARARG(s_print, char*, char*, char*);
 
 /* Semaphore fakes */
 FAKE_VALUE_FUNC(QueueHandle_t, _xSemaphoreCreateMutex);
