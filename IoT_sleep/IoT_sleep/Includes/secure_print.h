@@ -6,8 +6,8 @@
 #ifndef SECURE_PRINT_H
 #define SECURE_PRINT_H
 
-void s_print_create(void);
-void s_print(char*, char*, char*, ...);
+void s_print_create(SemaphoreHandle_t mutex);
+void s_print(char* level, char* tag, char* msg, ...);
 
 
 
