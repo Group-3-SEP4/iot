@@ -14,6 +14,7 @@
 #include <lora_driver.h>
 #include <rc_servo.h>
 
+#include "secure_print.h"
 #include "co2_service.h"
 #include "configuration_service.h"
 #include "uplink_handler.h"	
@@ -86,7 +87,7 @@ int main(void)
 	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
 	MessageBufferHandle_t message_buffer_uplink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_UPLINK);
 	MessageBufferHandle_t message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
-	mutex_print = xSemaphoreCreateMutex(); // initialize secure print mutex
+	s_print_create(xSemaphoreCreateMutex()); // initialize s_print
 	
 	
 	

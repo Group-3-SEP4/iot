@@ -11,6 +11,7 @@
 #include <event_groups.h>
 #include <semphr.h>
 #include <rc_servo.h>
+#include "secure_print.h"
 #include "servo_service.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"

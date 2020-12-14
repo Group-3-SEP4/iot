@@ -189,6 +189,9 @@
     <Compile Include="Includes\secrets.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\secure_print.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\sensor_data_handler.h">
       <SubType>compile</SubType>
     </Compile>
@@ -286,6 +289,9 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\payload_builder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\secure_print.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\sensor_data_handler.c">

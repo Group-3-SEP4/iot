@@ -6,8 +6,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <hal_defs.h>
-#include <semphr.h>
-#include <string.h>
 
 // define priorities
 #define DEF_PRIORITY_TASK_LINK					(tskIDLE_PRIORITY + 1)
@@ -61,7 +59,7 @@
 #define DEF_PRINT_TO_TERMINAL					true
 
 // define values
-#define DEF_DEFAULT_NA_SENSOR					INT_MAX
+#define DEF_DEFAULT_NA_SENSOR					UINT16_MAX
 #define DEF_PROPORTIONAL_GAIN_TEMP				4	
 
 // define EEPROM addresses
@@ -72,29 +70,6 @@
 // define Message buffer sizes
 #define DEF_MESSAGE_BUFFER_UPLINK				sizeof(lora_driver_payload_t)*2
 #define DEF_MESSAGE_BUFFER_DOWNLINK				sizeof(lora_driver_payload_t)*2
-
-
-
-
-
-
-/*
-	SECURE PRINT
-	define a variadic macro called s_print, checks if mutex has been setup while check if its allowed to print, take semaphore, printf with concatenate newline, release semaphore.
-	Mutex has to be initialized before usage with xSemaphoreCreateMutex() method.
-*/
-SemaphoreHandle_t mutex_print;
-#define s_print(level, tag, msg, ...) do { \
-	if (NULL != mutex_print && (DEF_PRINT_TO_TERMINAL == true || strcmp("INFO", level) != 0)){ \
-		if (xSemaphoreTake(mutex_print, DEF_WAIT_DEFAULT) == pdTRUE) { \
-			printf("%-7s --- %-25s :  "  msg "\n", level, tag, ##__VA_ARGS__); \
-			xSemaphoreGive(mutex_print); \
-		} \
-	} \
-} while (0)
-
-
-
 
 
 
