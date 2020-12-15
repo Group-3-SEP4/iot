@@ -1,3 +1,5 @@
+
+
 #include "definitions.h"	
 #include "gtest/gtest.h"
 #include "../fff/fff.h"
@@ -10,8 +12,9 @@ extern "C" {
 	#include <serial.h>
 	#include "wrapper_semaphore.h"
 	#include "wrapper_eventGroup.h"
+#include "wrapper_message_buffer.h"
 	#include "wrapper_task.h"
-
+#include <event_groups.h>
 	#include "secure_print.h"
 	#include <avr/eeprom.h>
 	#include "configuration_service.h"
@@ -19,6 +22,12 @@ extern "C" {
 	#include <mh_z19.h>
 	#include <task.h>
 	#include "co2_service.h"
+#include <rc_servo.h>
+#include "servo_service.h"
+
+#include "wrapper_message_buffer.h"
+#include <hih8120.h>
+	
 }
 /* fake s_print */
 FAKE_VOID_FUNC4_VARARG(s_print, char*, char*, char*);
@@ -38,6 +47,8 @@ FAKE_VOID_FUNC(eeprom_write_word, uint16_t*, uint16_t);
 FAKE_VALUE_FUNC(BaseType_t, _xEventGroupGetBits, EventGroupHandle_t);
 FAKE_VALUE_FUNC(BaseType_t, _xEventGroupClearBits, EventGroupHandle_t, EventBits_t);
 FAKE_VALUE_FUNC(BaseType_t, _xEventGroupSetBits, EventGroupHandle_t, EventBits_t);
+FAKE_VALUE_FUNC(BaseType_t, _xEventGroupWaitBits, EventGroupHandle_t, EventBits_t, BaseType_t, BaseType_t, TickType_t);
+FAKE_VALUE_FUNC(size_t, _xMessageBufferSend, MessageBufferHandle_t, const void*, size_t, TickType_t);
 
 /* fake task func */
 FAKE_VALUE_FUNC(BaseType_t, _xTaskCreate, TaskFunction_t, const char*, configSTACK_DEPTH_TYPE, void *, UBaseType_t, TaskHandle_t*);
@@ -51,6 +62,57 @@ typedef void(*mh_z19_callBack)(uint16_t ppm); // callbacks required by driver
 FAKE_VOID_FUNC(mh_z19_create, serial_comPort_t, mh_z19_callBack);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_takeMeassuring);
 FAKE_VALUE_FUNC(mh_z19_returnCode_t, mh_z19_getCo2Ppm, uint16_t*);
+
+
+
+FAKE_VALUE_FUNC(void*, pvPortMalloc, size_t);
+FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_create);
+FAKE_VALUE_FUNC(bool, hih8120_isReady);
+FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_wakeup);
+FAKE_VALUE_FUNC(hih8120_driverReturnCode_t, hih8120_measure);
+FAKE_VALUE_FUNC(float, hih8120_getHumidity);
+FAKE_VALUE_FUNC(float, hih8120_getTemperature);
+FAKE_VOID_FUNC(rc_servo_setPosition, uint8_t, int8_t);
+
+FAKE_VALUE_FUNC(int8_t, get_co2_claim);
+FAKE_VALUE_FUNC(int8_t, get_temp_claim);
+
+class random_test : public ::testing::Test
+{
+public:
+
+	void SetUp() override {
+		RESET_FAKE(_xSemaphoreCreateMutex)
+		RESET_FAKE(_xSemaphoreGive)
+		RESET_FAKE(_xSemaphoreTake)
+
+		RESET_FAKE(eeprom_read_word)
+		RESET_FAKE(eeprom_write_word)
+
+		RESET_FAKE(get_co2_claim)
+
+		FFF_RESET_HISTORY()
+	}
+	void TearDown() override {}
+	
+};
+
+
+TEST_F(random_test, getfindptr)
+{
+	_xSemaphoreTake_fake.return_val = pdTRUE;
+	get_co2_claim_fake.return_val = 1099;
+	get_temp_claim_fake.return_val = 100;
+
+	servo_t s =  servo_service_create(NULL, NULL, NULL, NULL, NULL, NULL);
+
+
+	
+	uint16_t t = servo_service_get_position(s);
+
+	printf("%i", t);
+	
+}
 
 
 class configuration_test : public ::testing::Test {

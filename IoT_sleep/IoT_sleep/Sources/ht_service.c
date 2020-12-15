@@ -14,6 +14,8 @@
 #include "wrapper_eventGroup.h"
 #include "ht_service.h"
 
+#include <wrapper_task.h>
+
 #define CLASS_NAME	"ht_service.c"
 
 typedef struct ht_measurement {
@@ -52,9 +54,9 @@ void ht_service_measure(ht_t sensor){
 	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_HT_WRITE) == pdTRUE) // protect shared data
 	{
 		hih8120_wakeup();
-		vTaskDelay(DEF_DELAY_DRIVER_HT);
+		_vTaskDelay(DEF_DELAY_DRIVER_HT);
 		hih8120_measure();
-		vTaskDelay(DEF_DELAY_DRIVER_HT);
+		_vTaskDelay(DEF_DELAY_DRIVER_HT);
 		
 		if(hih8120_isReady())
 		{
@@ -62,7 +64,7 @@ void ht_service_measure(ht_t sensor){
 			sensor->temperature = hih8120_getTemperature();
 			s_print("INFO", CLASS_NAME, "Temp: %i, Hum: %i ", sensor->temperature, sensor->humidity);
 			//s_print("Free stack: %d, minimum heap: %d",xPortGetFreeHeapSize(), xPortGetMinimumEverFreeHeapSize());
-			s_print("INFO", CLASS_NAME, "Stack high water mark: %d", uxTaskGetStackHighWaterMark(NULL));
+			//s_print("INFO", CLASS_NAME, "Stack high water mark: %d", uxTaskGetStackHighWaterMark(NULL));
 			
 			_xSemaphoreGive(_mutex);
 			if (_xEventGroupGetBits(_event_group_data_collect) & DEF_BIT_DATA_COLLECT_HT) // checks eventMeasureStart bits
@@ -79,12 +81,12 @@ void ht_service_measure(ht_t sensor){
 
 void ht_service_task(void* pv_parameters){
 
-	TickType_t x_last_wake_time = xTaskGetTickCount();
+	TickType_t x_last_wake_time = _xTaskGetTickCount();
 	const TickType_t x_frequency = DEF_DELAY_TASK_HT;
 		
 	for (;;)
 	{
-		vTaskDelayUntil(&x_last_wake_time, x_frequency); // execution delay must be defined as first
+		_vTaskDelayUntil(&x_last_wake_time, x_frequency); // execution delay must be defined as first
 		ht_service_measure((ht_t) pv_parameters);
 	}
 }
@@ -106,7 +108,7 @@ ht_t ht_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHa
 
 	hih8120_create();
 	
-	xTaskCreate(
+	_xTaskCreate(
 	ht_service_task,
 	"ht_measure_task",
 	DEF_STACK_HT,

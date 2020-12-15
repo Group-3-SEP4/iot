@@ -168,6 +168,12 @@
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="FreeRTOS\src\atomic.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="FreeRTOS\src\heap_3.c">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\co2_service.h">
       <SubType>compile</SubType>
     </Compile>
@@ -343,9 +349,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="FreeRTOS\src\FreeRTOSVariant.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="FreeRTOS\src\heap_4.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="FreeRTOS\src\list.c">

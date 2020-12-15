@@ -13,6 +13,9 @@
 #include <rc_servo.h>
 #include "secure_print.h"
 #include "servo_service.h"
+
+#include <wrapper_task.h>
+
 #include "definitions.h"
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"
@@ -46,7 +49,7 @@ uint16_t servo_service_get_position(servo_t servo){
 	return tmp_pos;
 }
 
-static double calculate_claim(uint16_t current_value, uint16_t setpoint, uint16_t p_gain){
+double calculate_claim(uint16_t current_value, uint16_t setpoint, uint16_t p_gain){
 	double claim = 0.0;
 	if (p_gain > 0){
 		claim = (((double)(current_value - setpoint) /(double) p_gain) * 100.0);
@@ -60,7 +63,7 @@ static double calculate_claim(uint16_t current_value, uint16_t setpoint, uint16_
 	return claim;
 }
 
-static int8_t get_co2_claim(){
+int8_t get_co2_claim(){
 	uint16_t setpoint = configuration_service_get_min_co2(_configuration_service);
 	uint16_t p_gain = (configuration_service_get_max_co2(_configuration_service) - configuration_service_get_min_co2(_configuration_service));
 	uint16_t currentValue = co2_service_get_measurement(_co2_service);
@@ -68,7 +71,7 @@ static int8_t get_co2_claim(){
 	return claim;
 }
 
-static int8_t get_temp_claim(){
+int8_t get_temp_claim(){
 	uint16_t setpoint = configuration_service_get_temperature(_configuration_service);
 	uint16_t p_gain = DEF_PROPORTIONAL_GAIN_TEMP;
 	uint16_t currentValue = ht_service_get_temperature(_ht_service);
@@ -77,7 +80,7 @@ static int8_t get_temp_claim(){
 }
 
 
-static void servo_regulate(servo_t servo){
+void servo_regulate(servo_t servo){
 	int8_t co2_claim = get_co2_claim();
 	int8_t temp_claim = get_temp_claim();
 	int8_t max_claim = 0;
@@ -111,12 +114,12 @@ static void servo_regulate(servo_t servo){
 void servo_task(void* pvParameters){
 	
 	
-	TickType_t xLastWakeTime = xTaskGetTickCount();
+	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_SERVO;
 	
 	for (;;)
 	{
-		vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first
+		_vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first
 		servo_regulate((servo_t) pvParameters);
 	}
 }
@@ -136,12 +139,12 @@ servo_t servo_service_create(uint8_t servo_no, EventGroupHandle_t event_group_da
 	_servo->servo_no = servo_no;
 	_servo->position = 0;
 	
-	_mutex = xSemaphoreCreateMutex();
+	_mutex = _xSemaphoreCreateMutex();
 	
 	_event_group_data_collect = event_group_data_collect;
 	_event_group_data_ready = event_group_data_ready;
 	
-	xTaskCreate(
+	_xTaskCreate(
 	servo_task,		/* Function that implements the task. */
 	"servo task",		/* Text name for the task. */
 	DEF_STACK_SERVO,			/* Stack size in words, not bytes. */

@@ -41,6 +41,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_service.c" />
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration_service.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\ht_service.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\payload_builder.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\sensor_data_handler.c" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\servo_service.c" />
     <ClCompile Include="configurationTest.cpp" />
     <ClCompile Include="IoTTesting.cpp" />
   </ItemGroup>
@@ -49,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\IoT_sleep\IoT_sleep\Includes\definitions.h" />
+    <ClInclude Include="..\..\IoT_sleep\IoT_sleep\Includes\servo_service.h" />
     <ClInclude Include="ATMEGA_FreeRTOS.h" />
     <ClInclude Include="avr\eeprom.h" />
     <ClInclude Include="FreeRTOSConfig.h" />

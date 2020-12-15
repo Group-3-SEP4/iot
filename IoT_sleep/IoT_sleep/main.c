@@ -95,7 +95,6 @@ int main(void)
 	
 	start_tasks(event_group_data_collect, event_group_data_ready, message_buffer_uplink, message_buffer_downlink);
 	s_print("START", CLASS_NAME, "Program Started.");
-	s_print("INFO", CLASS_NAME, "Free heap: %i", xPortGetMinimumEverFreeHeapSize());
 	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
 
 	while (1)

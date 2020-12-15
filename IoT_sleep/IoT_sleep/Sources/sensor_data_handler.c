@@ -7,6 +7,9 @@
 #include <stdio.h>
 //#include <event_groups.h>
 #include "sensor_data_handler.h"
+
+#include <wrapper_task.h>
+
 #include "co2_service.h"
 #include "ht_service.h"
 #include "servo_service.h"
@@ -42,7 +45,7 @@ MessageBufferHandle_t messageBuffer
 	_ht_service = ht_service;
 	_servo_service = _servo_service;
 	
-	xTaskCreate(
+	_xTaskCreate(
 	sensor_data_handler_task		/* Function that implements the task. */
 	, "sdh_task"		/* Text name for the task. */
 	, DEF_STACK_SENSOR_DATA_HANDLER			/* Stack size in words, not bytes. */
@@ -95,11 +98,11 @@ void sensor_data_handler_task(void *pvParameters){
 		printf("sensor_data_handler_task: Error creating payload_builder_t, could not allocate memory!");
 	}
 
-	TickType_t xLastWakeTime = xTaskGetTickCount();
+	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_FREQUENCY_UPLINK;
 	for (;;)
 	{
-		vTaskDelayUntil( &xLastWakeTime, xFrequency );
+		_vTaskDelayUntil( &xLastWakeTime, xFrequency );
 		
 		sensor_data_handler_task_body(_payload_builder);
 	}

@@ -52,7 +52,7 @@ void downlink_handler_create(configuration_t configuration, MessageBufferHandle_
 	
 	xTaskCreate(
 	downlink_handler_task,
-	(const portCHAR *)"downlink_handler",
+	"downlink_handler",
 	DEF_STACK_DOWNLINK,
 	message_buffer,
 	DEF_PRIORITY_TASK_LINK,

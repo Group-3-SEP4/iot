@@ -9,6 +9,18 @@
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_service.c">
       <Filter>ProductionCode</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\sensor_data_handler.c">
+      <Filter>ProductionCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\payload_builder.c">
+      <Filter>ProductionCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\servo_service.c">
+      <Filter>ProductionCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\ht_service.c">
+      <Filter>ProductionCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ProductionCode">
@@ -26,6 +38,9 @@
     <ClInclude Include="FreeRTOSConfig.h" />
     <ClInclude Include="avr\eeprom.h">
       <Filter>avr</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\IoT_sleep\IoT_sleep\Includes\servo_service.h">
+      <Filter>ProductionCode</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

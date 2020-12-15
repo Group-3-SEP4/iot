@@ -28,7 +28,7 @@ void uplink_handler_create(MessageBufferHandle_t message_buffer)
 {
 	xTaskCreate(
 	uplink_handler_task
-	,  (const portCHAR *)"uh_task"  
+	,  "uh_task"  
 	,  DEF_STACK_UPLINK  
 	,  message_buffer
 	,  DEF_PRIORITY_TASK_UPLINK  
