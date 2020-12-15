@@ -4,9 +4,6 @@
 #include <stdio.h>
 #include <mh_z19.h>
 #include <ATMEGA_FreeRTOS.h>
-
-
-
 #include "co2_service.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"
@@ -51,9 +48,7 @@ inline void co2_service_measure(co2_service_t service){
 				_xEventGroupClearBits(service->event_collect, DEF_BIT_DATA_COLLECT_CO2); // clears eventMeasure bits
 				_xEventGroupSetBits(service->event_ready, DEF_BIT_DATA_READY_CO2); // sets eventDataReady bits
 			}
-			if (DEF_PRINT_TO_TERMINAL){
-				s_print("INFO", CLASS_NAME, "Current CO2: %i", co2_service_get_measurement(service));
-			}
+			s_print("INFO", CLASS_NAME, "Current CO2: %i", co2_service_get_measurement(service));
 		}
 	}
 }

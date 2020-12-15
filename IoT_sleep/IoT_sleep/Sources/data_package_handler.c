@@ -49,8 +49,6 @@ void data_package_handler_collect_data(){
 	
 		lora_driver_payload_t payload = payload_builder_get_payload(tt, rh, co, sPos);
 		
-		s_print("INFO", CLASS_NAME, "payload: TT %i, RH %i CO2 %i, sPos %i", tt, rh, co, sPos);
-		
 		_xMessageBufferSend(buffer_uplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE);
 	}
 }

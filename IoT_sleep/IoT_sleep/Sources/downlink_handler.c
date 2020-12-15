@@ -22,7 +22,7 @@ void downlink_handler_task( void *pvParameters )
 	MessageBufferHandle_t buffer_downlink = pvParameters;
 	
 	for(;;)
-	{	
+	{
 		lora_driver_payload_t _payload;
 		size_t xReceivedBytes;
 		
@@ -30,19 +30,19 @@ void downlink_handler_task( void *pvParameters )
 		
 		if(xReceivedBytes > 0)
 		{
+			s_print("PROD", CLASS_NAME, "Received new data.");
 			configuration_service_set_temperature(configuration, (uint16_t)((_payload.bytes[0] << 8) + _payload.bytes[1]));
 			configuration_service_set_min_co2(configuration, (uint16_t)((_payload.bytes[2] << 8) + _payload.bytes[3]));
 			configuration_service_set_max_co2(configuration, (uint16_t)((_payload.bytes[4] << 8) + _payload.bytes[5]));
-			s_print("INFO", CLASS_NAME, "Received new data.");
 		} else {
-			s_print("INFO", CLASS_NAME, "Buffer empty looping around.");
+			s_print("PROD", CLASS_NAME, "Buffer empty looping around.");
 		}
 	}
 }
 
 
 void downlink_handler_create(MessageBufferHandle_t buffer_downlink, configuration_service_t configuration_service)
-{	
+{
 	configuration = configuration_service;
 	
 	_xTaskCreate(

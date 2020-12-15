@@ -17,10 +17,9 @@
 #define LORA_RESET_PIN		PK4
 
 // MH-Z19 CO2 Driver
-#define MH_Z19_USART		ser_USART3
+#define MH_Z19_USART ser_USART3
 
-// Servo no.
-//#define SERVO_J13			1 //not sure if J13 = 1
-#define SERVO_J14			0
+// Servo outputs
+#define OUT_J14		0
  
 #endif /* HAL_DEFS_H_ */

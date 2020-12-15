@@ -10,7 +10,7 @@
 #include "wrapper_task.h"
 #include "secure_print.h"
 
-// LoRa keys 
+// LoRa keys
 #include "secrets.h"
 
 #define CLASS_NAME	"uplink_handler.c"
@@ -26,36 +26,36 @@ static void lora_setup(void)
 	status_leds_slowBlink(led_ST2); // OPTIONAL: Led the green led blink slowly while we are setting up LoRa
 
 	// Factory reset the transceiver
-	s_print("INFO", CLASS_NAME, "FactoryReset >%s<", lora_driver_mapReturnCodeToText(lora_driver_rn2483FactoryReset()));
+	s_print("PROD", CLASS_NAME, "FactoryReset >%s<", lora_driver_mapReturnCodeToText(lora_driver_rn2483FactoryReset()));
 	
 	// Configure to EU868 LoRaWAN standards
-	s_print("INFO", CLASS_NAME, "Configure to EU868 >%s<", lora_driver_mapReturnCodeToText(lora_driver_configureToEu868()));
+	s_print("PROD", CLASS_NAME, "Configure to EU868 >%s<", lora_driver_mapReturnCodeToText(lora_driver_configureToEu868()));
 
 	// Get the transceivers HW EUI
 	rc = lora_driver_getRn2483Hweui(_out_buf);
-	s_print("INFO", CLASS_NAME, "Get HWEUI >%s<: %s",lora_driver_mapReturnCodeToText(rc), _out_buf);
+	s_print("PROD", CLASS_NAME, "Get HWEUI >%s<: %s",lora_driver_mapReturnCodeToText(rc), _out_buf);
 
 	// Set the HWEUI as DevEUI in the LoRaWAN software stack in the transceiver
-	s_print("INFO", CLASS_NAME, "Set DevEUI: %s >%s<", _out_buf, lora_driver_mapReturnCodeToText(lora_driver_setDeviceIdentifier(_out_buf)));
+	s_print("PROD", CLASS_NAME, "Set DevEUI: %s >%s<", _out_buf, lora_driver_mapReturnCodeToText(lora_driver_setDeviceIdentifier(_out_buf)));
 
 	// Set Over The Air Activation parameters to be ready to join the LoRaWAN
 	printf("Set OTAA Identity appEUI:%s appKEY:%s devEUI:%s >%s<", LORA_appEUI, LORA_appKEY, _out_buf, lora_driver_mapReturnCodeToText(lora_driver_setOtaaIdentity(LORA_appEUI,LORA_appKEY,_out_buf)));
 
 	// Save all the MAC settings in the transceiver
-	s_print("INFO", CLASS_NAME, "Save mac >%s<",lora_driver_mapReturnCodeToText(lora_driver_saveMac()));
+	s_print("PROD", CLASS_NAME, "Save mac >%s<",lora_driver_mapReturnCodeToText(lora_driver_saveMac()));
 
 	// Enable Adaptive Data Rate
-	s_print("INFO", CLASS_NAME, "Set Adaptive Data Rate: ON >%s<", lora_driver_mapReturnCodeToText(lora_driver_setAdaptiveDataRate(LORA_ON)));
+	s_print("PROD", CLASS_NAME, "Set Adaptive Data Rate: ON >%s<", lora_driver_mapReturnCodeToText(lora_driver_setAdaptiveDataRate(LORA_ON)));
 
 	// Set receiver window1 delay to 500 ms - this is needed if down-link messages will be used
-	s_print("INFO", CLASS_NAME, "Set Receiver Delay: %d ms >%s<", 500, lora_driver_mapReturnCodeToText(lora_driver_setReceiveDelay(500)));
+	s_print("PROD", CLASS_NAME, "Set Receiver Delay: %d ms >%s<", 500, lora_driver_mapReturnCodeToText(lora_driver_setReceiveDelay(500)));
 
 	// Join the LoRaWAN
 	uint8_t maxJoinTriesLeft = 10;
 	
 	do {
 		rc = lora_driver_join(LORA_OTAA);
-		s_print("INFO", CLASS_NAME, "Join Network TriesLeft:%d >%s<", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
+		s_print("PROD", CLASS_NAME, "Join Network TriesLeft:%d >%s<", maxJoinTriesLeft, lora_driver_mapReturnCodeToText(rc));
 
 		if ( rc != LORA_ACCEPTED)
 		{
@@ -118,9 +118,9 @@ void uplink_handler_task( void *pvParameters )
 	
 	float packages_sent = 0.0;
 	
-	for(;;) 
+	for(;;)
 	{
-	
+		
 		lora_driver_payload_t payload;
 		size_t xReceivedBytes;
 		
@@ -128,16 +128,16 @@ void uplink_handler_task( void *pvParameters )
 		
 		if( xReceivedBytes > 0 )
 		{
-				display_7seg_display(packages_sent++, 0);
+			display_7seg_display(packages_sent++, 0);
 
-				status_leds_shortPuls(led_ST4);  // OPTIONAL
-				//lora_driver_sendUploadMessage(false, &uplink_payload);
-				lora_driver_returnCode_t return_code = lora_driver_sendUploadMessage(false, &payload);
-				char * return_code_str = lora_driver_mapReturnCodeToText(return_code);
+			status_leds_shortPuls(led_ST4);  // OPTIONAL
+			//lora_driver_sendUploadMessage(false, &uplink_payload);
+			lora_driver_returnCode_t return_code = lora_driver_sendUploadMessage(false, &payload);
+			char * return_code_str = lora_driver_mapReturnCodeToText(return_code);
 			
-				s_print("INFO", CLASS_NAME, "Upload Message: >%s<", return_code_str);
-		} else {
-			s_print("INFO", CLASS_NAME, "Buffer empty looping around.");
+			s_print("PROD", CLASS_NAME, "Upload Message: >%s<", return_code_str);
+			} else {
+			s_print("PROD", CLASS_NAME, "Buffer empty looping around.");
 		}
 	}
 }

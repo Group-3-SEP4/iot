@@ -39,11 +39,12 @@ void create_operations(MessageBufferHandle_t buffer_downlink){
 	
 	ht_service_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
 	
-	servo_service_t servo_service = servo_service_create(SERVO_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
+	servo_service_t servo_service = servo_service_create(OUT_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
 	
 	data_package_handler_create(event_group_data_collect, event_group_data_ready, buffer_uplink, co2_service, ht_service, servo_service);
 	
 	uplink_handler_create(buffer_uplink);
+	
 	downlink_handler_create(buffer_downlink, configuration_service);
 }
 
@@ -58,7 +59,7 @@ void initialiseSystem(MessageBufferHandle_t buffer_downlink)
 	// Make it possible to use stdio on COM port 0 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_create(ser_USART0);
 	
-	// LoRaWAN initialization 
+	// LoRaWAN initialization
 	// Initialise the HAL layer and use 5 for LED driver priority
 	hal_create(5);
 	
@@ -86,7 +87,7 @@ int main(void)
 	// Create tasks
 	create_operations(buffer_downlink);
 
-	s_print("INFO", CLASS_NAME, "Program Started!!");
+	s_print("PROD", CLASS_NAME, "Program Started!!");
 
 	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 

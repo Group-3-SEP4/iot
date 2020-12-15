@@ -24,7 +24,7 @@ typedef struct ht_service {
 
 
 int16_t ht_service_get_temperature(ht_service_t service) {
-	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
+	int16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_TEMP_READ) == pdTRUE)
 	{
 		tmp_value = service->temperature;
@@ -64,10 +64,7 @@ inline void ht_service_measure(ht_service_t service){
 				_xEventGroupClearBits(service->event_collect, DEF_BIT_DATA_COLLECT_HUM_TEMP); // clears eventMeasure bits
 				_xEventGroupSetBits(service->event_ready, DEF_BIT_DATA_READY_HUM_TEMP); // sets eventDataReady bits
 			}
-			
-			if (DEF_PRINT_TO_TERMINAL){
-				s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(service), ht_service_get_humidity(service));
-			}
+			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(service), ht_service_get_humidity(service));
 		}
 	}
 }

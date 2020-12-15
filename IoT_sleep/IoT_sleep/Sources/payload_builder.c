@@ -21,9 +21,6 @@ lora_driver_payload_t payload_builder_get_payload(int16_t tt, uint16_t rh, uint1
 	payload.bytes[6] = sPos >> 8;
 	payload.bytes[7] = sPos & 0xFF;
 	
-	if (DEF_PRINT_TO_TERMINAL){
-		s_print("INFO", CLASS_NAME, "Payload: tt %i rh %i co %i sPos %i", tt, rh, co, sPos);
-	}
-	
+	s_print("PROD", CLASS_NAME, "Payload: tt %i rh %i co %i sPos %i", tt, rh, co, sPos);
 	return payload;
 }

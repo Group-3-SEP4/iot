@@ -32,9 +32,7 @@ configuration_service_t configuration_service_create(void) {
 	service->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
 	service->co2Range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
 	service->co2Range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
-	if (DEF_PRINT_TO_TERMINAL){
-		s_print("PRODUCTION", CLASS_NAME, "configuration_create: Read from EEPROM: %d, %d, %d", service->temp, service->co2Range[MIN_CO2_FLAG], service->co2Range[MAX_CO2_FLAG]);
-	}
+	s_print("INFO", CLASS_NAME, "configuration_create: Read from EEPROM: %d, %d, %d", service->temp, service->co2Range[MIN_CO2_FLAG], service->co2Range[MAX_CO2_FLAG]);
 	return service;
 }
 
@@ -55,9 +53,7 @@ void configuration_service_set_temperature(configuration_service_t service, uint
 			eeprom_write_word(DEF_MEMLOC_TEMP, temp);
 			service->temp = temp;
 			_xSemaphoreGive(service->mutex);
-			if (DEF_PRINT_TO_TERMINAL){
-				s_print("INFO", CLASS_NAME, "Set temp: %d", temp);
-			}
+			s_print("INFO", CLASS_NAME, "Set temp: %d", temp);
 		}
 	}
 }
@@ -80,9 +76,7 @@ void configuration_service_set_min_co2(configuration_service_t service, uint16_t
 			eeprom_write_word(DEF_MEMLOC_CO2_MIN, min);
 			service->co2Range[MIN_CO2_FLAG] = min;
 			_xSemaphoreGive(service->mutex);
-			if (DEF_PRINT_TO_TERMINAL){
-				s_print("INFO", CLASS_NAME, "Set min co2: %d", min);
-			}
+			s_print("INFO", CLASS_NAME, "Set min co2: %d", min);
 		}
 	}
 }
@@ -104,9 +98,7 @@ void configuration_service_set_max_co2(configuration_service_t service, uint16_t
 			eeprom_write_word(DEF_MEMLOC_CO2_MAX, max);
 			service->co2Range[MAX_CO2_FLAG] = max;
 			_xSemaphoreGive(service->mutex);
-			if (DEF_PRINT_TO_TERMINAL){
-				s_print("INFO", CLASS_NAME, "Set max co2: %d", max);
-			}
+			s_print("INFO", CLASS_NAME, "Set max co2: %d", max);
 		}
 	}
 }

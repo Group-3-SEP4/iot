@@ -93,10 +93,7 @@ void servo_service_regulate(servo_service_t service){
 			_xEventGroupClearBits(service->event_collect, DEF_BIT_DATA_COLLECT_SERVO); // clears eventMeasure bits
 			_xEventGroupSetBits(service->event_ready, DEF_BIT_DATA_READY_SERVO); // sets eventDataReady bits
 		}
-		
-		if (DEF_PRINT_TO_TERMINAL){
-			s_print("INFO", CLASS_NAME, "Regulator: TT %i, CO2 %i, Max %i pct.",temp_claim, co2_claim, max_claim);
-		}
+		s_print("INFO", CLASS_NAME, "Regulator: TT %i, CO2 %i, Max %i pct.",temp_claim, co2_claim, max_claim);
 	}
 }
 
