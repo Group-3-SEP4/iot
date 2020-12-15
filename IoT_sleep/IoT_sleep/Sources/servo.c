@@ -30,9 +30,6 @@ static SemaphoreHandle_t _servo_mutex;
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
 
-static EventBits_t _bitMeasureStart;
-static EventBits_t _bitDataReady;
-
 static configuration_t _configuration;
 static co2_sensor_t _co2_sensor;
 static ht_sensor_t _ht_sensor;
@@ -96,10 +93,10 @@ static void servo_regulate(servo_t servo){
 
 		_xSemaphoreGive(_servo_mutex);
 		
-		if (_xEventGroupGetBits(_eventGroupMeasure) & _bitMeasureStart) // checks eventMeasureStart bits
+		if (_xEventGroupGetBits(_eventGroupMeasure) & DEF_BIT_MEASURE_START_SERVO) // checks eventMeasureStart bits
 		{
-			_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
-			_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
+			_xEventGroupClearBits(_eventGroupMeasure, DEF_BIT_MEASURE_START_SERVO); // clears eventMeasure bits
+			_xEventGroupSetBits(_eventGroupDataReady, DEF_BIT_DATA_READY_SERVO); // sets eventDataReady bits
 		}
 		
 		if (DEF_PRINT_TO_TERMINAL){
@@ -141,10 +138,6 @@ servo_t servo_create(uint8_t servoNo, EventGroupHandle_t eventGroupMeasure, Even
 	
 	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
-	
-	_bitMeasureStart = DEF_BIT_MEASURE_START_SERVO;
-	_bitDataReady = DEF_BIT_DATA_READY_SERVO;
-	
 	
 	xTaskCreate(
 	servo_task,		/* Function that implements the task. */

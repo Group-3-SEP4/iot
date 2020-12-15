@@ -28,9 +28,6 @@ static SemaphoreHandle_t _mutex;
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
 
-static EventBits_t _bitMeasureStart;
-static EventBits_t _bitDataReady;
-
 
 int16_t ht_getTemperature(ht_sensor_t sensor) {
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
@@ -42,6 +39,7 @@ int16_t ht_getTemperature(ht_sensor_t sensor) {
 	return _tmpValue;
 }
 
+
 uint16_t ht_getHumidity(ht_sensor_t sensor) {
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake (_mutex, DEF_WAIT_MUTEX_HUM_READ) == pdTRUE)
@@ -51,6 +49,7 @@ uint16_t ht_getHumidity(ht_sensor_t sensor) {
 	}
 	return _tmpValue;
 }
+
 
 inline void ht_measure(ht_sensor_t sensor){
 	
@@ -66,10 +65,10 @@ inline void ht_measure(ht_sensor_t sensor){
 			sensor->humidity = hih8120_getHumidity();
 			sensor->temperature = hih8120_getTemperature();
 			_xSemaphoreGive(_mutex);
-			if (_xEventGroupGetBits(_eventGroupMeasure) & _bitMeasureStart) // checks eventMeasureStart bits
+			if (_xEventGroupGetBits(_eventGroupMeasure) & DEF_BIT_MEASURE_START_HUM_TEMP) // checks eventMeasureStart bits
 			{
-				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
-				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
+				_xEventGroupClearBits(_eventGroupMeasure, DEF_BIT_MEASURE_START_HUM_TEMP); // clears eventMeasure bits
+				_xEventGroupSetBits(_eventGroupDataReady, DEF_BIT_DATA_READY_HUM_TEMP); // sets eventDataReady bits
 			}
 			
 			if (DEF_PRINT_TO_TERMINAL){
@@ -80,6 +79,7 @@ inline void ht_measure(ht_sensor_t sensor){
 	}
 	
 }
+
 
 void ht_task(void* pvParameters){
 
@@ -95,6 +95,7 @@ void ht_task(void* pvParameters){
 	
 }
 
+
 ht_sensor_t ht_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady){
 	
 	ht_sensor_t sensor = malloc(sizeof(ht_sensor_t));
@@ -109,10 +110,6 @@ ht_sensor_t ht_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t e
 
 	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
-
-	_bitMeasureStart = DEF_BIT_MEASURE_START_HUM_TEMP;
-	_bitDataReady = DEF_BIT_DATA_READY_HUM_TEMP;
-
 
 	hih8120_create();
 	

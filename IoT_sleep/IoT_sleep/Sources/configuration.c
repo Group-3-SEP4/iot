@@ -41,6 +41,7 @@ configuration_t configuration_create(void) {
 	return self;
 }
 
+
 uint16_t configuration_getDefaultTemperatur(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake(_confMutex, DEF_WAIT_DEFAULT) == pdTRUE) {
@@ -49,6 +50,7 @@ uint16_t configuration_getDefaultTemperatur(configuration_t self) {
 	}
 	return _tempValue;
 }
+
 
 void configuration_setDefaultTemperatur(configuration_t self, uint16_t temp) {
 	if (self->temp != temp) {
@@ -63,6 +65,7 @@ void configuration_setDefaultTemperatur(configuration_t self, uint16_t temp) {
 	}
 }
 
+
 uint16_t configuration_getMinCo2(configuration_t self) {
 	uint16_t _tempValue = DEF_DEFAULT_NA_SENSOR;
 	if (xSemaphoreTake(_confMutex, DEF_WAIT_DEFAULT) == pdTRUE) {
@@ -71,6 +74,7 @@ uint16_t configuration_getMinCo2(configuration_t self) {
 	}
 	return _tempValue;
 }
+
 
 void configuration_setMinCo2(configuration_t self, uint16_t min) {
 
@@ -95,6 +99,7 @@ uint16_t configuration_getMaxCo2(configuration_t self) {
 	}
 	return _tempValue;
 }
+
 
 void configuration_setMaxCo2(configuration_t self, uint16_t max) {
 	if (self->co2Range[MAX_CO2_FLAG] != max) {

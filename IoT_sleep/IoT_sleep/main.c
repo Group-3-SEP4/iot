@@ -27,8 +27,6 @@
 #define CLASS_NAME		"main.c"
 
 
-
-/*-----------------------------------------------------------*/
 void create_operations(MessageBufferHandle_t msgBufferDownlink){
 	
 	configuration_t configuration = configuration_create();
@@ -51,7 +49,6 @@ void create_operations(MessageBufferHandle_t msgBufferDownlink){
 }
 
 
-/*-----------------------------------------------------------*/
 void initialiseSystem(MessageBufferHandle_t msgBufferDownlink)
 {
 	
@@ -80,7 +77,6 @@ void initialiseSystem(MessageBufferHandle_t msgBufferDownlink)
 }
 
 
-/*-----------------------------------------------------------*/
 int main(void)
 {
 	MessageBufferHandle_t msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
@@ -91,9 +87,7 @@ int main(void)
 	// Create tasks
 	create_operations(msgBufferDownlink);
 
-	if (DEF_PRINT_TO_TERMINAL){
-		s_print("INFO", CLASS_NAME, "Program Started!! Free heap: %i", xPortGetFreeHeapSize() );
-	}
+	s_print("INFO", CLASS_NAME, "Program Started!! Free heap: %i", xPortGetFreeHeapSize() );
 
 	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 

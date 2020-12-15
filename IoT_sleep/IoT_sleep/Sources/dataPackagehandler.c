@@ -52,9 +52,7 @@ void dataPackageHandler_collectSensorData(){
 	
 		lora_driver_payload_t payload = payloadBuilder_getPayload(tt, rh, co, sPos);
 		
-		if (DEF_PRINT_TO_TERMINAL){
-			s_print("PRODUCTION", CLASS_NAME, "payload: TT %i, RH %i CO2 %i, sPos %i", tt, rh, co, sPos);
-		}
+		s_print("INFO", CLASS_NAME, "payload: TT %i, RH %i CO2 %i, sPos %i", tt, rh, co, sPos);
 		
 		_xMessageBufferSend(_msgBufferUplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE);
 	}
@@ -72,19 +70,17 @@ void dataPackageHandler_task(void* pvParameters){
 	}
 }
 
+
 void dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, MessageBufferHandle_t messageBufferuplink, co2_sensor_t co2_sensor, ht_sensor_t ht_sensor, servo_t servo){
-	
 	
 	_co2_sensor = co2_sensor;
 	_ht_sensor = ht_sensor;
 	_servo = servo;
 	
-	
 	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
 	_msgBufferUplink = messageBufferuplink;
 	
-
 	xTaskCreate(
 	dataPackageHandler_task,		/* Function that implements the task. */
 	"data package task",			/* Text name for the task. */

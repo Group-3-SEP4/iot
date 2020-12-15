@@ -25,9 +25,6 @@ static SemaphoreHandle_t _co2_mutex;
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
 
-static EventBits_t _bitMeasureStart;
-static EventBits_t _bitDataReady;
-
 
 uint16_t co2_getMeasurement(co2_sensor_t sensor){
 	uint16_t _tmpValue = DEF_DEFAULT_NA_SENSOR;
@@ -51,10 +48,10 @@ inline void co2_measure(co2_sensor_t sensor){
 			mh_z19_getCo2Ppm(&sensor->value);
 			_xSemaphoreGive(_co2_mutex);
 			
-			if (_xEventGroupGetBits(_eventGroupMeasure) & _bitMeasureStart) // checks eventMeasureStart bits
+			if (_xEventGroupGetBits(_eventGroupMeasure) & DEF_BIT_MEASURE_START_CO2) // checks eventMeasureStart bits
 			{	
-				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
-				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
+				_xEventGroupClearBits(_eventGroupMeasure, DEF_BIT_MEASURE_START_CO2); // clears eventMeasure bits
+				_xEventGroupSetBits(_eventGroupDataReady, DEF_BIT_DATA_READY_CO2); // sets eventDataReady bits
 			}
 			if (DEF_PRINT_TO_TERMINAL){
 				s_print("INFO", CLASS_NAME, "Current CO2: %i", co2_getMeasurement(sensor));
@@ -90,10 +87,6 @@ co2_sensor_t co2_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t
 	
 	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
-	
-	_bitMeasureStart = DEF_BIT_MEASURE_START_CO2;
-	_bitDataReady = DEF_BIT_DATA_READY_CO2;
-	
 	
 	mh_z19_create(MH_Z19_USART, NULL); 
 	
