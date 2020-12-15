@@ -13,6 +13,9 @@
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"
 #include "ht_sensor.h"
+#include "secure_print.h"
+
+#define CLASS_NAME	"ht_sensor.c"
 
 
 typedef struct ht_sensor {
@@ -68,9 +71,9 @@ inline void ht_measure(ht_sensor_t sensor){
 				_xEventGroupClearBits(_eventGroupMeasure, _bitMeasureStart); // clears eventMeasure bits
 				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
 			}
-
+			
 			if (DEF_PRINT_TO_TERMINAL){
-				printf("Current temperature and humidity: %i, %i\n", ht_getTemperature(sensor), ht_getHumidity(sensor));
+				s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_getTemperature(sensor), ht_getHumidity(sensor));
 			}
 		}
 

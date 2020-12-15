@@ -6,8 +6,8 @@
 #include <status_leds.h>
 #include <display_7seg.h>
 #include "definitions.h"
-#include "secure_print.h"
 #include "wrapper_messageBuffer.h"
+#include "secure_print.h"
 
 // LoRa keys 
 #include "secrets.h"
@@ -134,10 +134,12 @@ void uplink_handler_task( void *pvParameters )
 				lora_driver_returnCode_t returnCode = lora_driver_sendUploadMessage(false, &_payload);
 				char * returnCodeStr = lora_driver_mapReturnCodeToText(returnCode);
 			
-				s_print("INFO", CLASS_NAME, "Upload Message: >%s<", returnCodeStr);
+				if (DEF_PRINT_TO_TERMINAL){
+					s_print("PRODUCTION", CLASS_NAME, "Upload Message: >%s<", returnCodeStr);
+				}
 		} else {
 			if (DEF_PRINT_TO_TERMINAL){
-				printf("Buffer empty looping around \n");
+				s_print("PRODUCTION", CLASS_NAME, "Buffer empty looping around.");
 			}
 		}
 	}

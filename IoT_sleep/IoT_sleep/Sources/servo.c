@@ -15,7 +15,9 @@
 #include "co2_sensor.h"
 #include "ht_sensor.h"
 #include "configuration.h"
+#include "secure_print.h"
 
+#define CLASS_NAME	"servo.c"
 
 typedef struct servo {
 	uint8_t servoNo;
@@ -40,7 +42,6 @@ uint16_t servo_getPosition(servo_t servo){
 	if (_xSemaphoreTake (_servo_mutex, DEF_WAIT_MUTEX_SERVO_READ) == pdTRUE)
 	{
 		_tmpPos = servo->position;
-		printf("servo get %p\n",servo->position);
 		_xSemaphoreGive(_servo_mutex);
 	}
 	return _tmpPos;
@@ -91,7 +92,6 @@ static void servo_regulate(servo_t servo){
 		}
 		
 		servo->position = maxClaim;
-		printf("servo %p\n",servo->position);
 		rc_servo_setPosition(servo->servoNo, maxClaim);
 
 		_xSemaphoreGive(_servo_mutex);
@@ -103,7 +103,7 @@ static void servo_regulate(servo_t servo){
 		}
 		
 		if (DEF_PRINT_TO_TERMINAL){
-			printf("Regulator claim: TT %i, CO2 %i, Max %i pct.\n",tempClaim, co2Claim, maxClaim);
+			s_print("INFO", CLASS_NAME, "Regulator: TT %i, CO2 %i, Max %i pct.",tempClaim, co2Claim, maxClaim);
 		}
 	}
 }

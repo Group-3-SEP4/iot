@@ -11,6 +11,9 @@
 #include "definitions.h"
 #include "wrapper_semaphore.h"
 #include "wrapper_eventGroup.h"
+#include "secure_print.h"
+
+#define CLASS_NAME	"co2_sensor.c"
 
 typedef struct co2_sensor {
 	uint16_t value;
@@ -54,7 +57,7 @@ inline void co2_measure(co2_sensor_t sensor){
 				_xEventGroupSetBits(_eventGroupDataReady, _bitDataReady); // sets eventDataReady bits
 			}
 			if (DEF_PRINT_TO_TERMINAL){
-				printf("Current CO2: %i\n", co2_getMeasurement(sensor));
+				s_print("INFO", CLASS_NAME, "Current CO2: %i", co2_getMeasurement(sensor));
 			}
 		}
 	}

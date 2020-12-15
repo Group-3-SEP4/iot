@@ -22,13 +22,14 @@
 #include "uplinkHandler.h"
 #include "downlinkHandler.h"
 #include "servo.h"
+#include "secure_print.h"
 
+#define CLASS_NAME		"main.c"
 
-MessageBufferHandle_t msgBufferDownlink;
 
 
 /*-----------------------------------------------------------*/
-void create_operations(void){
+void create_operations(MessageBufferHandle_t msgBufferDownlink){
 	
 	configuration_t configuration = configuration_create();
 
@@ -51,7 +52,7 @@ void create_operations(void){
 
 
 /*-----------------------------------------------------------*/
-void initialiseSystem()
+void initialiseSystem(MessageBufferHandle_t msgBufferDownlink)
 {
 	
 	// Set output ports for leds used in the example
@@ -69,7 +70,6 @@ void initialiseSystem()
 	rc_servo_create();
 
 	// Initialise the LoRaWAN
-	msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	lora_driver_create(LORA_USART, msgBufferDownlink);
 	
 	// Here the call back function is not needed
@@ -83,14 +83,18 @@ void initialiseSystem()
 /*-----------------------------------------------------------*/
 int main(void)
 {
-	initialiseSystem(); // Must be done as the very first thing!!
+	MessageBufferHandle_t msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	s_print_create(xSemaphoreCreateMutex()); // initialize s_print
+	
+	initialiseSystem(msgBufferDownlink); // Must be done as the very first thing!!
 	
 	// Create tasks
-	create_operations();
+	create_operations(msgBufferDownlink);
 
-	printf("Program Started!!\n");
-	
-	printf("Free Heap size: %i\n", xPortGetFreeHeapSize());
+	if (DEF_PRINT_TO_TERMINAL){
+		s_print("INFO", CLASS_NAME, "Program Started!! Free heap: %i", xPortGetFreeHeapSize() );
+	}
+
 	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 
 	while (1)

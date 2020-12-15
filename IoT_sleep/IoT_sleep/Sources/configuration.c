@@ -7,6 +7,10 @@
 #include "configuration.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"
+#include "secure_print.h"
+#include "secure_print.h"
+
+#define CLASS_NAME	"configuration.c"
 
 #define MIN_CO2_FLAG 0
 #define MAX_CO2_FLAG 1
@@ -31,7 +35,9 @@ configuration_t configuration_create(void) {
 	self->temp = eeprom_read_word(DEF_MEMLOC_TEMP);
 	self->co2Range[MIN_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MIN);
 	self->co2Range[MAX_CO2_FLAG] = eeprom_read_word(DEF_MEMLOC_CO2_MAX);
-	printf("configuration_create: Read from EEPROM: %d, %d, %d\n", self->temp, self->co2Range[MIN_CO2_FLAG], self->co2Range[MAX_CO2_FLAG]);
+	if (DEF_PRINT_TO_TERMINAL){
+		s_print("PRODUCTION", CLASS_NAME, "configuration_create: Read from EEPROM: %d, %d, %d", self->temp, self->co2Range[MIN_CO2_FLAG], self->co2Range[MAX_CO2_FLAG]);
+	}
 	return self;
 }
 
@@ -45,12 +51,14 @@ uint16_t configuration_getDefaultTemperatur(configuration_t self) {
 }
 
 void configuration_setDefaultTemperatur(configuration_t self, uint16_t temp) {
-	printf("configuration_setDefaultTemperatur: set temp to: %d\n", temp);
 	if (self->temp != temp) {
 		if (_xSemaphoreTake(_confMutex, pdMS_TO_TICKS(portMAX_DELAY)) == pdTRUE) { // if conf. cant be run, wait forever.
 			eeprom_write_word(DEF_MEMLOC_TEMP, temp);
 			self->temp = temp;
 			_xSemaphoreGive(_confMutex);
+			if (DEF_PRINT_TO_TERMINAL){
+				s_print("INFO", CLASS_NAME, "Set temp: %d", temp);
+			}
 		}
 	}
 }
@@ -71,6 +79,9 @@ void configuration_setMinCo2(configuration_t self, uint16_t min) {
 			eeprom_write_word(DEF_MEMLOC_CO2_MIN, min);
 			self->co2Range[MIN_CO2_FLAG] = min;
 			xSemaphoreGive(_confMutex);
+			if (DEF_PRINT_TO_TERMINAL){
+				s_print("INFO", CLASS_NAME, "Set min co2: %d", min);
+			}
 		}
 	}
 }
@@ -91,6 +102,9 @@ void configuration_setMaxCo2(configuration_t self, uint16_t max) {
 			eeprom_write_word(DEF_MEMLOC_CO2_MAX, max);
 			self->co2Range[MAX_CO2_FLAG] = max;
 			xSemaphoreGive(_confMutex);
+			if (DEF_PRINT_TO_TERMINAL){
+				s_print("INFO", CLASS_NAME, "Set max co2: %d", max);
+			}
 		}
 	}
 }

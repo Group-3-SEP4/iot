@@ -6,6 +6,7 @@
 #include <message_buffer.h>
 #include <stddef.h>
 #include <semphr.h>
+#include <lora_driver.h>
 #include "dataPackageHandler.h"
 #include "definitions.h"
 #include "wrapper_semaphore.h"
@@ -15,9 +16,9 @@
 #include "ht_sensor.h"
 #include "servo.h"
 #include "payloadBuilder.h"
+#include "secure_print.h"
 
-#include <lora_driver.h>
-
+#define CLASS_NAME	"dataPackageHandler.c"
 
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
@@ -51,7 +52,9 @@ void dataPackageHandler_collectSensorData(){
 	
 		lora_driver_payload_t payload = payloadBuilder_getPayload(tt, rh, co, sPos);
 		
-		printf("payload: TT %i, RH %i CO2 %i, sPos %i\n", tt, rh, co, sPos);
+		if (DEF_PRINT_TO_TERMINAL){
+			s_print("PRODUCTION", CLASS_NAME, "payload: TT %i, RH %i CO2 %i, sPos %i", tt, rh, co, sPos);
+		}
 		
 		_xMessageBufferSend(_msgBufferUplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE);
 	}
