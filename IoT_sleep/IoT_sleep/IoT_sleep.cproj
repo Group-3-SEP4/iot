@@ -41,7 +41,7 @@
       </framework-data>
     </AsfFrameworkConfig>
     <avrtool>com.atmel.avrdbg.tool.atmelice</avrtool>
-    <avrtoolserialnumber>J41800046174</avrtoolserialnumber>
+    <avrtoolserialnumber>J41800046156</avrtoolserialnumber>
     <avrdeviceexpectedsignature>0x1E9801</avrdeviceexpectedsignature>
     <com_atmel_avrdbg_tool_simulator>
       <ToolOptions>
@@ -59,15 +59,15 @@
     <com_atmel_avrdbg_tool_atmelice>
       <ToolOptions>
         <InterfaceProperties>
-          <JtagDbgClock>1569846</JtagDbgClock>
+          <JtagDbgClock>1555577</JtagDbgClock>
         </InterfaceProperties>
         <InterfaceName>JTAG</InterfaceName>
       </ToolOptions>
       <ToolType>com.atmel.avrdbg.tool.atmelice</ToolType>
-      <ToolNumber>J41800046174</ToolNumber>
+      <ToolNumber>J41800046156</ToolNumber>
       <ToolName>Atmel-ICE</ToolName>
     </com_atmel_avrdbg_tool_atmelice>
-    <avrtoolinterfaceclock>1569846</avrtoolinterfaceclock>
+    <avrtoolinterfaceclock>1555577</avrtoolinterfaceclock>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <ToolchainSettings>
@@ -186,7 +186,13 @@
     <Compile Include="Includes\ht_sensor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Includes\payloadBuilder.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Includes\secrets.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\secure_print.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\servo.h">
@@ -220,6 +226,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\ht_sensor.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\payloadBuilder.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Sources\secure_print.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\servo.c">

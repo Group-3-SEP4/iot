@@ -14,97 +14,49 @@
 #include "co2_sensor.h"
 #include "ht_sensor.h"
 #include "servo.h"
+#include "payloadBuilder.h"
 
 #include <lora_driver.h>
-
-
-typedef struct dataPackage {
-	int16_t temperature;
-	int16_t humidity;
-	uint16_t co2;
-	uint16_t servo;
-} dataPackage;
 
 
 static EventGroupHandle_t _eventGroupMeasure;
 static EventGroupHandle_t _eventGroupDataReady;
 static MessageBufferHandle_t _msgBufferUplink;
 
-static EventBits_t _bitMeasureStart;
-static EventBits_t _bitDataReady;
-
 static co2_sensor_t _co2_sensor;
 static ht_sensor_t _ht_sensor;
 static servo_t _servo;
-static SemaphoreHandle_t _data_mutex;
 
-static lora_driver_payload_t _uplink_payload;
 
-lora_driver_payload_t dataPackageHandler_getPayload(dataPackageHandler_t dataPackageHandler){
-	uint16_t hum = DEF_DEFAULT_NA_SENSOR; 
-	int16_t temp = DEF_DEFAULT_NA_SENSOR; 
-	uint16_t co2_ppm = DEF_DEFAULT_NA_SENSOR;
-	uint16_t servo = DEF_DEFAULT_NA_SENSOR;
+void dataPackageHandler_collectSensorData(){
 	
-	if (_xSemaphoreTake (_data_mutex, DEF_WAIT_MUTEX_DATAPACKAGE) == pdTRUE)
-	{
-		temp = dataPackageHandler->temperature;
-		hum = dataPackageHandler->humidity;
-		co2_ppm = dataPackageHandler->co2;
-		servo = dataPackageHandler->servo;
-	
-		_xSemaphoreGive(_data_mutex);
-	}
-	
-	_uplink_payload.bytes[0] = hum >> 8; 
-	_uplink_payload.bytes[1] = hum & 0xFF;
-	_uplink_payload.bytes[2] = temp >> 8;
-	_uplink_payload.bytes[3] = temp & 0xFF;
-	_uplink_payload.bytes[4] = co2_ppm >> 8;
-	_uplink_payload.bytes[5] = co2_ppm & 0xFF;
-	_uplink_payload.bytes[6] = servo >> 8;
-	_uplink_payload.bytes[7] = servo & 0xFF;
-
-	if (DEF_PRINT_TO_TERMINAL){
-		printf("Payload data: CO2: %i ppm, temp: %i, RH: %i, Servo position: %i \n", co2_ppm, temp, hum, servo);
-	}
-
-	return _uplink_payload;
-}
-	
-
-inline static void dataPackageHandler_collectSensorData(dataPackageHandler_t dataPackage){
-	
-	_xEventGroupSetBits(_eventGroupMeasure, _bitMeasureStart);
+	_xEventGroupSetBits(_eventGroupMeasure, DEF_BIT_MEASURE_START);
 	
 	EventBits_t dataBits = xEventGroupWaitBits(
 	_eventGroupDataReady,	// The event group being tested.
-	_bitDataReady,			// The bits to wait for.
+	DEF_BIT_DATA_READY,			// The bits to wait for.
 	pdTRUE,					// bits will be cleared before return
 	pdTRUE,					// wait for bits to be set
 	DEF_WAIT_EVENT_DATA_READY);	// time to wait
 	
-	if ((dataBits & _bitDataReady) == _bitDataReady){
-		if (_xSemaphoreTake (_data_mutex, DEF_WAIT_MUTEX_DATAPACKAGE) == pdTRUE) // protect shared data
-		{
-			dataPackage->temperature = ht_getTemperature(_ht_sensor);
-			dataPackage->co2 = co2_getMeasurement(_co2_sensor);
-			dataPackage->servo = servo_getPosition(_servo);
-			dataPackage->humidity = ht_getHumidity(_ht_sensor);
+	
+	if ((dataBits & DEF_BIT_DATA_READY) == DEF_BIT_DATA_READY){
 		
-			_xSemaphoreGive(_data_mutex);
-			
+		int16_t tt = ht_getTemperature(_ht_sensor);
+		uint16_t co = co2_getMeasurement(_co2_sensor);
+		uint16_t sPos = servo_getPosition(_servo);
+		uint16_t rh = ht_getHumidity(_ht_sensor);
 		
-			
-			_xEventGroupClearBits(_eventGroupMeasure, _bitDataReady);
-		}
+		_xEventGroupClearBits(_eventGroupMeasure, DEF_BIT_DATA_READY);
+	
+		lora_driver_payload_t payload = payloadBuilder_getPayload(tt, rh, co, sPos);
 		
-		lora_driver_payload_t payload = dataPackageHandler_getPayload(dataPackage);	
+		printf("payload: TT %i, RH %i CO2 %i, sPos %i\n", tt, rh, co, sPos);
+		
 		_xMessageBufferSend(_msgBufferUplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE);
 	}
 }
 
-// static bliver taget ved compile og ikke i stacken
 
 void dataPackageHandler_task(void* pvParameters){	
 	TickType_t xLastWakeTime = xTaskGetTickCount();
@@ -113,49 +65,31 @@ void dataPackageHandler_task(void* pvParameters){
 	for (;;)
 	{
 		vTaskDelayUntil(&xLastWakeTime, xFrequency); // execution delay must be defined as first
-		dataPackageHandler_collectSensorData((dataPackageHandler_t) pvParameters);
+		dataPackageHandler_collectSensorData();
 	}
 }
 
-
-dataPackageHandler_t dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, MessageBufferHandle_t messageBufferuplink, co2_sensor_t co2_sensor, ht_sensor_t ht_sensor, servo_t servo){
+void dataPackageHandler_create(EventGroupHandle_t eventGroupMeasure, EventGroupHandle_t eventGroupDataReady, MessageBufferHandle_t messageBufferuplink, co2_sensor_t co2_sensor, ht_sensor_t ht_sensor, servo_t servo){
 	
-	dataPackageHandler_t _dataPackageHandler = malloc(sizeof(dataPackage));
-	if (NULL == _dataPackageHandler){
-		return NULL;
-	}
-	
-	_dataPackageHandler->temperature = DEF_DEFAULT_NA_SENSOR;
-	_dataPackageHandler->humidity = DEF_DEFAULT_NA_SENSOR;
-	_dataPackageHandler->co2 = DEF_DEFAULT_NA_SENSOR;
 	
 	_co2_sensor = co2_sensor;
 	_ht_sensor = ht_sensor;
 	_servo = servo;
 	
-	_data_mutex = xSemaphoreCreateMutex();
 	
 	_eventGroupMeasure = eventGroupMeasure;
 	_eventGroupDataReady = eventGroupDataReady;
 	_msgBufferUplink = messageBufferuplink;
 	
-	_bitMeasureStart = DEF_BIT_MEASURE_START;
-	_bitDataReady = DEF_BIT_DATA_READY;
-	
-	_uplink_payload.len = 8;
-	_uplink_payload.port_no = 2;
 
 	xTaskCreate(
 	dataPackageHandler_task,		/* Function that implements the task. */
 	"data package task",			/* Text name for the task. */
 	DEF_STACK_DATAPACKAGE,			/* Stack size in words, not bytes. */
-	_dataPackageHandler,			/* Parameter passed into the task. */
+	NULL,			/* Parameter passed into the task. */
 	DEF_PRIORITY_TASK_DATAPACKAGE,	/* Priority at which the task is created. */
 	NULL);							/* Used to pass out the created task's handle. */
-	
-	
-	return _dataPackageHandler;
-	
+
 }
 
 

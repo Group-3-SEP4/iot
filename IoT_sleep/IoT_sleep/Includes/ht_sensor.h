@@ -11,6 +11,4 @@ int16_t ht_getTemperature(ht_sensor_t sensor);
 uint16_t ht_getHumidity(ht_sensor_t sensor);
 void ht_measure(ht_sensor_t sensor);
 
-
-
 #endif
