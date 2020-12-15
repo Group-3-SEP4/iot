@@ -39,7 +39,7 @@ static void lora_setup(void)
 	s_print("PROD", CLASS_NAME, "Set DevEUI: %s >%s<", _out_buf, lora_driver_mapReturnCodeToText(lora_driver_setDeviceIdentifier(_out_buf)));
 
 	// Set Over The Air Activation parameters to be ready to join the LoRaWAN
-	printf("Set OTAA Identity appEUI:%s appKEY:%s devEUI:%s >%s<", LORA_appEUI, LORA_appKEY, _out_buf, lora_driver_mapReturnCodeToText(lora_driver_setOtaaIdentity(LORA_appEUI,LORA_appKEY,_out_buf)));
+	s_print("PROD", CLASS_NAME, "Set OTAA Identity appEUI:%s appKEY:%s devEUI:%s >%s<", LORA_appEUI, LORA_appKEY, _out_buf, lora_driver_mapReturnCodeToText(lora_driver_setOtaaIdentity(LORA_appEUI,LORA_appKEY,_out_buf)));
 
 	// Save all the MAC settings in the transceiver
 	s_print("PROD", CLASS_NAME, "Save mac >%s<",lora_driver_mapReturnCodeToText(lora_driver_saveMac()));
