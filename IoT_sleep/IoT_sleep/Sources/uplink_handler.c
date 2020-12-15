@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <lora_driver.h>
-#include <message_buffer.h>
 #include <status_leds.h>
 #include <display_7seg.h>
+#include "uplink_handler.h"
 #include "definitions.h"
 #include "wrapper_messageBuffer.h"
+#include "wrapper_task.h"
 #include "secure_print.h"
 
 // LoRa keys 
@@ -17,7 +18,7 @@
 static bool initialized = false;
 
 
-static void _lora_setup(void)
+static void lora_setup(void)
 {
 	char _out_buf[100];
 	
@@ -97,7 +98,7 @@ static void _lora_setup(void)
 
 void uplink_handler_task( void *pvParameters )
 {
-	MessageBufferHandle_t _msgBufferUplink = pvParameters;
+	MessageBufferHandle_t buffer_uplink = pvParameters;
 
 	
 	if (!initialized){
@@ -110,31 +111,31 @@ void uplink_handler_task( void *pvParameters )
 
 		lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 
-		_lora_setup();
+		lora_setup();
 		
 		initialized = true;
 	}
 	
-	float packagesSent = 0.0;
+	float packages_sent = 0.0;
 	
 	for(;;) 
 	{
 	
-		lora_driver_payload_t _payload;
+		lora_driver_payload_t payload;
 		size_t xReceivedBytes;
 		
-		xReceivedBytes = _xMessageBufferReceive( _msgBufferUplink,( void * ) &_payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_EMPTY_UPLINK);
+		xReceivedBytes = _xMessageBufferReceive( buffer_uplink,( void * ) &payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_EMPTY_UPLINK);
 		
 		if( xReceivedBytes > 0 )
 		{
-				display_7seg_display(packagesSent++, 0);
+				display_7seg_display(packages_sent++, 0);
 
 				status_leds_shortPuls(led_ST4);  // OPTIONAL
 				//lora_driver_sendUploadMessage(false, &uplink_payload);
-				lora_driver_returnCode_t returnCode = lora_driver_sendUploadMessage(false, &_payload);
-				char * returnCodeStr = lora_driver_mapReturnCodeToText(returnCode);
+				lora_driver_returnCode_t return_code = lora_driver_sendUploadMessage(false, &payload);
+				char * return_code_str = lora_driver_mapReturnCodeToText(return_code);
 			
-				s_print("INFO", CLASS_NAME, "Upload Message: >%s<", returnCodeStr);
+				s_print("INFO", CLASS_NAME, "Upload Message: >%s<", return_code_str);
 		} else {
 			s_print("INFO", CLASS_NAME, "Buffer empty looping around.");
 		}
@@ -142,14 +143,13 @@ void uplink_handler_task( void *pvParameters )
 }
 
 
-void uplink_handler_create(MessageBufferHandle_t messageBufferUplink)
+void uplink_handler_create(MessageBufferHandle_t buffer_uplink)
 {
-	
-	xTaskCreate(
+	_xTaskCreate(
 	uplink_handler_task
-	,  (const portCHAR *)"UplinkHandler"  // A name just for humans
+	,  "UplinkHandler"  // A name just for humans
 	,  DEF_STACK_UPLINK  // This stack size can be checked & adjusted by reading the Stack Highwater
-	,  messageBufferUplink
+	,  buffer_uplink
 	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }

@@ -168,25 +168,31 @@
     <Compile Include="drivers\display_7seg.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\co2_sensor.h">
+    <Compile Include="FreeRTOS\src\atomic.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\configuration.h">
+    <Compile Include="FreeRTOS\src\heap_3.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\dataPackageHandler.h">
+    <Compile Include="Includes\co2_service.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\configuration_service.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Includes\data_package_handler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\definitions.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\downlinkHandler.h">
+    <Compile Include="Includes\downlink_handler.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\ht_sensor.h">
+    <Compile Include="Includes\ht_service.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\payloadBuilder.h">
+    <Compile Include="Includes\payload_builder.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\secrets.h">
@@ -195,10 +201,10 @@
     <Compile Include="Includes\secure_print.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\servo.h">
+    <Compile Include="Includes\servo_service.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Includes\uplinkHandler.h">
+    <Compile Include="Includes\uplink_handler.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Includes\Wrappers\wrapper_eventGroup.h">
@@ -213,31 +219,31 @@
     <Compile Include="Includes\Wrappers\wrapper_task.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\co2_sensor.c">
+    <Compile Include="Sources\co2_service.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\configuration.c">
+    <Compile Include="Sources\configuration_service.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\dataPackageHandler.c">
+    <Compile Include="Sources\data_package_handler.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\downlinkHandler.c">
+    <Compile Include="Sources\downlink_handler.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\ht_sensor.c">
+    <Compile Include="Sources\ht_service.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\payloadBuilder.c">
+    <Compile Include="Sources\payload_builder.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Sources\secure_print.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\servo.c">
+    <Compile Include="Sources\servo_service.c">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Sources\uplinkHandler.c">
+    <Compile Include="Sources\uplink_handler.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="drivers\fifo.h">
@@ -343,9 +349,6 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="FreeRTOS\src\FreeRTOSVariant.h">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="FreeRTOS\src\heap_4.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="FreeRTOS\src\list.c">

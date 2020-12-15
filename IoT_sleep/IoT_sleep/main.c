@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <avr/io.h>
 #include <avr/sfr_defs.h>
-
 #include <ihal.h>
 #include <ATMEGA_FreeRTOS.h>
 #include <semphr.h>
@@ -15,41 +14,41 @@
 #include <rc_servo.h>
 
 #include "definitions.h"
-#include "co2_sensor.h"
-#include "ht_sensor.h"
-#include "dataPackageHandler.h"
-#include "configuration.h"
-#include "uplinkHandler.h"
-#include "downlinkHandler.h"
-#include "servo.h"
+#include "co2_service.h"
+#include "ht_service.h"
+#include "data_package_handler.h"
+#include "configuration_service.h"
+#include "uplink_handler.h"
+#include "downlink_handler.h"
+#include "servo_service.h"
 #include "secure_print.h"
 
 #define CLASS_NAME		"main.c"
 
 
-void create_operations(MessageBufferHandle_t msgBufferDownlink){
+void create_operations(MessageBufferHandle_t buffer_downlink){
 	
-	configuration_t configuration = configuration_create();
+	configuration_service_t configuration_service = configuration_service_create();
 
-	EventGroupHandle_t eventGroupMeasure  = xEventGroupCreate();
-	EventGroupHandle_t eventGroupDataReady = xEventGroupCreate();
+	EventGroupHandle_t event_group_data_collect  = xEventGroupCreate();
+	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
 	
-	MessageBufferHandle_t msgBufferUplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	MessageBufferHandle_t buffer_uplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 
-	co2_sensor_t co2Sensor = co2_create(eventGroupMeasure, eventGroupDataReady);
+	co2_service_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
 	
-	ht_sensor_t htSensor = ht_create(eventGroupMeasure, eventGroupDataReady);
+	ht_service_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
 	
-	servo_t servo = servo_create(SERVO_J14, eventGroupMeasure, eventGroupDataReady, configuration, co2Sensor, htSensor);
+	servo_service_t servo_service = servo_service_create(SERVO_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
 	
-	dataPackageHandler_create(eventGroupMeasure, eventGroupDataReady, msgBufferUplink, co2Sensor, htSensor, servo);
+	data_package_handler_create(event_group_data_collect, event_group_data_ready, buffer_uplink, co2_service, ht_service, servo_service);
 	
-	uplink_handler_create(msgBufferUplink);
-	downlink_handler_create(msgBufferDownlink, configuration);
+	uplink_handler_create(buffer_uplink);
+	downlink_handler_create(buffer_downlink, configuration_service);
 }
 
 
-void initialiseSystem(MessageBufferHandle_t msgBufferDownlink)
+void initialiseSystem(MessageBufferHandle_t buffer_downlink)
 {
 	
 	// Set output ports for leds used in the example
@@ -67,7 +66,7 @@ void initialiseSystem(MessageBufferHandle_t msgBufferDownlink)
 	rc_servo_create();
 
 	// Initialise the LoRaWAN
-	lora_driver_create(LORA_USART, msgBufferDownlink);
+	lora_driver_create(LORA_USART, buffer_downlink);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);
@@ -79,15 +78,15 @@ void initialiseSystem(MessageBufferHandle_t msgBufferDownlink)
 
 int main(void)
 {
-	MessageBufferHandle_t msgBufferDownlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	MessageBufferHandle_t buffer_downlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	s_print_create(xSemaphoreCreateMutex()); // initialize s_print
 	
-	initialiseSystem(msgBufferDownlink); // Must be done as the very first thing!!
+	initialiseSystem(buffer_downlink); // Must be done as the very first thing!!
 	
 	// Create tasks
-	create_operations(msgBufferDownlink);
+	create_operations(buffer_downlink);
 
-	s_print("INFO", CLASS_NAME, "Program Started!! Free heap: %i", xPortGetFreeHeapSize() );
+	s_print("INFO", CLASS_NAME, "Program Started!!");
 
 	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 

@@ -1,14 +1,14 @@
 #include <stdint.h>
 #include <lora_driver.h>
-#include "payloadBuilder.h"
+#include "payload_builder.h"
 #include "definitions.h"
 #include "secure_print.h"
 
-#define CLASS_NAME	"payloadBuilder.c"
+#define CLASS_NAME	"payload_builder.c"
 
 static lora_driver_payload_t payload;
 
-lora_driver_payload_t payloadBuilder_getPayload(int16_t tt, uint16_t rh, uint16_t co, uint16_t sPos){
+lora_driver_payload_t payload_builder_get_payload(int16_t tt, uint16_t rh, uint16_t co, uint16_t sPos){
 	payload.len = 8;
 	payload.port_no = 2;
 	
