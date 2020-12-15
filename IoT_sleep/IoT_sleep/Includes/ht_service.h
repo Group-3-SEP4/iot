@@ -1,16 +1,14 @@
-#ifndef HUMIDITYTEMPERATURE_SERVICE_H
-#define HUMIDITYTEMPERATURE_SERVICE_H
+#ifndef HT_SERVICE_H
+#define HT_SERVICE_H
 
 #include <stdint.h>
 #include <event_groups.h>
 
-typedef struct ht_measurement* ht_t;
+typedef struct ht_service* ht_service_t;
 
-ht_t ht_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready);
-int16_t ht_service_get_temperature(ht_t sensor);
-uint16_t ht_service_get_humidity(ht_t sensor);
-void ht_service_measure(ht_t sensor);
-
-
+ht_service_t ht_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready);
+int16_t ht_service_get_temperature(ht_service_t service);
+uint16_t ht_service_get_humidity(ht_service_t service);
+void ht_service_measure(ht_service_t service);
 
 #endif

@@ -10,69 +10,64 @@
 #include <event_groups.h>
 #include <message_buffer.h>
 #include <display_7seg.h>
-#include <status_leds.h>
 #include <lora_driver.h>
 #include <rc_servo.h>
 
-#include "secure_print.h"
-#include "co2_service.h"
-#include "configuration_service.h"
-#include "uplink_handler.h"	
-#include "downlink_handler.h"
 #include "definitions.h"
-#include "sensor_data_handler.h"
+#include "co2_service.h"
 #include "ht_service.h"
+#include "data_package_handler.h"
+#include "configuration_service.h"
+#include "uplink_handler.h"
+#include "downlink_handler.h"
 #include "servo_service.h"
+#include "secure_print.h"
 
 #define CLASS_NAME		"main.c"
 
-void start_tasks(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, MessageBufferHandle_t message_buffer_uplink, MessageBufferHandle_t message_buffer_downlink){
-	
-	configuration_t configuration_service = configuration_service_create();
-	
-	co2_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
 
-	ht_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
+void create_operations(MessageBufferHandle_t buffer_downlink){
 	
-	servo_t servo_service = servo_service_create(
-		OUT_J14, 
-		event_group_data_collect, 
-		event_group_data_ready, 
-		configuration_service, 
-		co2_service, 
-		ht_service);
-		
-	sensor_data_handler_create(
-		message_buffer_uplink,
-		event_group_data_collect, 
-		event_group_data_ready, 
-		co2_service, 
-		ht_service, 
-		servo_service);
+	configuration_service_t configuration_service = configuration_service_create();
+
+	EventGroupHandle_t event_group_data_collect  = xEventGroupCreate();
+	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
 	
-	uplink_handler_create(message_buffer_uplink);
+	MessageBufferHandle_t buffer_uplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+
+	co2_service_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
 	
-	downlink_handler_create(configuration_service, message_buffer_downlink);
+	ht_service_t ht_service = ht_service_create(event_group_data_collect, event_group_data_ready);
+	
+	servo_service_t servo_service = servo_service_create(OUT_J14, event_group_data_collect, event_group_data_ready, configuration_service, co2_service, ht_service);
+	
+	data_package_handler_create(event_group_data_collect, event_group_data_ready, buffer_uplink, co2_service, ht_service, servo_service);
+	
+	uplink_handler_create(buffer_uplink);
+	
+	downlink_handler_create(buffer_downlink, configuration_service);
 }
 
-void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
+
+void initialiseSystem(MessageBufferHandle_t buffer_downlink)
 {
-	// Set output ports for LEDs used in the example
+	
+	// Set output ports for leds used in the example
 	DDRA |= _BV(DDA0) | _BV(DDA7);
-	// Initialize the trace-driver to be used together with the R2R-Network
+	// Initialise the trace-driver to be used together with the R2R-Network
 	trace_init();
 	// Make it possible to use stdio on COM port 0 (USB) on Arduino board - Setting 57600,8,N,1
 	stdio_create(ser_USART0);
 	
-	// LoRaWAN initialization 
-	// Initialize the HAL layer and use 5 for LED driver priority
+	// LoRaWAN initialization
+	// Initialise the HAL layer and use 5 for LED driver priority
 	hal_create(5);
 	
 	// initialize the servo
 	rc_servo_create();
-		
-	// Initialize the LoRaWAN driver without down-link buffer
-	lora_driver_create(LORA_USART, message_buffer_downlink);
+
+	// Initialise the LoRaWAN
+	lora_driver_create(LORA_USART, buffer_downlink);
 	
 	// Here the call back function is not needed
 	display_7seg_init(NULL);
@@ -81,24 +76,23 @@ void initialize_hardware(MessageBufferHandle_t message_buffer_downlink)
 	display_7seg_powerUp();
 }
 
+
 int main(void)
 {
-	EventGroupHandle_t event_group_data_collect = xEventGroupCreate();
-	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
-	MessageBufferHandle_t message_buffer_uplink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_UPLINK);
-	MessageBufferHandle_t message_buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
+	MessageBufferHandle_t buffer_downlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
 	s_print_create(xSemaphoreCreateMutex()); // initialize s_print
 	
+	initialiseSystem(buffer_downlink); // Must be done as the very first thing!!
 	
-	
-	initialize_hardware(message_buffer_downlink); // Must be done as the very first thing!!
-	
-	start_tasks(event_group_data_collect, event_group_data_ready, message_buffer_uplink, message_buffer_downlink);
-	s_print("START", CLASS_NAME, "Program Started.");
-	s_print("INFO", CLASS_NAME, "Free heap: %i", xPortGetMinimumEverFreeHeapSize());
-	vTaskStartScheduler(); // Initialize and run the freeRTOS scheduler. Execution should never return from here.
+	// Create tasks
+	create_operations(buffer_downlink);
+
+	s_print("PROD", CLASS_NAME, "Program Started!!");
+
+	vTaskStartScheduler(); // Initialise and run the freeRTOS scheduler. Execution should never return from here.
 
 	while (1)
 	{
 	}
 }
+

@@ -1,15 +1,8 @@
-/*
-*  Author: Aron 264237
-*/
+#ifndef UPLINK_HANDLER_H
+#define UPLINK_HANDLER_H
 
-#ifndef UPLINKHANDLER_H
-#define UPLINKHANDLER_H
+#include <message_buffer.h>
 
-#include "ATMEGA_FreeRTOS.h"
-#include "portmacro.h"
-
-void uplink_handler_create(MessageBufferHandle_t message_buffer);
-
-void uplink_handler_task_body(MessageBufferHandle_t uplink_message_buffer, float packagesSent);
+void uplink_handler_create(MessageBufferHandle_t buffer_uplink);
 
 #endif

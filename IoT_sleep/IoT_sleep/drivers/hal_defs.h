@@ -12,9 +12,9 @@
 #include <serial.h>
 
 // Lora Transceiver
-#define LORA_USART	ser_USART1
-#define LORA_RESET_PORT PORTK
-#define LORA_RESET_PIN PK4
+#define LORA_USART			ser_USART1
+#define LORA_RESET_PORT		PORTK
+#define LORA_RESET_PIN		PK4
 
 // MH-Z19 CO2 Driver
 #define MH_Z19_USART ser_USART3
