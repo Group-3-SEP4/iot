@@ -124,7 +124,7 @@ static void uplink_handler_task( void *pvParameters )
 		lora_driver_payload_t payload;
 		size_t xReceivedBytes;
 		
-		xReceivedBytes = _xMessageBufferReceive( buffer_uplink,( void * ) &payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_EMPTY_UPLINK);
+		xReceivedBytes = _xMessageBufferReceive( buffer_uplink,( void * ) &payload, sizeof(lora_driver_payload_t ), DEF_WAIT_BUFFER_UPLINK_EMPTY);
 		
 		if( xReceivedBytes > 0 )
 		{

@@ -22,7 +22,9 @@ class payload_builder_test : public ::testing::Test {
 public:
 
 	void SetUp() override {
-	
+		RESET_FAKE(s_print)
+
+		FFF_RESET_HISTORY()
 	}
 	void TearDown() override {}
 };

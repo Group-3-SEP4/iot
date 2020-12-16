@@ -49,14 +49,14 @@ void data_package_handler_collect_data(){
 	
 		lora_driver_payload_t payload = payload_builder_get_payload(tt, rh, co, sPos);
 		
-		_xMessageBufferSend(buffer_uplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_MSG_BUFFER_FULL_DATAPACKGE);
+		_xMessageBufferSend(buffer_uplink, &payload, sizeof(lora_driver_payload_t), DEF_WAIT_BUFFER_UPLINK_FULL);
 	}
 }
 
 
 static void data_package_handler_task(void* pvParameters){	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
-	const TickType_t xFrequency = DEF_DELAY_TASK_SEND_DATAPACKAGE;
+	const TickType_t xFrequency = DEF_DELAY_TASK_SEND_PAYLOAD;
 	
 	for (;;)
 	{

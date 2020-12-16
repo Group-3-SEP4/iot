@@ -109,8 +109,6 @@ TEST_F(configuration_test, getStoredValues) {
 	ASSERT_EQ(returnValues[0], temp);
 	ASSERT_EQ(returnValues[1], min);
 	ASSERT_EQ(returnValues[2], max);
-
-
 }
 
 TEST_F(configuration_test, validateCorrectMemoryReadLocationOnCreate) {
