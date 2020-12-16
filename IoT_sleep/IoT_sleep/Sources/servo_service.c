@@ -23,7 +23,7 @@ typedef struct servo_service {
 	SemaphoreHandle_t mutex;
 	EventGroupHandle_t event_ready;
 	EventGroupHandle_t event_collect;
-} servo_service;
+} servo_service_st;
 
 static configuration_service_t configuration;
 static co2_service_t co2;
@@ -114,7 +114,7 @@ void servo_service_task(void* pvParameters){
 
 servo_service_t servo_service_create(uint8_t servo_no, EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, configuration_service_t configuration_service, co2_service_t co2_service, ht_service_t ht_service){
 	
-	servo_service_t service = malloc(sizeof(servo_service));
+	servo_service_t service = pvPortMalloc(sizeof(servo_service_st));
 	if (NULL == service){
 		return NULL;
 	}

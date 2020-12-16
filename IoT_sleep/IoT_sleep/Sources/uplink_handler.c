@@ -104,10 +104,10 @@ void uplink_handler_task( void *pvParameters )
 	if (!initialized){
 		// Hardware reset of LoRaWAN transceiver
 		lora_driver_resetRn2483(1);
-		vTaskDelay(2);
+		_vTaskDelay(2);
 		lora_driver_resetRn2483(0);
 		// Give it a chance to wakeup
-		vTaskDelay(150);
+		_vTaskDelay(150);
 
 		lora_driver_flushBuffers(); // get rid of first version string from module after reset!
 

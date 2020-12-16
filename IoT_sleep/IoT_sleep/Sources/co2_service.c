@@ -18,7 +18,7 @@ typedef struct co2_service {
 	SemaphoreHandle_t mutex;
 	EventGroupHandle_t event_collect;
 	EventGroupHandle_t event_ready;
-} co2_service; 
+} co2_service_st; 
 
 
 uint16_t co2_service_get_measurement(co2_service_t service){
@@ -69,7 +69,7 @@ void co2_service_task(void* pvParameters){
 
 co2_service_t co2_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready){
 	
-	co2_service_t service = malloc(sizeof(co2_service));
+	co2_service_t service = pvPortMalloc(sizeof(co2_service_st));
 	if (NULL == service){
 		return NULL;
 	}

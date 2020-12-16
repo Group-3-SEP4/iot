@@ -17,13 +17,13 @@ typedef struct configuration_service {
 	uint16_t temp;
 	uint16_t co2Range[2]; // only min[0] and max[1]
 	SemaphoreHandle_t mutex;
-} configuration_service;
+} configuration_service_st;
 
 
 
 configuration_service_t configuration_service_create(void) {
 	
-	configuration_service_t service = pvPortMalloc(sizeof(configuration_service));
+	configuration_service_t service = pvPortMalloc(sizeof(configuration_service_st));
 	if (NULL == service){
 		return NULL;
 	}

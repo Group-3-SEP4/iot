@@ -20,7 +20,7 @@ typedef struct ht_service {
 	SemaphoreHandle_t mutex;
 	EventGroupHandle_t event_collect;
 	EventGroupHandle_t event_ready;
-}ht_service;
+}ht_service_st;
 
 
 int16_t ht_service_get_temperature(ht_service_t service) {
@@ -87,7 +87,7 @@ void ht_service_task(void* pvParameters){
 
 ht_service_t ht_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready){
 	
-	ht_service_t service = malloc(sizeof(ht_service_t));
+	ht_service_t service = pvPortMalloc(sizeof(ht_service_st));
 	
 	if (service == NULL)
 	return NULL;
