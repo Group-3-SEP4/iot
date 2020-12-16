@@ -1,7 +1,6 @@
 #include <stdint.h>
 #include <lora_driver.h>
 #include "payload_builder.h"
-#include "definitions.h"
 #include "secure_print.h"
 
 #define CLASS_NAME	"payload_builder.c"

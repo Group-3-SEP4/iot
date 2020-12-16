@@ -1,9 +1,11 @@
 #ifndef DEFINITIONS_H
 #define DEFINITIONS_H
 
+#include <ATMEGA_FreeRTOS.h>
+#include <FreeRTOSConfig.h>
 #include <hal_defs.h>
 #include <limits.h>
-#include <FreeRTOSConfig.h>
+
 #include <stdbool.h>
 #include <stdint.h>
 
