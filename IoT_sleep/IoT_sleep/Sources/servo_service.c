@@ -42,7 +42,7 @@ uint16_t servo_service_get_position(servo_service_t service){
 static double servo_service_calculate_claim(uint16_t current_value, uint16_t setpoint, uint16_t p_gain){
 	double claim = 0.0;
 	if (p_gain > 0){
-		claim = (((double)current_value - (double)setpoint) /(double) p_gain) * 100.0;
+		claim = ((((double)current_value - (double)setpoint)) /(double) p_gain) * 100.0;
 		if (claim < 0.0){
 			claim = 0.0;
 		}
