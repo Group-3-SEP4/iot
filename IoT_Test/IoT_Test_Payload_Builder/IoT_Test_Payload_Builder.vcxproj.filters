@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\payload_builder.c">
+      <Filter>ProductionCode</Filter>
+    </ClCompile>
+    <ClCompile Include="IoT_Test_Payload_Builder.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="ProductionCode">
+      <UniqueIdentifier>{38f71203-bf17-470a-a1e4-e3ea576cbca3}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ATMEGA_FreeRTOS.h" />
+    <ClInclude Include="FreeRTOSConfig.h" />
+    <ClInclude Include="..\..\IoT_sleep\IoT_sleep\Includes\definitions.h">
+      <Filter>ProductionCode</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+</Project>

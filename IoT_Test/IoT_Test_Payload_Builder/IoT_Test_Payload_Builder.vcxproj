@@ -19,13 +19,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{105ea5b1-20d1-44eb-878e-40e1d17ee255}</ProjectGuid>
+    <ProjectGuid>{ab7f1e5b-a75a-45a6-a061-560669ba87da}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
-    <ProjectName>IoT_Test_Configuration_Service</ProjectName>
+    <ProjectName>IoT_Test_Payload_Builder</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -37,11 +37,11 @@
     <IncludePath>C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Sources\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\drivers;.;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>.;C:\Repos\SEP4\iot\IoT_Test\IoT_Test_Configuration_Service\avr;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\drivers;C:\Repos\SEP4\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Repos\SEP4\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\Includes;C:\Repos\SEP4\iot\IoT_Test\;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\FreeRTOS\src;$(IncludePath)</IncludePath>
+    <IncludePath>.;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\drivers;C:\Repos\SEP4\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Repos\SEP4\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\Includes;C:\Repos\SEP4\iot\IoT_Test\IoT_Test_Payload_Builder;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\FreeRTOS\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\configuration_service.c" />
-    <ClCompile Include="IoT_Test_Configuration.cpp" />
+    <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\payload_builder.c" />
+    <ClCompile Include="IoT_Test_Payload_Builder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -49,7 +49,6 @@
   <ItemGroup>
     <ClInclude Include="..\..\IoT_sleep\IoT_sleep\Includes\definitions.h" />
     <ClInclude Include="ATMEGA_FreeRTOS.h" />
-    <ClInclude Include="avr\eeprom.h" />
     <ClInclude Include="FreeRTOSConfig.h" />
   </ItemGroup>
   <ItemDefinitionGroup />

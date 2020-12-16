@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IoT_Test_Co2_Service", "IoT
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IoT_Test_Configuration_Service", "IoT_Test_Configuration_Service\IoT_Test.vcxproj", "{105EA5B1-20D1-44EB-878E-40E1D17EE255}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IoT_Test_Payload_Builder", "IoT_Test_Payload_Builder\IoT_Test_Payload_Builder.vcxproj", "{AB7F1E5B-A75A-45A6-A061-560669BA87DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -31,6 +33,14 @@ Global
 		{105EA5B1-20D1-44EB-878E-40E1D17EE255}.Release|x64.Build.0 = Release|x64
 		{105EA5B1-20D1-44EB-878E-40E1D17EE255}.Release|x86.ActiveCfg = Release|Win32
 		{105EA5B1-20D1-44EB-878E-40E1D17EE255}.Release|x86.Build.0 = Release|Win32
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Debug|x64.ActiveCfg = Debug|x64
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Debug|x64.Build.0 = Debug|x64
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Debug|x86.ActiveCfg = Debug|Win32
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Debug|x86.Build.0 = Debug|Win32
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Release|x64.ActiveCfg = Release|x64
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Release|x64.Build.0 = Release|x64
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Release|x86.ActiveCfg = Release|Win32
+		{AB7F1E5B-A75A-45A6-A061-560669BA87DA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

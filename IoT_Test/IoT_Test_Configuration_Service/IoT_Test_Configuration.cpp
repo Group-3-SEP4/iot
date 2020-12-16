@@ -14,7 +14,6 @@ extern "C" {
 #include "secure_print.h"
 #include <avr/eeprom.h>
 #include "configuration_service.h"
-
 }
 
 
