@@ -33,7 +33,7 @@ void create_operations(MessageBufferHandle_t buffer_downlink){
 	EventGroupHandle_t event_group_data_collect  = xEventGroupCreate();
 	EventGroupHandle_t event_group_data_ready = xEventGroupCreate();
 	
-	MessageBufferHandle_t buffer_uplink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	MessageBufferHandle_t buffer_uplink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_UPLINK);
 
 	co2_service_t co2_service = co2_service_create(event_group_data_collect, event_group_data_ready);
 	
@@ -79,7 +79,7 @@ void initialiseSystem(MessageBufferHandle_t buffer_downlink)
 
 int main(void)
 {
-	MessageBufferHandle_t buffer_downlink = xMessageBufferCreate(sizeof(lora_driver_payload_t)*2);
+	MessageBufferHandle_t buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
 	s_print_create(xSemaphoreCreateMutex()); // initialize s_print
 	
 	initialiseSystem(buffer_downlink); // Must be done as the very first thing!!

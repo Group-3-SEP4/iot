@@ -17,7 +17,7 @@
 static configuration_service_t configuration;
 
 
-void downlink_handler_task( void *pvParameters )
+static void downlink_handler_task( void *pvParameters )
 {
 	MessageBufferHandle_t buffer_downlink = pvParameters;
 	
@@ -26,7 +26,7 @@ void downlink_handler_task( void *pvParameters )
 		lora_driver_payload_t _payload;
 		size_t xReceivedBytes;
 		
-		xReceivedBytes = _xMessageBufferReceive( buffer_downlink,( void * ) &_payload, sizeof(lora_driver_payload_t ), DEF_WAIT_MSG_BUFFER_DOWNLINK);
+		xReceivedBytes = _xMessageBufferReceive( buffer_downlink,( void * ) &_payload, sizeof(lora_driver_payload_t ), DEF_WAIT_BUFFER_DOWNLINK);
 		
 		if(xReceivedBytes > 0)
 		{

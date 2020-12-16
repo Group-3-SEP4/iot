@@ -54,7 +54,7 @@ inline void co2_service_measure(co2_service_t service){
 }
 
 
-void co2_service_task(void* pvParameters){
+static void co2_service_task(void* pvParameters){
 	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_CO2;

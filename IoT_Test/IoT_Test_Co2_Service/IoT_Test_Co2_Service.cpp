@@ -108,12 +108,18 @@ TEST_F(co2_test, CreateInitialize_mhz19_driver_with_argument) {
 }
 
 
-TEST_F(co2_test, TestName) {
+TEST_F(co2_test, co2MeasureCallDriver_mh_z19) {
 
 	// Arrange
-
+	co2_service_t sensor = co2_service_create(NULL, NULL);
+	mh_z19_takeMeassuring_fake.return_val = MHZ19_OK;
+	_xSemaphoreTake_fake.return_val = pdTRUE;
 	// Act
-
+	co2_service_measure(sensor);
 	// Assert
-
+	EXPECT_EQ(1, mh_z19_takeMeassuring_fake.call_count);
+	EXPECT_EQ(2, _xSemaphoreTake_fake.call_count);
+	EXPECT_EQ(1, mh_z19_getCo2Ppm_fake.call_count);
+	EXPECT_EQ(2, _xSemaphoreGive_fake.call_count);
+	EXPECT_EQ(1, _xEventGroupGetBits_fake.call_count);
 }
