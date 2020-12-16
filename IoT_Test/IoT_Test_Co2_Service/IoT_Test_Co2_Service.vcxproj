@@ -37,7 +37,7 @@
     <IncludePath>C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Sources\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\drivers;.;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Users\Jacob\Documents\Github\sep4\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Users\Jacob\Documents\Github\sep4\IoT_sleep\IoT_sleep\Includes;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>.;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\drivers;C:\Repos\SEP4\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;C:\Repos\SEP4\iot\IoT_Test\FreeRTOS\FreeRTOS\Source\include;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\Includes\Wrappers;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\Includes;C:\Repos\SEP4\iot\IoT_Test;C:\Repos\SEP4\iot\IoT_sleep\IoT_sleep\FreeRTOS\src;$(IncludePath)</IncludePath>
+    <IncludePath>.;$(SolutionDir)..\IoT_sleep\IoT_sleep\drivers;$(SolutionDir)IoT_Test\FreeRTOS\FreeRTOS\Source\portable\MSVC-MingW;$(SolutionDir)IoT_Test\FreeRTOS\FreeRTOS\Source\include;$(SolutionDir)..\IoT_sleep\IoT_sleep\Includes\Wrappers;$(SolutionDir)..\IoT_sleep\IoT_sleep\Includes;$(SolutionDir)IoT_Test;$(SolutionDir)..\IoT_sleep\IoT_sleep\FreeRTOS\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemGroup>
     <ClCompile Include="..\..\IoT_sleep\IoT_sleep\Sources\co2_service.c" />
