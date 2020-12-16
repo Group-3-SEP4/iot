@@ -71,7 +71,7 @@ static int8_t servo_service_get_temp_claim(){
 
 
 void servo_service_regulate(servo_service_t service){
-	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_SERVO) == pdTRUE) // protect shared data
+	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_SERVO_WRITE) == pdTRUE) // protect shared data
 	{
 		int8_t co2_claim = servo_service_get_co2_claim();
 		int8_t temp_claim = servo_service_get_temp_claim();
@@ -98,7 +98,7 @@ void servo_service_regulate(servo_service_t service){
 }
 
 
-void servo_service_task(void* pvParameters){
+static void servo_service_task(void* pvParameters){
 	
 	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
@@ -114,7 +114,7 @@ void servo_service_task(void* pvParameters){
 
 servo_service_t servo_service_create(uint8_t servo_no, EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, configuration_service_t configuration_service, co2_service_t co2_service, ht_service_t ht_service){
 	
-	servo_service_t service = pvPortMalloc(sizeof(servo_service_st));
+	servo_service_t service = malloc(sizeof(servo_service_st));
 	if (NULL == service){
 		return NULL;
 	}

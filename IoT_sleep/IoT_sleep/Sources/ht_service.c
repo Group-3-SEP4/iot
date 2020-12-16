@@ -25,7 +25,7 @@ typedef struct ht_service {
 
 int16_t ht_service_get_temperature(ht_service_t service) {
 	int16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
-	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_TEMP_READ) == pdTRUE)
+	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_T_READ) == pdTRUE)
 	{
 		tmp_value = service->temperature;
 		_xSemaphoreGive(service->mutex);
@@ -36,7 +36,7 @@ int16_t ht_service_get_temperature(ht_service_t service) {
 
 uint16_t ht_service_get_humidity(ht_service_t service) {
 	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
-	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_HUM_READ) == pdTRUE)
+	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_H_READ) == pdTRUE)
 	{
 		tmp_value = service->humidity;
 		_xSemaphoreGive(service->mutex);
@@ -47,22 +47,22 @@ uint16_t ht_service_get_humidity(ht_service_t service) {
 
 inline void ht_service_measure(ht_service_t service){
 	
-	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_HUM_TEMP_WRITE) == pdTRUE) // protect shared data
+	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_HT_WRITE) == pdTRUE) // protect shared data
 	{
 		hih8120_wakeup();
-		vTaskDelay(50);
+		vTaskDelay(DEF_DELAY_DRIVER_HT);
 		hih8120_measure();
-		vTaskDelay(50);
+		vTaskDelay(DEF_DELAY_DRIVER_HT);
 		
 		if(hih8120_isReady())
 		{
 			service->humidity = hih8120_getHumidity();
 			service->temperature = hih8120_getTemperature();
 			_xSemaphoreGive(service->mutex);
-			if (_xEventGroupGetBits(service->event_collect) & DEF_BIT_DATA_COLLECT_HUM_TEMP) // checks eventMeasureStart bits
+			if (_xEventGroupGetBits(service->event_collect) & DEF_BIT_DATA_COLLECT_HT) // checks eventMeasureStart bits
 			{
-				_xEventGroupClearBits(service->event_collect, DEF_BIT_DATA_COLLECT_HUM_TEMP); // clears eventMeasure bits
-				_xEventGroupSetBits(service->event_ready, DEF_BIT_DATA_READY_HUM_TEMP); // sets eventDataReady bits
+				_xEventGroupClearBits(service->event_collect, DEF_BIT_DATA_COLLECT_HT); // clears eventMeasure bits
+				_xEventGroupSetBits(service->event_ready, DEF_BIT_DATA_READY_HT); // sets eventDataReady bits
 			}
 			s_print("INFO", CLASS_NAME, "Current temperature and humidity: %i, %i", ht_service_get_temperature(service), ht_service_get_humidity(service));
 		}
@@ -70,11 +70,11 @@ inline void ht_service_measure(ht_service_t service){
 }
 
 
-void ht_service_task(void* pvParameters){
+static void ht_service_task(void* pvParameters){
 
 
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
-	const TickType_t xFrequency = DEF_DELAY_TASK_HUM_TEMP;
+	const TickType_t xFrequency = DEF_DELAY_TASK_HT;
 		
 	for (;;)
 	{
@@ -87,7 +87,7 @@ void ht_service_task(void* pvParameters){
 
 ht_service_t ht_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready){
 	
-	ht_service_t service = pvPortMalloc(sizeof(ht_service_st));
+	ht_service_t service = malloc(sizeof(ht_service_st));
 	
 	if (service == NULL)
 	return NULL;
@@ -105,9 +105,9 @@ ht_service_t ht_service_create(EventGroupHandle_t event_group_data_collect, Even
 	_xTaskCreate(
 	ht_service_task,
 	"ht_measure_task",
-	DEF_STACK_HUM_TEMP,
+	DEF_STACK_HT,
 	service,
-	DEF_PRIORITY_TASK_HUM_TEMP,
+	DEF_PRIORITY_TASK_HT,
 	NULL
 	);
 	

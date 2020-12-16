@@ -54,7 +54,7 @@ inline void co2_service_measure(co2_service_t service){
 }
 
 
-void co2_service_task(void* pvParameters){
+static void co2_service_task(void* pvParameters){
 	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_CO2;
@@ -69,7 +69,7 @@ void co2_service_task(void* pvParameters){
 
 co2_service_t co2_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready){
 	
-	co2_service_t service = pvPortMalloc(sizeof(co2_service_st));
+	co2_service_t service = malloc(sizeof(co2_service_st));
 	if (NULL == service){
 		return NULL;
 	}

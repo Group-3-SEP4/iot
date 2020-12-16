@@ -54,7 +54,7 @@ void data_package_handler_collect_data(){
 }
 
 
-void data_package_handler_task(void* pvParameters){	
+static void data_package_handler_task(void* pvParameters){	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_SEND_DATAPACKAGE;
 	

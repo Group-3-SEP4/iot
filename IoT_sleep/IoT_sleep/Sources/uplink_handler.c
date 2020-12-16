@@ -96,7 +96,7 @@ static void lora_setup(void)
 }
 
 
-void uplink_handler_task( void *pvParameters )
+static void uplink_handler_task( void *pvParameters )
 {
 	MessageBufferHandle_t buffer_uplink = pvParameters;
 
