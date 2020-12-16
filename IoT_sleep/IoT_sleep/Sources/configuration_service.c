@@ -23,7 +23,7 @@ typedef struct configuration_service {
 
 configuration_service_t configuration_service_create(void) {
 	
-	configuration_service_t service = pvPortMalloc(sizeof(configuration_service_st));
+	configuration_service_t service = malloc(sizeof(configuration_service_st));
 	if (NULL == service){
 		return NULL;
 	}
