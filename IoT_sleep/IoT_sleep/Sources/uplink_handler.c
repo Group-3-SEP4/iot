@@ -17,7 +17,6 @@
 
 static bool initialized = false;
 
-
 static void lora_setup(void)
 {
 	char _out_buf[100];
@@ -95,7 +94,6 @@ static void lora_setup(void)
 	}
 }
 
-
 static void uplink_handler_task( void *pvParameters )
 {
 	MessageBufferHandle_t buffer_uplink = pvParameters;
@@ -142,7 +140,6 @@ static void uplink_handler_task( void *pvParameters )
 	}
 }
 
-
 void uplink_handler_create(MessageBufferHandle_t buffer_uplink)
 {
 	_xTaskCreate(
@@ -153,4 +150,3 @@ void uplink_handler_create(MessageBufferHandle_t buffer_uplink)
 	,  DEF_PRIORITY_TASK_UPLINK  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
 	,  NULL );
 }
-

@@ -25,7 +25,6 @@
 
 #define CLASS_NAME		"main.c"
 
-
 void create_operations(MessageBufferHandle_t buffer_downlink){
 	
 	configuration_service_t configuration_service = configuration_service_create();
@@ -48,10 +47,8 @@ void create_operations(MessageBufferHandle_t buffer_downlink){
 	downlink_handler_create(buffer_downlink, configuration_service);
 }
 
-
 void initialiseSystem(MessageBufferHandle_t buffer_downlink)
 {
-	
 	// Set output ports for leds used in the example
 	DDRA |= _BV(DDA0) | _BV(DDA7);
 	// Initialise the trace-driver to be used together with the R2R-Network
@@ -76,7 +73,6 @@ void initialiseSystem(MessageBufferHandle_t buffer_downlink)
 	display_7seg_powerUp();
 }
 
-
 int main(void)
 {
 	MessageBufferHandle_t buffer_downlink = xMessageBufferCreate(DEF_MESSAGE_BUFFER_DOWNLINK);
@@ -95,4 +91,3 @@ int main(void)
 	{
 	}
 }
-

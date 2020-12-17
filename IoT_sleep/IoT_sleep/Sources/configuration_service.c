@@ -9,7 +9,6 @@
 #include "secure_print.h"
 
 #define CLASS_NAME	"configuration_service.c"
-
 #define MIN_CO2_FLAG 0
 #define MAX_CO2_FLAG 1
 
@@ -18,8 +17,6 @@ typedef struct configuration_service {
 	uint16_t co2_range[2]; // only min[0] and max[1]
 	SemaphoreHandle_t mutex;
 } configuration_service_st;
-
-
 
 configuration_service_t configuration_service_create(void) {
 	
@@ -36,7 +33,6 @@ configuration_service_t configuration_service_create(void) {
 	return service;
 }
 
-
 uint16_t configuration_service_get_temperature(configuration_service_t service) {
 	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake(service->mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
@@ -45,7 +41,6 @@ uint16_t configuration_service_get_temperature(configuration_service_t service) 
 	}
 	return tmp_value;
 }
-
 
 void configuration_service_set_temperature(configuration_service_t service, uint16_t temp) {
 	if (service->temp != temp) {
@@ -58,7 +53,6 @@ void configuration_service_set_temperature(configuration_service_t service, uint
 	}
 }
 
-
 uint16_t configuration_service_get_min_co2(configuration_service_t service) {
 	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake(service->mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
@@ -67,7 +61,6 @@ uint16_t configuration_service_get_min_co2(configuration_service_t service) {
 	}
 	return tmp_value;
 }
-
 
 void configuration_service_set_min_co2(configuration_service_t service, uint16_t min) {
 
@@ -81,7 +74,6 @@ void configuration_service_set_min_co2(configuration_service_t service, uint16_t
 	}
 }
 
-
 uint16_t configuration_service_get_max_co2(configuration_service_t service) {
 	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake(service->mutex, DEF_WAIT_DEFAULT) == pdTRUE) {
@@ -90,7 +82,6 @@ uint16_t configuration_service_get_max_co2(configuration_service_t service) {
 	}
 	return tmp_value;
 }
-
 
 void configuration_service_set_max_co2(configuration_service_t service, uint16_t max) {
 	if (service->co2_range[MAX_CO2_FLAG] != max) {
@@ -102,9 +93,3 @@ void configuration_service_set_max_co2(configuration_service_t service, uint16_t
 		}
 	}
 }
-
-
-
-
-
-

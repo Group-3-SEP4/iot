@@ -6,12 +6,10 @@ inline EventBits_t _xEventGroupGetBits(EventGroupHandle_t xEventGroup)
 	return xEventGroupGetBits(xEventGroup);
 }
 
-
 inline EventBits_t _xEventGroupClearBits(EventGroupHandle_t xEventGroup, EventBits_t bits)
 {
 	return xEventGroupClearBits(xEventGroup, bits);
 }
-
 
 inline EventBits_t _xEventGroupSetBits(EventGroupHandle_t xEventGroup, EventBits_t bits)
 {

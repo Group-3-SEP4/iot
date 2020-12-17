@@ -69,7 +69,6 @@ static int8_t servo_service_get_temp_claim(){
 	return claim;
 }
 
-
 void servo_service_regulate(servo_service_t service){
 	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_SERVO_WRITE) == pdTRUE) // protect shared data
 	{
@@ -97,7 +96,6 @@ void servo_service_regulate(servo_service_t service){
 	}
 }
 
-
 static void servo_service_task(void* pvParameters){
 	
 	
@@ -110,7 +108,6 @@ static void servo_service_task(void* pvParameters){
 		servo_service_regulate((servo_service_t) pvParameters);
 	}
 }
-
 
 servo_service_t servo_service_create(uint8_t servo_no, EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, configuration_service_t configuration_service, co2_service_t co2_service, ht_service_t ht_service){
 	

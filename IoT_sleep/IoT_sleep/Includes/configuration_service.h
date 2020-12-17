@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 
-
 typedef struct configuration_service* configuration_service_t;
 
 configuration_service_t configuration_service_create(void);

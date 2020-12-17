@@ -16,7 +16,6 @@
 
 static configuration_service_t configuration;
 
-
 static void downlink_handler_task( void *pvParameters )
 {
 	MessageBufferHandle_t buffer_downlink = pvParameters;
@@ -39,7 +38,6 @@ static void downlink_handler_task( void *pvParameters )
 		}
 	}
 }
-
 
 void downlink_handler_create(MessageBufferHandle_t buffer_downlink, configuration_service_t configuration_service)
 {

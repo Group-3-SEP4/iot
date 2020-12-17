@@ -26,7 +26,6 @@ static co2_service_t co2;
 static ht_service_t ht;
 static servo_service_t servo;
 
-
 void data_package_handler_collect_data(){
 	
 	_xEventGroupSetBits(event_collect, DEF_BIT_DATA_COLLECT_ALL);
@@ -53,7 +52,6 @@ void data_package_handler_collect_data(){
 	}
 }
 
-
 static void data_package_handler_task(void* pvParameters){	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
 	const TickType_t xFrequency = DEF_DELAY_TASK_SEND_PAYLOAD;
@@ -64,7 +62,6 @@ static void data_package_handler_task(void* pvParameters){
 		data_package_handler_collect_data();
 	}
 }
-
 
 void data_package_handler_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready, MessageBufferHandle_t message_buffer_uplink, co2_service_t co2_service, ht_service_t ht_service, servo_service_t servo_service){
 	
@@ -85,5 +82,3 @@ void data_package_handler_create(EventGroupHandle_t event_group_data_collect, Ev
 	NULL);							/* Used to pass out the created task's handle. */
 
 }
-
-

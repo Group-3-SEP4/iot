@@ -13,7 +13,6 @@ void s_print_create(SemaphoreHandle_t mutex) {
 	mutex_print = mutex;
 }
 
-
 void s_print(char* level, char* tag, char* msg, ...) {
 	if (NULL != mutex_print && (DEF_PRINT_TO_TERMINAL == true || strcmp("INFO", level) != 0)){
 		if (_xSemaphoreTake(mutex_print, DEF_WAIT_DEFAULT) == pdTRUE) {

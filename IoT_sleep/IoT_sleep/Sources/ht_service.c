@@ -13,7 +13,6 @@
 
 #define CLASS_NAME	"ht_service.c"
 
-
 typedef struct ht_service {
 	uint16_t humidity;
 	int16_t temperature;
@@ -21,7 +20,6 @@ typedef struct ht_service {
 	EventGroupHandle_t event_collect;
 	EventGroupHandle_t event_ready;
 }ht_service_st;
-
 
 int16_t ht_service_get_temperature(ht_service_t service) {
 	int16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
@@ -33,7 +31,6 @@ int16_t ht_service_get_temperature(ht_service_t service) {
 	return tmp_value;
 }
 
-
 uint16_t ht_service_get_humidity(ht_service_t service) {
 	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_H_READ) == pdTRUE)
@@ -43,7 +40,6 @@ uint16_t ht_service_get_humidity(ht_service_t service) {
 	}
 	return tmp_value;
 }
-
 
 inline void ht_service_measure(ht_service_t service){
 	
@@ -69,7 +65,6 @@ inline void ht_service_measure(ht_service_t service){
 	}
 }
 
-
 static void ht_service_task(void* pvParameters){
 
 
@@ -83,7 +78,6 @@ static void ht_service_task(void* pvParameters){
 	}
 	
 }
-
 
 ht_service_t ht_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready){
 	
@@ -113,5 +107,3 @@ ht_service_t ht_service_create(EventGroupHandle_t event_group_data_collect, Even
 	
 	return service;
 }
-
-

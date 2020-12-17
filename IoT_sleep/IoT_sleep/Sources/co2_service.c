@@ -20,7 +20,6 @@ typedef struct co2_service {
 	EventGroupHandle_t event_ready;
 } co2_service_st; 
 
-
 uint16_t co2_service_get_measurement(co2_service_t service){
 	uint16_t tmp_value = DEF_DEFAULT_NA_SENSOR;
 	if (_xSemaphoreTake (service->mutex, DEF_WAIT_MUTEX_CO2) == pdTRUE)
@@ -30,7 +29,6 @@ uint16_t co2_service_get_measurement(co2_service_t service){
 	}
 	return tmp_value;
 }
-
 
 inline void co2_service_measure(co2_service_t service){
 	
@@ -53,7 +51,6 @@ inline void co2_service_measure(co2_service_t service){
 	}
 }
 
-
 static void co2_service_task(void* pvParameters){
 	
 	TickType_t xLastWakeTime = _xTaskGetTickCount();
@@ -65,7 +62,6 @@ static void co2_service_task(void* pvParameters){
 		co2_service_measure((co2_service_t) pvParameters);
 	}
 }
-
 
 co2_service_t co2_service_create(EventGroupHandle_t event_group_data_collect, EventGroupHandle_t event_group_data_ready){
 	
